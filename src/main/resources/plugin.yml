@@ -1,0 +1,6 @@
+name: RivalRun
+version: '1.0-SNAPSHOT'
+main: xyz.skuller.rivalRun.RivalRun
+api-version: '1.21'
+authors: [ Skuller ]
+description: A plugin built for speedrunning minecraft with friends.
