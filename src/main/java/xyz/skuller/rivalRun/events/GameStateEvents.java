@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.managers.GameStateManager;
 
 public class GameStateEvents implements Listener {
@@ -78,9 +79,16 @@ public class GameStateEvents implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        if (gsm.isState(GameStateManager.GameStates.PAUSED)) {
-            event.setTo(event.getFrom());
-            event.getPlayer().sendActionBar(Component.text("Game is paused", NamedTextColor.RED));
+        if (gsm.isState(GameStateManager.GameStates.PAUSED) ||
+                gsm.isState(GameStateManager.GameStates.STARTING))
+        {
+
+            if (event.getFrom().getX() != event.getTo().getX() ||
+                    event.getFrom().getZ() != event.getTo().getZ())
+            {
+                event.setTo(event.getFrom());
+                event.getPlayer().sendActionBar(Component.text("Game is " + RivalRun.getInstance().getGameStateManager().getState(), NamedTextColor.RED));
+            }
         }
     }
 

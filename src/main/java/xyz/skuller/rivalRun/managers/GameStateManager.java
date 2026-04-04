@@ -11,6 +11,7 @@ public class GameStateManager {
 
     public enum GameStates{
         WAITING,
+        STARTING,
         PAUSED,
         RUNNING,
         POST
@@ -54,11 +55,7 @@ public class GameStateManager {
         return currentState == GameStates.RUNNING && gracePeriod;
     }
 
-    // Function used to set the grace period on or off
-    public void setGracePeriod(boolean value) {
-        this.gracePeriod = value;
-    }
-
+    // Grace period manager
     public void startGracePeriod(int seconds) {
 
         this.gracePeriod = true;
@@ -89,13 +86,11 @@ public class GameStateManager {
                 }
 
                 // Player Action Bar Update
-                Bukkit.getOnlinePlayers().forEach(player -> {
-                    player.sendActionBar(
-                            Component.text("Grace Period: ", NamedTextColor.GOLD)
-                                    .append(Component.text(graceTimeLeft, timeColor))
-                                    .append(Component.text("s", NamedTextColor.GRAY))
-                    );
-                });
+                Bukkit.getOnlinePlayers().forEach(player -> player.sendActionBar(
+                        Component.text("Grace Period: ", NamedTextColor.GOLD)
+                                .append(Component.text(graceTimeLeft, timeColor))
+                                .append(Component.text("s", NamedTextColor.GRAY))
+                ));
 
                 // Alerts for the last 5 seconds
                 if (graceTimeLeft <= 5) {
@@ -104,14 +99,12 @@ public class GameStateManager {
 
                     float pitch = 1.0f + (5 - graceTimeLeft) * 0.2f;
 
-                    Bukkit.getOnlinePlayers().forEach(player -> {
-                        player.playSound(
-                                player.getLocation(),
-                                Sound.BLOCK_NOTE_BLOCK_HAT,
-                                1f,
-                                pitch
-                        );
-                    });
+                    Bukkit.getOnlinePlayers().forEach(player -> player.playSound(
+                            player.getLocation(),
+                            Sound.BLOCK_NOTE_BLOCK_HAT,
+                            1f,
+                            pitch
+                    ));
                 }
 
                 graceTimeLeft--;
@@ -120,12 +113,48 @@ public class GameStateManager {
     }
 
 
+    // Countdown before the game starts and the game start logic.
+    public void startCountdown(int seconds) {
+        setState(GameStates.STARTING);
+
+        new BukkitRunnable() {
+
+            int timeLeft = seconds;
+
+            @Override
+            public void run() {
+
+                if (timeLeft <= 0 ) {
+                    Bukkit.getOnlinePlayers().forEach(player -> {
+                        player.sendTitle("§aGO!", "§7Good luck!", 0, 40, 10);
+                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1f,1f);
+                    });
+
+                    cancel();
+
+                    setState(GameStates.RUNNING);
+                    startGracePeriod(300);
+                    Bukkit.broadcast(Component.text("The game has begun.", NamedTextColor.GREEN));
+
+                    return;
+                }
+
+                Bukkit.getOnlinePlayers().forEach(player -> {
+                    player.sendTitle("§e" + timeLeft, "", 0, 20, 0);
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
+                });
+
+                timeLeft--;
+            }
+
+        }.runTaskTimer(RivalRun.getInstance(), 0L, 20L);
+    }
+
+
 
     // Function that handles all the game start logic such as grace period and game states and all that
     public void startGame() {
-        setState(GameStates.RUNNING);
-        Bukkit.broadcast(Component.text("The game has begun."));
-        startGracePeriod(300);
+        startCountdown(5);
     }
 
 }
