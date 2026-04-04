@@ -2,11 +2,16 @@ package xyz.skuller.rivalRun.managers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+import xyz.skuller.rivalRun.events.JoinEvent;
+import xyz.skuller.rivalRun.events.LeaveEvent;
 
 public class EventManager {
 
     // Registering Events
     public void RegisterEvents(Plugin plugin) {
+
+        plugin.getServer().getPluginManager().registerEvents(new JoinEvent(), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new LeaveEvent(), plugin);
 
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Registered all the events.");
     }
