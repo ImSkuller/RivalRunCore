@@ -1,10 +1,13 @@
 package xyz.skuller.rivalRun.events;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -16,7 +19,6 @@ public class GameStateEvents implements Listener {
 
     public GameStateEvents(GameStateManager gsm) {
         this.gsm = gsm;
-        System.out.println("GSM INIT: " + gsm);
     }
 
     @EventHandler
@@ -58,6 +60,17 @@ public class GameStateEvents implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
+            if (gsm.isGracePeriod()) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player)) return;
+
         if (gsm.isState(GameStateManager.GameStates.PAUSED)) {
             event.setCancelled(true);
         }
@@ -67,7 +80,7 @@ public class GameStateEvents implements Listener {
     public void onMove(PlayerMoveEvent event) {
         if (gsm.isState(GameStateManager.GameStates.PAUSED)) {
             event.setTo(event.getFrom());
-            event.getPlayer().sendActionBar(Component.text("Game is paused"));
+            event.getPlayer().sendActionBar(Component.text("Game is paused", NamedTextColor.RED));
         }
     }
 
