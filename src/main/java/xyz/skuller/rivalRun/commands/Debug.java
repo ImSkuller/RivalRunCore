@@ -25,6 +25,11 @@ public class Debug implements TabExecutor {
             return true;
         }
 
+        if (!sender.isOp()) {
+            sender.sendRichMessage("<red>You do not have the permission/s required to run this command.");
+            return true;
+        }
+
         GameStateManager gameStateManager = RivalRun.getInstance().getGameStateManager();
 
         if (args[0].equalsIgnoreCase("MODE")) {

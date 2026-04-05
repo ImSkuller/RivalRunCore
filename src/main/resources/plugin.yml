@@ -56,3 +56,9 @@ commands:
       - choose-team
       - team-choose
 
+  switchteam:
+    description: Command used to switch teams.
+    aliases:
+      - switch-team
+      - team-switch
+      - teamswitch

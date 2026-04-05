@@ -99,7 +99,56 @@ gui:
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #
 ############################################################
-teams: true
+teams:
+  # The number of teams that you want.
+  # Team is categorized into colors by default so you don't have to give the team a name,
+  # Just enter in the number of teams you want in the server.
+  #
+  # Usable Parameters: Integer (2 to 6)
+  list: 3
+
+  # The max number of players you want per team.
+  # The min is by default 0 so you don't have to worry about that.
+  #
+  # Usable Parameters: Integer (2 to 6)
+  max: 2
+
+  # This parameter controls if the players in a team can harm each other.
+  # Set this to 'true' if you want to enable friendly fire. (teammates can damage each other)
+  # Set this to 'false' if you want to disable friendly fire. (teammates cannot damage each other)
+  # Recommendation: false
+  #
+  # Usable Parameters: Boolean (true / false)
+  friendlyFire: false
+
+  # This parameter handles team switching.
+  # Set this to 'true' if you want players to be able to switch teams mid-game.
+  # Set this to 'false' if you don't want players to be able to switch teams mid-game.
+  # Recommendation: false
+  #
+  # Usable Parameters: Boolean (true / false)
+  teamSwitching: false
+
+  # This controls the GUI that appears when players first join the game.
+  # Set this to 'true' if you want players to get a prompt to select the team
+  # Set this to 'false' if you don't want players to get a pop-up tp select the team
+  # Recommendation: true
+  #
+  # Usable Parameters: Boolean (true / false)
+  loginGUI: true
+
+  # This controls what the teams are gonna be named
+  # There are some already predefined names in the system you cannot edit them.
+  # But you may select which one of those name sets you want to use.
+  #
+  # 0: Default (RED, BLUE, GREEN, YELLOW, AQUA, PURPLE)
+  # 1: Passive Mobs (Pig, Cow, Chicken, Sheep, Squid, Axolotl)
+  # 2: Hostile Mobs (Zombie, Creeper, Blaze, Piglin, Enderman, Warden)
+  # 3: Flowers (Rose, Dandelions, Sunflower, Cornflower, Tulip, Lilly)
+  # 5: Blocks (Wood, Stone, Sand, Deepslate, Obsidian, Endstone)
+  #
+  # Usable Parameters: Integers (Select from the above list)
+  teamName: 0
 
 
 

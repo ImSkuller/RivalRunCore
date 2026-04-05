@@ -2,6 +2,7 @@ package xyz.skuller.rivalRun.managers;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.helpers.Teams;
 
 import java.util.Collection;
@@ -10,6 +11,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TeamsManager {
+
+    int teamNumbers = RivalRun.getInstance().getConfig().getInt("");
 
     private final Map<String, Teams> teams = new HashMap<>();
     private final Map<UUID, Teams> playerTeams = new HashMap<>();
@@ -30,5 +33,7 @@ public class TeamsManager {
     public Collection<Teams> getTeams() {
         return teams.values();
     }
+
+
 
 }
