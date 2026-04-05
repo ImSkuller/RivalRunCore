@@ -39,6 +39,7 @@ public class GameStateManager {
 
     // Function used to set the state of the game
     public void setState(GameStates newState) {
+        if (this.currentState == newState) return;
         this.currentState = newState;
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Game state updated to " + newState.name());
     }
@@ -155,6 +156,15 @@ public class GameStateManager {
     // Function that handles all the game start logic such as grace period and game states and all that
     public void startGame() {
         startCountdown(5);
+    }
+
+    // Function that's used to reset the game after it ends.
+    public void resetGame() {
+        gracePeriod = true;
+        graceTimeLeft = 0;
+        timeColor = NamedTextColor.GREEN;
+
+        setState(GameStates.WAITING);
     }
 
 }
