@@ -4,3 +4,55 @@ main: xyz.skuller.rivalRun.RivalRun
 api-version: '1.21'
 authors: [ Skuller ]
 description: A plugin built for speedrunning minecraft with friends.
+
+commands:
+  debug:
+    description: Command used to debug the plugin during development.
+    aliases:
+      - rivalrun-dev
+
+  endgame:
+    description: Command used to force end the game.
+    aliases:
+      - gameend
+      - rivalrunend
+      - game-end
+      - rivalrun-end
+      - end-game
+
+  startgame:
+    description: Command used to start the game for everyone in the server.
+    aliases:
+      - gamestart
+      - start-game
+      - game-start
+      - rivalrunstart
+      - rivalrun-start
+
+  pausegame:
+    description: Command used to pause the game for everyone in the server.
+    aliases:
+      - gamepause
+      - pause-game
+      - game-pause
+      - rivalrunpause
+      - rivalrun-pause
+
+  teamleave:
+    description: Command used to leave the current team that the player is in.
+    aliases:
+      - leaveteam
+      - team-leave
+      - leave-team
+
+  selectteam:
+    description: Command used to select a team to join.
+    aliases:
+      - teamselect
+      - chooseteam
+      - teamchoose
+      - select-team
+      - team-select
+      - choose-team
+      - team-choose
+

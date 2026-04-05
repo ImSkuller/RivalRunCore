@@ -3,9 +3,12 @@ package xyz.skuller.rivalRun.managers;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.commands.Debug;
 import xyz.skuller.rivalRun.events.GameStateEvents;
 import xyz.skuller.rivalRun.events.JoinEvent;
 import xyz.skuller.rivalRun.events.LeaveEvent;
+
+import java.util.Objects;
 
 public class EventManager {
 
@@ -21,9 +24,9 @@ public class EventManager {
 
 
     // Registering Commands
-    public void RegisterCommands(Plugin plugin) {
+    public void RegisterCommands(RivalRun plugin) {
 
-
+        Objects.requireNonNull(plugin.getCommand("debug")).setExecutor(new Debug());
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Registered all the commands.");
     }
 
