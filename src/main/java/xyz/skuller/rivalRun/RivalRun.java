@@ -1,5 +1,6 @@
 package xyz.skuller.rivalRun;
 
+import xyz.skuller.rivalRun.managers.ConfigManager;
 import xyz.skuller.rivalRun.managers.EventManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,6 +10,7 @@ public final class RivalRun extends JavaPlugin {
 
     private static RivalRun instance;
     private static GameStateManager gameStateManager;
+    double CURRENT_VERSION = 0.1;
 
 
     @Override
@@ -21,6 +23,9 @@ public final class RivalRun extends JavaPlugin {
         eventManager.RegisterEvents(this);
         eventManager.RegisterCommands(this);
         eventManager.StartConsoleEvent(getPluginMeta().getVersion());
+
+        // Loading Configuration File
+        new ConfigManager().ConfigUpdate(CURRENT_VERSION, this);
 
 
 

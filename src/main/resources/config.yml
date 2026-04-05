@@ -1,0 +1,111 @@
+############################################################
+# +------------------------------------------------------+ #
+# |                 Plugin By Skuller                    | #
+# |            https://discord.gg/WwVmxeXEgH             | #
+# +------------------------------------------------------+ #
+############################################################
+
+# If you receive an error when Rival Run loads,  ensure that:
+#  - No tabs are present: YAML only allows spaces
+#  - Indents are correct: YAML hierarchy is based entirely on indentation
+
+#<-------------------------------------------------------->#
+# Configuration File Starts Here
+#<-------------------------------------------------------->#
+
+
+############################################################
+# +------------------------------------------------------+ #
+# |             📜 Commands Configuration                | #
+# |                 Plugin By Skuller                    | #
+# +------------------------------------------------------+ #
+############################################################
+commands:
+  # This command is used to force end the game.
+  # This can only be run by administrators.
+  #
+  # Usable Parameters: Boolean (true / false)
+  endGame: true
+
+  # This command is used to pause the game for all the players.
+  # This can only be run by administrators.
+  #
+  # Usable Parameters: Boolean (true / false)
+  pauseGame: true
+
+  # This command can be used by players to select their team if they missed the first login event.
+  # This command can be run by anyone in the server.
+  # You can only run this command before the start of the game.
+  #
+  # Usable Parameters: Boolean (true / false)
+  teamSelect: true
+
+  # This command can be used to leave the team the player is in.
+  # This command can be run by anyone in the server.
+  # You can only run this command before the start of the game.
+  #
+  # Usable Parameters: Boolean (true / false)
+  teamLeave: true
+
+  # These are a set of developer commands used to debug/ test the plugin.
+  # You can mess around with them if you want.
+  # You need to be opped to run these commands.
+  #
+  # Usable Parameters: Boolean (true / false)
+  debug: false
+
+
+
+############################################################
+# +------------------------------------------------------+ #
+# |              🧸 GUI Configuration                    | #
+# |                Plugin By Skuller                     | #
+# +------------------------------------------------------+ #
+############################################################
+gui:
+  # This determines if the fillers in the GUI is enabled or not
+  # Change this to false if you don't want fillers (Design)
+  #
+  # Usable Parameters: Boolean (true / false)
+  filler: true
+
+  # These are the fillers used in the GUIS (Only works when filler is set to true)
+  # Change the items to something valid to change it in game
+  # Ex. RED_GLASS_PANE, LIME_GLASS_PANE
+  #
+  # Usable Parameters: STRING(Minecraft Item Names)
+  filler-1: RED_GLASS_PANE
+  filler-2: WHITE_GLASS_PANE
+
+  # Filler Names are the names used for fillers in the GUI
+  # Only works if filler is set to true
+  #
+  # Usable Parameters: String + MiniMessage format
+  filler-1-name: ""
+  filler-2-name: ""
+
+  # Turn all the plugin GUI's on and off by changing the values here
+  # If you change the values here some commands might have severe changes and
+  # Some may even get disabled if you set this to false.
+  #
+  # Usable Parameters: Boolean (true / false)
+  test-gui: true
+
+
+
+############################################################
+# +------------------------------------------------------+ #
+# |              ➕ Teams Configuration                  | #
+# |                 Plugin By Skuller                    | #
+# +------------------------------------------------------+ #
+############################################################
+teams: true
+
+
+
+
+
+# Plugin Configuration Version
+# ⚠️ Do Not Change ⚠️️
+# If you change this value there is a high chance for your config file to get reset.
+version: 0.1

@@ -87,7 +87,7 @@ public class GameStateManager {
 
                 // Player Action Bar Update
                 Bukkit.getOnlinePlayers().forEach(player -> player.sendActionBar(
-                        Component.text("Grace Period: ", NamedTextColor.GOLD)
+                        Component.text("Grace Period: ", NamedTextColor.WHITE)
                                 .append(Component.text(graceTimeLeft, timeColor))
                                 .append(Component.text("s", NamedTextColor.GRAY))
                 ));
