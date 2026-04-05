@@ -1,5 +1,6 @@
 package xyz.skuller.rivalRun.helpers;
 
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 
 import java.util.HashSet;
@@ -9,10 +10,10 @@ import java.util.UUID;
 public class Teams {
 
     private final String name;
-    private final ChatColor color;
+    private final NamedTextColor color;
     private final Set<UUID> players;
 
-    public Teams(String name, ChatColor color) {
+    public Teams(String name, NamedTextColor color) {
         this.name = name;
         this.color = color;
         this.players = new HashSet<>();
@@ -34,12 +35,16 @@ public class Teams {
         return players;
     }
 
-    public ChatColor getColor() {
+    public NamedTextColor getColor() {
         return color;
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getSize() {
+        return players.size();
     }
 
 }

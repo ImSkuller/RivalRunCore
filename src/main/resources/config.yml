@@ -145,7 +145,7 @@ teams:
   # 1: Passive Mobs (Pig, Cow, Chicken, Sheep, Squid, Axolotl)
   # 2: Hostile Mobs (Zombie, Creeper, Blaze, Piglin, Enderman, Warden)
   # 3: Flowers (Rose, Dandelions, Sunflower, Cornflower, Tulip, Lilly)
-  # 5: Blocks (Wood, Stone, Sand, Deepslate, Obsidian, Endstone)
+  # 4: Blocks (Wood, Stone, Sand, Deepslate, Obsidian, Endstone)
   #
   # Usable Parameters: Integers (Select from the above list)
   teamName: 0
