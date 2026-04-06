@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.managers.GameStateManager;
 
+import java.nio.Buffer;
 import java.util.List;
 
 public class Debug implements TabExecutor {
@@ -53,6 +54,23 @@ public class Debug implements TabExecutor {
             return true;
         }
 
+        else if (args[0].equalsIgnoreCase("game")) {
+            if (args[1].equalsIgnoreCase("start")) {
+                gameStateManager.startGame();
+            }
+            else if (args[1].equalsIgnoreCase("stop")) {
+                if (gameStateManager.isState(GameStateManager.GameStates.RUNNING) || gameStateManager.isState(GameStateManager.GameStates.PAUSED))
+                {
+                    sender.sendRichMessage("\n<green>The game has now ended.");
+                    gameStateManager.resetGame();
+                    return true;
+                } else {
+                    sender.sendRichMessage("<red>You can only use this command when the game is already running.");
+                    return true;
+                }
+            }
+        }
+
         return true;
 
     }
@@ -64,13 +82,17 @@ public class Debug implements TabExecutor {
                                                 @NotNull String @NotNull [] args)
     {
         if (args.length == 1) {
-            return List.of("mode");
+            return List.of("mode", "game");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("mode")) {
             return java.util.Arrays.stream(GameStateManager.GameStates.values())
                     .map(Enum::name)
                     .toList();
+        }
+
+        else if (args.length == 2 && args[0].equalsIgnoreCase("game")) {
+            return List.of("start", "stop");
         }
 
         return List.of();
