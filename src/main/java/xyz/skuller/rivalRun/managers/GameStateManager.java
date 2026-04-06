@@ -116,6 +116,12 @@ public class GameStateManager {
 
     // Countdown before the game starts and the game start logic.
     public void startCountdown(int seconds) {
+        boolean isGraceEnabled;
+        int graceTime;
+
+        isGraceEnabled = RivalRun.getInstance().getConfig().getBoolean("grace.enabled");
+        graceTime= RivalRun.getInstance().getConfig().getInt("grace.gracePeriod");
+
         setState(GameStates.STARTING);
 
         new BukkitRunnable() {
@@ -134,7 +140,9 @@ public class GameStateManager {
                     cancel();
 
                     setState(GameStates.RUNNING);
-                    startGracePeriod(300);
+                    if (isGraceEnabled) {
+                        startGracePeriod(graceTime);
+                    }
                     Bukkit.broadcast(Component.text("The game has begun.", NamedTextColor.GREEN));
 
                     return;

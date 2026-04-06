@@ -95,6 +95,29 @@ gui:
 
 ############################################################
 # +------------------------------------------------------+ #
+# |              ➕ Grace Configuration                  | #
+# |                 Plugin By Skuller                    | #
+# +------------------------------------------------------+ #
+############################################################
+grace:
+  # This determines if you want to enable a grace period or not
+  # Recommended: true
+  #
+  # Usable Parameters: Boolean (true / false)
+  enabled: true
+
+  # This determines the grace period if its enabled.
+  # You cannot provide a value below 1 minute. (60 Seconds)
+  # You have to enter the value in seconds.
+  # Ex: 5 Minutes would be 300 seconds (5 * 60 = 300)
+  #
+  # Usable Parameters: Integer (Seconds)
+  gracePeriod: 300
+
+
+
+############################################################
+# +------------------------------------------------------+ #
 # |              ➕ Teams Configuration                  | #
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #

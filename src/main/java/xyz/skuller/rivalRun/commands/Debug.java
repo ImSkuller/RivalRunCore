@@ -1,5 +1,6 @@
 package xyz.skuller.rivalRun.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -9,6 +10,7 @@ import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.managers.GameStateManager;
 
 import java.nio.Buffer;
+import java.util.Arrays;
 import java.util.List;
 
 public class Debug implements TabExecutor {
@@ -54,7 +56,7 @@ public class Debug implements TabExecutor {
             return true;
         }
 
-        else if (args[0].equalsIgnoreCase("game")) {
+        else if (args[0].equalsIgnoreCase("GAME")) {
             if (args[1].equalsIgnoreCase("start")) {
                 gameStateManager.startGame();
             }
@@ -71,6 +73,35 @@ public class Debug implements TabExecutor {
             }
         }
 
+        else if (args[0].equalsIgnoreCase("RESETCONFIG")) {
+            var instance = RivalRun.getInstance();
+            // Header Logic
+            instance.getConfig().options().setHeader(List.of(
+                    "############################################################",
+                    "# +------------------------------------------------------+ #",
+                    "# |                 Plugin By Skuller                    | #",
+                    "# |            https://discord.gg/58QeTrs3n9             | #" ,
+                    "# +------------------------------------------------------+ #",
+                    "############################################################",
+                    " ",
+                    "# If you receive an error when Rival Run loads,  ensure that:",
+                    "#  - No tabs are present: YAML only allows spaces",
+                    "#  - Indents are correct: YAML hierarchy is based entirely on indentation",
+                    " ",
+                    "#<-------------------------------------------------------->#",
+                    "# Configuration File Starts Here",
+                    "#<-------------------------------------------------------->#",
+                    " "
+            ));
+
+            instance.saveResource("config.yml", true);
+            instance.reloadConfig();
+            instance.saveConfig();
+
+            Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Config files reload.");
+            sender.sendRichMessage("<green>Reloaded all the config files.");
+        }
+
         return true;
 
     }
@@ -82,11 +113,11 @@ public class Debug implements TabExecutor {
                                                 @NotNull String @NotNull [] args)
     {
         if (args.length == 1) {
-            return List.of("mode", "game");
+            return List.of("mode", "game", "resetconfig");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("mode")) {
-            return java.util.Arrays.stream(GameStateManager.GameStates.values())
+            return Arrays.stream(GameStateManager.GameStates.values())
                     .map(Enum::name)
                     .toList();
         }
