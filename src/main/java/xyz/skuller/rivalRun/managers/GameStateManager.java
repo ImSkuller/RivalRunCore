@@ -163,6 +163,10 @@ public class GameStateManager {
 
     // Function that handles all the game start logic such as grace period and game states and all that
     public void startGame() {
+        boolean isTeamSwitchingEnabled = RivalRun.getInstance().getConfig().getBoolean("teams.teamSwitching");
+        if (!(isTeamSwitchingEnabled)) {
+            RivalRun.getInstance().getTeamManager().lockTeams();
+        }
         startCountdown(5);
     }
 
@@ -171,6 +175,7 @@ public class GameStateManager {
         gracePeriod = true;
         graceTimeLeft = 0;
         timeColor = NamedTextColor.GREEN;
+        RivalRun.getInstance().getTeamManager().unlockTeams();
 
         setState(GameStates.WAITING);
     }

@@ -43,6 +43,10 @@ public class Teams {
         return name;
     }
 
+    public boolean isFull(int maxSize) {
+        return players.size() >= maxSize;
+    }
+
     public int getSize() {
         return players.size();
     }

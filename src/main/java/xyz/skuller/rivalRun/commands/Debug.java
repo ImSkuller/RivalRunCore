@@ -111,6 +111,12 @@ public class Debug implements TabExecutor {
             new TestMenu().open(player);
         }
 
+        else if (args[0].equalsIgnoreCase("getTeams")) {
+            sender.sendRichMessage("<green>Listed below are all the teams.");
+            sender.sendRichMessage("<aqua>" + RivalRun.getInstance().getTeamManager().getFormattedTeams());
+            return true;
+        }
+
         return true;
 
     }
@@ -122,7 +128,7 @@ public class Debug implements TabExecutor {
                                                 @NotNull String @NotNull [] args)
     {
         if (args.length == 1) {
-            return List.of("mode", "game", "resetconfig", "testgui");
+            return List.of("Mode", "Game", "resetConfig", "testGUI", "getTeams");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("mode")) {
@@ -132,7 +138,7 @@ public class Debug implements TabExecutor {
         }
 
         else if (args.length == 2 && args[0].equalsIgnoreCase("game")) {
-            return List.of("start", "stop");
+            return List.of("Start", "Stop");
         }
 
         return List.of();

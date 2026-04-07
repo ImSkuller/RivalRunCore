@@ -1,11 +1,14 @@
 package xyz.skuller.rivalRun.events;
 
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.Teams;
+import xyz.skuller.rivalRun.managers.TeamsManager;
 
 public class LeaveEvent implements Listener {
 
@@ -13,31 +16,25 @@ public class LeaveEvent implements Listener {
     public void onLeave(PlayerQuitEvent event) {
 
         final Player player = event.getPlayer();
+        TeamsManager teamManager = RivalRun.getInstance().getTeamManager();
 
+        Teams team = teamManager.getPlayerTeam(player);
 
-        // TODO: Make all these values actually real instead of placeholders.
+        Component quitMessage;
 
-        int teamID = 1;
-        NamedTextColor teamColor = NamedTextColor.YELLOW;
+        if (team != null) {
 
-        if (teamID == 1) {
+            quitMessage = Component.text("")
+                    .append(Component.text(player.getName(), team.getColor()))
+                    .append(Component.text(" left the server", NamedTextColor.RED));
 
-            // Quit message for people who belong to a team.
-            Component quitMessage = Component.text("")
-                    .append(player.displayName().color(teamColor))
-                    .append(Component.text(" Left The Server", NamedTextColor.RED));
+        } else {
 
-            event.quitMessage(quitMessage);
-        }
-        else {
-
-            // Quit for people who are not in a team.
-            Component quitMessage = Component.text("")
-                    .append(player.displayName().color(NamedTextColor.WHITE))
-                    .append(Component.text(" Left The Server", NamedTextColor.RED));
-
-            event.quitMessage(quitMessage);
+            quitMessage = Component.text("")
+                    .append(Component.text(player.getName(), NamedTextColor.WHITE))
+                    .append(Component.text(" left the server", NamedTextColor.RED));
         }
 
+        event.quitMessage(quitMessage);
     }
 }

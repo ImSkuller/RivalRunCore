@@ -5,11 +5,13 @@ import xyz.skuller.rivalRun.managers.EventManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.skuller.rivalRun.managers.GameStateManager;
+import xyz.skuller.rivalRun.managers.TeamsManager;
 
 public final class RivalRun extends JavaPlugin {
 
     private static RivalRun instance;
     private static GameStateManager gameStateManager;
+    private static TeamsManager teamManager;
     double CURRENT_VERSION = 0.1;
 
 
@@ -17,6 +19,7 @@ public final class RivalRun extends JavaPlugin {
     public void onEnable() {
         instance = this;
         gameStateManager = new GameStateManager();
+        teamManager = new TeamsManager(this);
 
         // Event manager
         EventManager eventManager = new EventManager();
@@ -27,6 +30,8 @@ public final class RivalRun extends JavaPlugin {
         // Loading Configuration File
         new ConfigManager().ConfigUpdate(CURRENT_VERSION, this);
 
+        // Team Manager Things.
+        teamManager.loadTeamsFromConfig();
 
 
         // Loaded Message
@@ -45,4 +50,6 @@ public final class RivalRun extends JavaPlugin {
     public static RivalRun getInstance() { return instance; }
 
     public GameStateManager getGameStateManager() { return gameStateManager; }
+
+    public TeamsManager getTeamManager() {return teamManager; }
 }

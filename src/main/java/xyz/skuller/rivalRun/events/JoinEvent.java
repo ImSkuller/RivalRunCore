@@ -6,6 +6,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.Teams;
+import xyz.skuller.rivalRun.managers.TeamsManager;
 
 public class JoinEvent implements Listener {
 
@@ -13,29 +16,31 @@ public class JoinEvent implements Listener {
     public void onJoin(PlayerJoinEvent event) {
 
         final Player player = event.getPlayer();
+        TeamsManager teamManager = RivalRun.getInstance().getTeamManager();
 
+        Teams team = teamManager.getPlayerTeam(player);
 
-        // TODO: Make all these values actually real values.
-        int teamID = 1;
-        NamedTextColor teamColor = NamedTextColor.YELLOW;
+        // Apply visuals if player has a team
+        if (team != null) {
+            teamManager.applyNametag(player);
+            teamManager.updateTab(player);
+        }
 
+        Component joinMessage;
 
-        if (teamID == 1) {
+        if (team != null) {
 
-            // Join message for people who belong to a team.
-            Component joinMessage = Component.text("")
-                    .append(player.displayName().color(teamColor))
-                    .append(Component.text(" Joined The Server", NamedTextColor.GREEN));
+            joinMessage = Component.text("")
+                    .append(Component.text(player.getName(), team.getColor()))
+                    .append(Component.text(" joined the server", NamedTextColor.GREEN));
 
-            event.joinMessage(joinMessage);
         } else {
 
-            // Join message for people who are not in a team.
-            Component joinMessage = Component.text("")
-                    .append(player.displayName().color(NamedTextColor.WHITE))
-                    .append(Component.text(" Joined The Server", NamedTextColor.GREEN));
-
-            event.joinMessage(joinMessage);
+            joinMessage = Component.text("")
+                    .append(Component.text(player.getName(), NamedTextColor.WHITE))
+                    .append(Component.text(" joined the server", NamedTextColor.GREEN));
         }
+
+        event.joinMessage(joinMessage);
     }
 }
