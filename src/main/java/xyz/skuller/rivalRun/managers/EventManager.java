@@ -5,6 +5,7 @@ import org.bukkit.plugin.Plugin;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.commands.Debug;
 import xyz.skuller.rivalRun.events.GameStateEvents;
+import xyz.skuller.rivalRun.events.InventoryListener;
 import xyz.skuller.rivalRun.events.JoinEvent;
 import xyz.skuller.rivalRun.events.LeaveEvent;
 
@@ -18,6 +19,7 @@ public class EventManager {
         plugin.getServer().getPluginManager().registerEvents(new JoinEvent(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new LeaveEvent(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new GameStateEvents(((RivalRun) plugin).getGameStateManager()), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new InventoryListener(), plugin);
 
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Registered all the events.");
     }

@@ -4,12 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.managers.GameStateManager;
+import xyz.skuller.rivalRun.menus.TestMenu;
 
-import java.nio.Buffer;
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,11 +66,10 @@ public class Debug implements TabExecutor {
                 {
                     sender.sendRichMessage("\n<green>The game has now ended.");
                     gameStateManager.resetGame();
-                    return true;
                 } else {
                     sender.sendRichMessage("<red>You can only use this command when the game is already running.");
-                    return true;
                 }
+                return true;
             }
         }
 
@@ -102,6 +102,15 @@ public class Debug implements TabExecutor {
             sender.sendRichMessage("<green>Reloaded all the config files.");
         }
 
+        else if (args[0].equalsIgnoreCase("testgui")) {
+            if (!(sender instanceof final Player player)) {
+                sender.sendRichMessage("<red>Only players can use this command");
+                return true;
+            }
+
+            new TestMenu().open(player);
+        }
+
         return true;
 
     }
@@ -113,7 +122,7 @@ public class Debug implements TabExecutor {
                                                 @NotNull String @NotNull [] args)
     {
         if (args.length == 1) {
-            return List.of("mode", "game", "resetconfig");
+            return List.of("mode", "game", "resetconfig", "testgui");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("mode")) {

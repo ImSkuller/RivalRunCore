@@ -28,8 +28,8 @@ public class TeamsManager {
         int presetId = plugin.getConfig().getInt("teams.teamName");
 
         // Validate team count
-        if (teamCount < 2 || teamCount > 6) {
-            throw new IllegalArgumentException("Teams must be between 2 and 6");
+        if (teamCount < 2 || teamCount > 7) {
+            throw new IllegalArgumentException("Teams must be between 2 and 7");
         }
 
         TeamPresets.TeamPreset[] presets = TeamPresets.TeamPreset.values();

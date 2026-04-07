@@ -69,14 +69,6 @@ gui:
   # Usable Parameters: Boolean (true / false)
   filler: true
 
-  # These are the fillers used in the GUIS (Only works when filler is set to true)
-  # Change the items to something valid to change it in game
-  # Ex. RED_GLASS_PANE, LIME_GLASS_PANE
-  #
-  # Usable Parameters: STRING(Minecraft Item Names)
-  filler-1: RED_GLASS_PANE
-  filler-2: WHITE_GLASS_PANE
-
   # Filler Names are the names used for fillers in the GUI
   # Only works if filler is set to true
   #
@@ -127,7 +119,7 @@ teams:
   # Team is categorized into colors by default so you don't have to give the team a name,
   # Just enter in the number of teams you want in the server.
   #
-  # Usable Parameters: Integer (2 to 6)
+  # Usable Parameters: Integer (2 to 7)
   list: 3
 
   # The max number of players you want per team.
