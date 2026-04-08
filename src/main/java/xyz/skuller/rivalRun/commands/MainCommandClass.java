@@ -10,8 +10,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MainCommandClass implements TabExecutor {
-    GameCommands gameCommands;
-    TeamCommands teamCommands;
+
+    private final GameCommands gameCommands;
+    private final TeamCommands teamCommands;
+
+    public MainCommandClass(GameCommands gameCommands, TeamCommands teamCommands) {
+        this.gameCommands = gameCommands;
+        this.teamCommands = teamCommands;
+    }
+
     private final List<String> subCommands = List.of(
             "start", "startgame",
             "pause", "pausegame",

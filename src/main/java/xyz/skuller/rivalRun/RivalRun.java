@@ -1,5 +1,7 @@
 package xyz.skuller.rivalRun;
 
+import xyz.skuller.rivalRun.commands.GameCommands;
+import xyz.skuller.rivalRun.commands.TeamCommands;
 import xyz.skuller.rivalRun.managers.ConfigManager;
 import xyz.skuller.rivalRun.managers.EventManager;
 import org.bukkit.Bukkit;
@@ -12,6 +14,8 @@ public final class RivalRun extends JavaPlugin {
     private static RivalRun instance;
     private static GameStateManager gameStateManager;
     private static TeamsManager teamManager;
+    private static GameCommands gc;
+    private static TeamCommands tc;
     double CURRENT_VERSION = 0.1;
 
 
@@ -20,6 +24,8 @@ public final class RivalRun extends JavaPlugin {
         instance = this;
         gameStateManager = new GameStateManager();
         teamManager = new TeamsManager(this);
+        gc = new GameCommands();
+        tc = new TeamCommands();
 
         // Event manager
         EventManager eventManager = new EventManager();
@@ -47,9 +53,13 @@ public final class RivalRun extends JavaPlugin {
 
     }
 
-    public static RivalRun getInstance() { return instance; }
+    public static RivalRun getInstance() {return instance;}
 
-    public GameStateManager getGameStateManager() { return gameStateManager; }
+    public GameStateManager getGameStateManager() {return gameStateManager;}
 
-    public TeamsManager getTeamManager() {return teamManager; }
+    public TeamsManager getTeamManager() {return teamManager;}
+
+    public GameCommands getGameCommands() {return gc;}
+
+    public TeamCommands getTeamCommands() {return tc;}
 }

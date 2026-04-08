@@ -4,7 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.commands.Debug;
+import xyz.skuller.rivalRun.commands.GameCommands;
 import xyz.skuller.rivalRun.commands.MainCommandClass;
+import xyz.skuller.rivalRun.commands.TeamCommands;
 import xyz.skuller.rivalRun.events.*;
 
 import java.util.Objects;
@@ -28,8 +30,12 @@ public class EventManager {
 
     // Registering Commands
     public void RegisterCommands(RivalRun plugin) {
+
+        GameCommands gc = RivalRun.getInstance().getGameCommands();
+        TeamCommands tc = RivalRun.getInstance().getTeamCommands();
+
         Objects.requireNonNull(plugin.getCommand("rrdebug")).setExecutor(new Debug());
-        Objects.requireNonNull(plugin.getCommand("rivalrun")).setExecutor(new MainCommandClass());
+        Objects.requireNonNull(plugin.getCommand("rivalrun")).setExecutor(new MainCommandClass(gc, tc));
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Registered all the commands.");
     }
 
