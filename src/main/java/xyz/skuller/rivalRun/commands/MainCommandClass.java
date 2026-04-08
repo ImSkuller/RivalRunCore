@@ -73,6 +73,7 @@ public class MainCommandClass implements TabExecutor {
                 return true;
             }
             gameCommands.resetGame();
+            sender.sendRichMessage("<green>The game has been reset.");
         }
 
         else if (args[0].equalsIgnoreCase("resume") || args[0].equalsIgnoreCase("resumegame")) {

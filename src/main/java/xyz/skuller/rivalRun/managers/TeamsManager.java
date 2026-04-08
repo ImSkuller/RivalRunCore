@@ -196,5 +196,6 @@ public class TeamsManager {
         teams.clear();
         playerTeams.clear();
         teamsLocked = false;
+        loadTeamsFromConfig();
     }
 }
