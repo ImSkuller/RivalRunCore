@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public abstract class SimpleMenu implements Menu {
+    protected Player viewer;
 
     private final Map<Integer, Consumer<Player>> actions = new HashMap<>();
     private final Inventory inventory;
@@ -19,6 +20,17 @@ public abstract class SimpleMenu implements Menu {
 
         this.inventory = Bukkit.createInventory(this, rows.getSize(), title);
 
+    }
+
+    @Override
+    public void open(Player player) {
+
+        this.viewer = player;
+
+        clearMenu();
+        onSetItems();
+
+        player.openInventory(getInventory());
     }
 
     @Override
@@ -44,6 +56,11 @@ public abstract class SimpleMenu implements Menu {
 
         getInventory().setItem(slot, item);
 
+    }
+
+    protected void clearMenu() {
+        actions.clear();
+        inventory.clear();
     }
 
     public abstract void onSetItems();

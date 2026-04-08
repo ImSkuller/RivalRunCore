@@ -1,6 +1,7 @@
 package xyz.skuller.rivalRun.managers;
 
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
 import xyz.skuller.rivalRun.RivalRun;
@@ -51,6 +52,9 @@ public class TeamsManager {
 
             createTeam(teamName, color);
         }
+
+        Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Team count: <gold>" + teamCount);
+        Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Teams loaded: <gold>" + teams.size());
     }
 
     // Create Team function
@@ -77,6 +81,8 @@ public class TeamsManager {
             Teams oldTeam = playerTeams.get(uuid);
             oldTeam.removePlayer(uuid);
         }
+
+        Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Added <red>" + player + "<green> to team <red>" + newTeam);
 
         playerTeams.put(uuid, newTeam);
         newTeam.addPlayer(uuid);
@@ -106,6 +112,16 @@ public class TeamsManager {
         return names;
     }
 
+    // Returns the max team size
+    public int getMaxTeamSize() {
+        return plugin.getConfig().getInt("teams.max");
+    }
+
+    // Checks if the player is already in a team or not
+    public boolean isInTeam(Player player) {
+        return playerTeams.containsKey(player.getUniqueId());
+    }
+
     // Applies the team color to the player
     public void applyNametag(Player player) {
 
@@ -129,14 +145,8 @@ public class TeamsManager {
         Teams team = getPlayerTeam(player);
         if (team == null) return;
 
-        String prefix = "[" + team.getName() + "] ";
-
+        String prefix = " [" + team.getName() + "] ";
         player.setPlayerListName(prefix + player.getName());
-    }
-
-    // Function to help get the teams by its name
-    public Teams getTeamByName(String name) {
-        return teams.get(name);
     }
 
     // Function used to get all the teams that are currently in the game

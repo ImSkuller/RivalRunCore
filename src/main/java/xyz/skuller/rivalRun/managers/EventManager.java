@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.commands.Debug;
+import xyz.skuller.rivalRun.commands.MainCommandClass;
 import xyz.skuller.rivalRun.events.*;
 
 import java.util.Objects;
@@ -19,6 +20,7 @@ public class EventManager {
         plugin.getServer().getPluginManager().registerEvents(new InventoryListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new FriendlyFireEvent(plugin), plugin);
         plugin.getServer().getPluginManager().registerEvents(new TeamWinEvent(plugin), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new TeamChatFormatter(), plugin);
 
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Registered all the events.");
     }
@@ -26,8 +28,8 @@ public class EventManager {
 
     // Registering Commands
     public void RegisterCommands(RivalRun plugin) {
-
-        Objects.requireNonNull(plugin.getCommand("debug")).setExecutor(new Debug());
+        Objects.requireNonNull(plugin.getCommand("rrdebug")).setExecutor(new Debug());
+        Objects.requireNonNull(plugin.getCommand("rivalrun")).setExecutor(new MainCommandClass());
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Registered all the commands.");
     }
 

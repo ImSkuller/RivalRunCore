@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.managers.GameStateManager;
-import xyz.skuller.rivalRun.menus.TestMenu;
+import xyz.skuller.rivalRun.menus.TeamSelectMenu;
 
 import java.util.Arrays;
 import java.util.List;
@@ -102,19 +102,30 @@ public class Debug implements TabExecutor {
             sender.sendRichMessage("<green>Reloaded all the config files.");
         }
 
-        else if (args[0].equalsIgnoreCase("testgui")) {
+        else if (args[0].equalsIgnoreCase("teamGui")) {
             if (!(sender instanceof final Player player)) {
                 sender.sendRichMessage("<red>Only players can use this command");
                 return true;
             }
 
-            new TestMenu().open(player);
+            new TeamSelectMenu().open(player);
         }
 
         else if (args[0].equalsIgnoreCase("getTeams")) {
             sender.sendRichMessage("<green>Listed below are all the teams.");
             sender.sendRichMessage("<aqua>" + RivalRun.getInstance().getTeamManager().getFormattedTeams());
             return true;
+        }
+
+        else if (args[0].equalsIgnoreCase("togglefly")) {
+            if (!(sender instanceof final Player player)) {
+                sender.sendRichMessage("<red>Only players can use this command");
+                return true;
+            }
+
+            player.setAllowFlight(true);
+            player.setFlying(true);
+
         }
 
         return true;
@@ -128,7 +139,7 @@ public class Debug implements TabExecutor {
                                                 @NotNull String @NotNull [] args)
     {
         if (args.length == 1) {
-            return List.of("Mode", "Game", "resetConfig", "testGUI", "getTeams");
+            return List.of("Mode", "Game", "resetConfig", "teamGUI", "getTeams", "togglefly");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("mode")) {

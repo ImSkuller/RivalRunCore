@@ -1,7 +1,6 @@
 package xyz.skuller.rivalRun.helpers;
 
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.ChatColor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -50,5 +49,4 @@ public class Teams {
     public int getSize() {
         return players.size();
     }
-
 }
