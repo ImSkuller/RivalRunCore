@@ -26,10 +26,6 @@ public class Teams {
         players.remove(uuid);
     }
 
-    public boolean hasPlayer(UUID uuid) {
-        return players.contains(uuid);
-    }
-
     public Set<UUID> getPlayers() {
         return players;
     }
@@ -40,10 +36,6 @@ public class Teams {
 
     public String getName() {
         return name;
-    }
-
-    public boolean isFull(int maxSize) {
-        return players.size() >= maxSize;
     }
 
     public int getSize() {
