@@ -23,6 +23,11 @@ This plugin is mainly for fun and learning, so it isn’t designed to be perfect
 
 ---
 
+## Known Issues
+* The config doesn't really do much since i forgot to add the hook :P
+
+---
+
 ## Disclaimer
 
 * The plugin is **not optimized**
