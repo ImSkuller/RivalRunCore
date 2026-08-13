@@ -2,6 +2,7 @@ package xyz.skuller.rivalRun;
 
 import xyz.skuller.rivalRun.commands.GameCommands;
 import xyz.skuller.rivalRun.commands.TeamCommands;
+import xyz.skuller.rivalRun.managers.ChatInputManager;
 import xyz.skuller.rivalRun.managers.ConfigManager;
 import xyz.skuller.rivalRun.managers.EventManager;
 import org.bukkit.Bukkit;
@@ -22,6 +23,7 @@ public final class RivalRun extends JavaPlugin {
     private static ScoreboardManager scoreboardManager;
     private static TabListManager tabListManager;
     private static WinManager winManager;
+    private static ChatInputManager chatInputManager;
     private static GameCommands gc;
     private static TeamCommands tc;
     double CURRENT_VERSION = 0.2;
@@ -36,6 +38,7 @@ public final class RivalRun extends JavaPlugin {
         scoreboardManager = new ScoreboardManager();
         tabListManager = new TabListManager();
         winManager = new WinManager();
+        chatInputManager = new ChatInputManager();
         gc = new GameCommands();
         tc = new TeamCommands();
 
@@ -83,6 +86,8 @@ public final class RivalRun extends JavaPlugin {
     public TabListManager getTabListManager() {return tabListManager;}
 
     public WinManager getWinManager() {return winManager;}
+
+    public ChatInputManager getChatInputManager() {return chatInputManager;}
 
     public GameCommands getGameCommands() {return gc;}
 

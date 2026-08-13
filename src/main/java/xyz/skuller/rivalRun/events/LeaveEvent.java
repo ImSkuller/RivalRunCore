@@ -16,7 +16,10 @@ public class LeaveEvent implements Listener {
     public void onLeave(PlayerQuitEvent event) {
 
         final Player player = event.getPlayer();
-        TeamsManager teamManager = RivalRun.getInstance().getTeamManager();
+        RivalRun plugin = RivalRun.getInstance();
+        TeamsManager teamManager = plugin.getTeamManager();
+
+        plugin.getChatInputManager().cancel(player);
 
         Teams team = teamManager.getPlayerTeam(player);
 

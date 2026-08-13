@@ -25,6 +25,7 @@ public class EventManager {
         plugin.getServer().getPluginManager().registerEvents(new TeamChatFormatter(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new MotdEvent(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new SpectatorCompassListener(), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new ChatInputListener(), plugin);
 
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Registered all the events.");
     }
