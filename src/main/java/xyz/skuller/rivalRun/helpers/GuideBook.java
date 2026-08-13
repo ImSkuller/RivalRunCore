@@ -47,7 +47,14 @@ public class GuideBook {
                         <gray>Use the Spectate compass, or run:
                         <white>/rr spectate
 
-                        <gray>to teleport to any remaining player.""")
+                        <gray>to teleport to any remaining player."""),
+                page("""
+                        <gold><bold>After the Game
+
+                        <gray>Run:
+                        <white>/rr summary
+
+                        <gray>to see the winner, run time, and each team's achievements from the last match.""")
         )));
     }
 
@@ -98,7 +105,9 @@ public class GuideBook {
 
                         <gray>Set buffs and check Settings before you /rr start - both lock once the game begins.
 
-                        <gray>/rr reset never touches the map. Use /rr resetworld for that.""")
+                        <gray>/rr reset never touches the map. Use /rr resetworld for that.
+
+                        <gray>/rr summary shows the last completed match's results to everyone, any time.""")
         )));
     }
 

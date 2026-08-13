@@ -13,6 +13,7 @@ import xyz.skuller.rivalRun.helpers.GuideBook;
 import xyz.skuller.rivalRun.helpers.Messages;
 import xyz.skuller.rivalRun.menus.AdminMenu;
 import xyz.skuller.rivalRun.menus.BuffPlayerListMenu;
+import xyz.skuller.rivalRun.menus.MatchSummaryMenu;
 import xyz.skuller.rivalRun.menus.SpectatorMenu;
 import xyz.skuller.rivalRun.menus.WorldResetConfirmMenu;
 
@@ -42,7 +43,8 @@ public class MainCommandClass implements TabExecutor {
             "spectate", "spectator",
             "resetworld", "worldreset", "newworld",
             "buffs", "buffdebuff", "playersettings", "handicaps",
-            "help", "guide"
+            "help", "guide",
+            "summary", "matchsummary", "recap"
     );
 
     @Override
@@ -271,6 +273,17 @@ public class MainCommandClass implements TabExecutor {
             } else {
                 GuideBook.openPlayerGuide(player);
             }
+        }
+
+        else if (args[0].equalsIgnoreCase("summary") ||
+                args[0].equalsIgnoreCase("matchsummary") ||
+                args[0].equalsIgnoreCase("recap"))
+        {
+            if (!(sender instanceof final Player player)) {
+                sender.sendRichMessage("<red>Only players can use this command.");
+                return true;
+            }
+            new MatchSummaryMenu().open(player);
         }
 
         else {

@@ -13,10 +13,13 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.MatchSummary;
 import xyz.skuller.rivalRun.helpers.TeamPresets;
 import xyz.skuller.rivalRun.helpers.Teams;
+import xyz.skuller.rivalRun.helpers.WinReason;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -24,15 +27,18 @@ import java.util.UUID;
 // Single entry point for "a team just won", used by both the Ender Dragon
 // kill win condition and the spectator elimination win condition so the
 // celebration (chat banner, titles, sounds, fireworks) and state
-// transition only live in one place.
+// transition only live in one place. Also snapshots a MatchSummary at the
+// moment of victory - team rosters/achievements get wiped by the next
+// reset, so /rivalrun summary needs its own frozen copy to read from.
 public class WinManager {
 
     private static final Component DIVIDER = Component.text(
             "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬", NamedTextColor.GOLD, TextDecoration.BOLD);
 
     private final Random random = new Random();
+    private MatchSummary lastSummary;
 
-    public void announceWin(Teams team) {
+    public void announceWin(Teams team, WinReason reason) {
         RivalRun plugin = RivalRun.getInstance();
         GameStateManager gsm = plugin.getGameStateManager();
 
@@ -43,18 +49,44 @@ public class WinManager {
         String timer = gsm.getFormattedElapsed();
         List<String> winnerNames = plugin.getTeamManager().getPlayerNames(team);
 
-        broadcastBanner(team, timer, winnerNames);
+        lastSummary = buildSummary(team, reason, timer);
+
+        broadcastBanner(team, reason, timer, winnerNames);
         showTitles(team, timer);
         playSounds(team);
         launchFireworkShow(plugin, team);
     }
 
-    private void broadcastBanner(Teams team, String timer, List<String> winnerNames) {
+    public MatchSummary getLastSummary() {
+        return lastSummary;
+    }
+
+    private MatchSummary buildSummary(Teams winner, WinReason reason, String timer) {
+        RivalRun plugin = RivalRun.getInstance();
+        SpectatorManager sm = plugin.getSpectatorManager();
+        AchievementManager am = plugin.getAchievementManager();
+
+        List<MatchSummary.TeamResult> results = new ArrayList<>();
+        for (Teams team : plugin.getTeamManager().getTeams()) {
+            results.add(new MatchSummary.TeamResult(
+                    team.getName(),
+                    team.getColor(),
+                    sm.countAlive(team),
+                    team.getSize(),
+                    am.getAchievementsFor(team)
+            ));
+        }
+
+        return new MatchSummary(winner.getName(), winner.getColor(), reason, timer, results);
+    }
+
+    private void broadcastBanner(Teams team, WinReason reason, String timer, List<String> winnerNames) {
         Bukkit.broadcast(Component.empty());
         Bukkit.broadcast(DIVIDER);
         Bukkit.broadcast(Component.text("  🏆  TEAM ", NamedTextColor.GOLD, TextDecoration.BOLD)
                 .append(Component.text(team.getName().toUpperCase(), team.getColor(), TextDecoration.BOLD))
                 .append(Component.text(" WINS!  🏆", NamedTextColor.GOLD, TextDecoration.BOLD)));
+        Bukkit.broadcast(Component.text("  " + reason.getDescription(), NamedTextColor.GRAY));
         Bukkit.broadcast(Component.text("  Run time: ", NamedTextColor.GRAY)
                 .append(Component.text(timer, NamedTextColor.WHITE)));
 
@@ -62,6 +94,10 @@ public class WinManager {
             Bukkit.broadcast(Component.text("  Winners: ", NamedTextColor.GRAY)
                     .append(Component.text(String.join(", ", winnerNames), team.getColor())));
         }
+
+        Bukkit.broadcast(Component.text("  Run ", NamedTextColor.DARK_GRAY)
+                .append(Component.text("/rr summary", NamedTextColor.GRAY))
+                .append(Component.text(" for the full recap", NamedTextColor.DARK_GRAY)));
 
         Bukkit.broadcast(DIVIDER);
         Bukkit.broadcast(Component.empty());

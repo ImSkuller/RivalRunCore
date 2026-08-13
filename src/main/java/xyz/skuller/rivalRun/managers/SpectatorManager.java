@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.helpers.Teams;
+import xyz.skuller.rivalRun.helpers.WinReason;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -104,7 +105,7 @@ public class SpectatorManager {
         }
 
         if (teamsAlive == 1) {
-            plugin.getWinManager().announceWin(onlyRemaining);
+            plugin.getWinManager().announceWin(onlyRemaining, WinReason.ELIMINATION);
         }
     }
 

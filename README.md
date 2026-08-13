@@ -19,6 +19,8 @@ RivalRun is a small **hobby project** I made because I wanted to play a **teams 
 * Grace period + countdown before a run starts, with a real elapsed run timer
 * Win celebration: personalized titles, sounds, fireworks
 * Six speedrun achievements (Nether, blaze rod, ender pearl, eye of ender, the End, first hit on the dragon) - first team to reach each gets credit in chat and on the scoreboard
+* Match summary GUI (`/rr summary`) - winner, run time, and each team's survivors/achievements, viewable any time until the next match finishes
+* In-game guide books for admins and players (`/rr help`)
 
 **Teams**
 * GUI team selector with colored icons and leave/random-join buttons
@@ -63,6 +65,7 @@ RivalRun is a small **hobby project** I made because I wanted to play a **teams 
 | `buffs` | Set per-player buffs/debuffs before a game starts |
 | `resetworld` | Regenerate the entire world with a new seed (confirm/cancel GUI) |
 | `help` | Open the guide book - the full admin guide for admins, a player guide for everyone else |
+| `summary` | View the last completed match's results: winner, run time, and each team's achievements |
 
 `/rrdebug` has a handful of dev/testing commands, gated behind `commands.debug` in the config and requiring OP.
 

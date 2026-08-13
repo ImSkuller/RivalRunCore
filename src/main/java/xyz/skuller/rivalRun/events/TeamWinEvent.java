@@ -8,6 +8,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.plugin.Plugin;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.helpers.Teams;
+import xyz.skuller.rivalRun.helpers.WinReason;
 import xyz.skuller.rivalRun.managers.GameStateManager;
 
 public class TeamWinEvent implements Listener {
@@ -30,6 +31,6 @@ public class TeamWinEvent implements Listener {
         Teams team = RivalRun.getInstance().getTeamManager().getPlayerTeam(killer);
         if (team == null) return;
 
-        RivalRun.getInstance().getWinManager().announceWin(team);
+        RivalRun.getInstance().getWinManager().announceWin(team, WinReason.DRAGON);
     }
 }

@@ -11,6 +11,7 @@ import xyz.skuller.rivalRun.helpers.AchievementType;
 import xyz.skuller.rivalRun.helpers.Teams;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,6 +49,15 @@ public class AchievementManager {
 
     public long countFor(Teams team) {
         return claimed.values().stream().filter(owner -> owner == team).count();
+    }
+
+    // Iteration order follows AchievementType's declared (route) order,
+    // since claimed is an EnumMap.
+    public List<AchievementType> getAchievementsFor(Teams team) {
+        return claimed.entrySet().stream()
+                .filter(entry -> entry.getValue() == team)
+                .map(Map.Entry::getKey)
+                .toList();
     }
 
     public void reset() {

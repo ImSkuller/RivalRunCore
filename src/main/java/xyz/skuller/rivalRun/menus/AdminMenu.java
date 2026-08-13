@@ -82,6 +82,9 @@ public class AdminMenu extends SimpleMenu {
                     open(player);
                 });
 
+        setButton(12, Material.NETHER_STAR, "Match Summary", NamedTextColor.GOLD,
+                "See the last completed match's results.", player -> new MatchSummaryMenu().open(player));
+
         setButton(13, Material.WRITTEN_BOOK, "Help", NamedTextColor.YELLOW,
                 "Open the admin guide book.", GuideBook::openAdminGuide);
     }
