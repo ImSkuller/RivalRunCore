@@ -51,6 +51,9 @@ permissions:
   rivalrun.game.resetworld:
     description: Allows regenerating the entire world with a new seed.
     default: op
+  rivalrun.game.buffs:
+    description: Allows editing per-player buffs/debuffs before a game.
+    default: op
   rivalrun.admin:
     description: Allows access to the admin control menu.
     default: op

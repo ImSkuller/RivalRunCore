@@ -48,6 +48,9 @@ public class AdminMenu extends SimpleMenu {
                     open(player);
                 });
 
+        setButton(3, Material.GOLDEN_APPLE, "Player Buffs", NamedTextColor.AQUA,
+                "Set per-player handicaps before the game starts.", player -> new BuffPlayerListMenu().open(player));
+
         setButton(4, Material.RED_DYE, "End Game", NamedTextColor.RED,
                 "Force ends the run without a winner.", player -> {
                     gc.endGame();

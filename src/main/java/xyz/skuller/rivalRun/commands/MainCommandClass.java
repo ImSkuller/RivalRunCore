@@ -11,6 +11,7 @@ import org.jspecify.annotations.NonNull;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.helpers.Messages;
 import xyz.skuller.rivalRun.menus.AdminMenu;
+import xyz.skuller.rivalRun.menus.BuffPlayerListMenu;
 import xyz.skuller.rivalRun.menus.SpectatorMenu;
 import xyz.skuller.rivalRun.menus.WorldResetConfirmMenu;
 
@@ -38,7 +39,8 @@ public class MainCommandClass implements TabExecutor {
             "lock", "lockteams", "teamslock",
             "unlock", "unlockteams", "teamsunlock",
             "spectate", "spectator",
-            "resetworld", "worldreset", "newworld"
+            "resetworld", "worldreset", "newworld",
+            "buffs", "buffdebuff", "playersettings", "handicaps"
     );
 
     @Override
@@ -237,6 +239,22 @@ public class MainCommandClass implements TabExecutor {
                 return true;
             }
             new WorldResetConfirmMenu().open(player);
+        }
+
+        else if (args[0].equalsIgnoreCase("buffs") ||
+                args[0].equalsIgnoreCase("buffdebuff") ||
+                args[0].equalsIgnoreCase("playersettings") ||
+                args[0].equalsIgnoreCase("handicaps"))
+        {
+            if (!(sender instanceof final Player player)) {
+                sender.sendRichMessage("<red>Only players can use this command.");
+                return true;
+            }
+            if (!sender.hasPermission("rivalrun.game.buffs")) {
+                sender.sendRichMessage("<red>You do not have the permissions required to run this command.");
+                return true;
+            }
+            new BuffPlayerListMenu().open(player);
         }
 
         else {

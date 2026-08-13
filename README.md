@@ -49,6 +49,7 @@ This plugin is mainly for fun and learning, so it isn’t designed to be perfect
 | `lock` / `unlock` | Lock/unlock team joining and switching |
 | `spectate` | Open the spectator teleport menu (while spectating) |
 | `resetworld` | Regenerate the entire world with a new seed (confirm/cancel GUI) |
+| `buffs` | Set per-player buffs/debuffs before a game starts |
 
 `/rrdebug` has a handful of dev/testing commands, gated behind `commands.debug` in the config and requiring OP.
 

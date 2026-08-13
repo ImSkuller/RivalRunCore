@@ -3,6 +3,7 @@ package xyz.skuller.rivalRun.commands;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.managers.GameStateManager;
 import xyz.skuller.rivalRun.managers.TeamsManager;
@@ -13,6 +14,12 @@ public class GameCommands {
     GameStateManager.GameStates prevState;
 
     public void startGame() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (tmm.getPlayerTeam(player) == null) {
+                RivalRun.getInstance().getSpectatorManager().makeSpectator(player);
+            }
+        }
+        RivalRun.getInstance().getBuffManager().applyAll();
         gsm.startGame();
     }
 

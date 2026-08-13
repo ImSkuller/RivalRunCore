@@ -244,6 +244,7 @@ public class GameStateManager {
         pausedMillis = 0L;
         pauseStartedMillis = 0L;
         RivalRun.getInstance().getTeamManager().unlockTeams();
+        RivalRun.getInstance().getBuffManager().clearAll();
 
         setState(GameStates.WAITING);
     }
