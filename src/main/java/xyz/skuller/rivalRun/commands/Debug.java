@@ -34,9 +34,19 @@ public class Debug implements TabExecutor {
             return true;
         }
 
+        if (args.length == 0) {
+            sender.sendRichMessage("<red>Usage: /rrdebug <mode|game|resetConfig|teamGui|getTeams|togglefly>");
+            return true;
+        }
+
         GameStateManager gameStateManager = RivalRun.getInstance().getGameStateManager();
 
         if (args[0].equalsIgnoreCase("MODE")) {
+
+            if (args.length < 2) {
+                sender.sendRichMessage("<red>Usage: /rrdebug mode <state>");
+                return true;
+            }
 
             GameStateManager.GameStates newState;
 
@@ -58,6 +68,10 @@ public class Debug implements TabExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("GAME")) {
+            if (args.length < 2) {
+                sender.sendRichMessage("<red>Usage: /rrdebug game <start|stop>");
+                return true;
+            }
             if (args[1].equalsIgnoreCase("start")) {
                 gameStateManager.startGame();
             }
@@ -74,32 +88,15 @@ public class Debug implements TabExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("RESETCONFIG")) {
+            // Deliberately destructive - this is the dev-only "wipe it and start over"
+            // command. The automatic version migration in ConfigManager never does this.
             var instance = RivalRun.getInstance();
-            // Header Logic
-            instance.getConfig().options().setHeader(List.of(
-                    "############################################################",
-                    "# +------------------------------------------------------+ #",
-                    "# |                 Plugin By Skuller                    | #",
-                    "# |            https://discord.gg/58QeTrs3n9             | #" ,
-                    "# +------------------------------------------------------+ #",
-                    "############################################################",
-                    " ",
-                    "# If you receive an error when Rival Run loads,  ensure that:",
-                    "#  - No tabs are present: YAML only allows spaces",
-                    "#  - Indents are correct: YAML hierarchy is based entirely on indentation",
-                    " ",
-                    "#<-------------------------------------------------------->#",
-                    "# Configuration File Starts Here",
-                    "#<-------------------------------------------------------->#",
-                    " "
-            ));
 
             instance.saveResource("config.yml", true);
             instance.reloadConfig();
-            instance.saveConfig();
 
-            Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Config files reload.");
-            sender.sendRichMessage("<green>Reloaded all the config files.");
+            Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Config files reset to defaults.");
+            sender.sendRichMessage("<green>Reset all the config files to their defaults.");
         }
 
         else if (args[0].equalsIgnoreCase("teamGui")) {

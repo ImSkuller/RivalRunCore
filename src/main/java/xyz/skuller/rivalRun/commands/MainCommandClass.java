@@ -7,6 +7,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
+import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.menus.AdminMenu;
+import xyz.skuller.rivalRun.menus.SpectatorMenu;
 
 import java.util.List;
 
@@ -30,7 +33,8 @@ public class MainCommandClass implements TabExecutor {
             "leave", "leaveteam", "teamleave",
             "switch", "switchteam", "teamswitch",
             "lock", "lockteams", "teamslock",
-            "unlock", "unlockteams", "teamsunlock"
+            "unlock", "unlockteams", "teamsunlock",
+            "spectate"
     );
 
     @Override
@@ -40,6 +44,14 @@ public class MainCommandClass implements TabExecutor {
                              @NotNull String @NotNull [] args)
     {
         if (args.length == 0) {
+            if (sender instanceof final Player player
+                    && sender.hasPermission("rivalrun.admin")
+                    && RivalRun.getInstance().getConfig().getBoolean("gui.adminMenu", true))
+            {
+                new AdminMenu().open(player);
+                return true;
+            }
+
             sender.sendRichMessage("<red>Usage: /rr <subcommand>");
             return true;
         }
@@ -53,6 +65,7 @@ public class MainCommandClass implements TabExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("pause") || args[0].equalsIgnoreCase("pausegame")) {
+            if (!isEnabled(sender, "commands.pauseGame")) return true;
             if (!sender.hasPermission("rivalrun.game.pause")) {
                 sender.sendRichMessage("<red>You do not have the permissions required to run this command.");
                 return true;
@@ -61,6 +74,7 @@ public class MainCommandClass implements TabExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("end") || args[0].equalsIgnoreCase("endgame")) {
+            if (!isEnabled(sender, "commands.endGame")) return true;
             if (!sender.hasPermission("rivalrun.game.end")) {
                 sender.sendRichMessage("<red>You do not have the permissions required to run this command.");
                 return true;
@@ -78,6 +92,7 @@ public class MainCommandClass implements TabExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("resume") || args[0].equalsIgnoreCase("resumegame")) {
+            if (!isEnabled(sender, "commands.pauseGame")) return true;
             if (!sender.hasPermission("rivalrun.game.resume")) {
                 sender.sendRichMessage("<red>You do not have the permissions required to run this command.");
                 return true;
@@ -89,6 +104,7 @@ public class MainCommandClass implements TabExecutor {
                 args[0].equalsIgnoreCase("selectteam") ||
                 args[0].equalsIgnoreCase("teamselect"))
         {
+            if (!isEnabled(sender, "commands.teamSelect")) return true;
             if (!(sender instanceof final Player player)) {
                 sender.sendRichMessage("<red>Only players can use this command.");
                 return true;
@@ -104,6 +120,7 @@ public class MainCommandClass implements TabExecutor {
                 args[0].equalsIgnoreCase("leaveteam") ||
                 args[0].equalsIgnoreCase("teamleave"))
         {
+            if (!isEnabled(sender, "commands.teamLeave")) return true;
             if (!(sender instanceof final Player player)) {
                 sender.sendRichMessage("<red>Only players can use this command.");
                 return true;
@@ -119,6 +136,7 @@ public class MainCommandClass implements TabExecutor {
                 args[0].equalsIgnoreCase("switchteam") ||
                 args[0].equalsIgnoreCase("teamswitch"))
         {
+            if (!isEnabled(sender, "commands.teamSelect")) return true;
             if (!(sender instanceof final Player player)) {
                 sender.sendRichMessage("<red>Only players can use this command.");
                 return true;
@@ -160,10 +178,32 @@ public class MainCommandClass implements TabExecutor {
             teamCommands.unlockTeams(player);
         }
 
+        else if (args[0].equalsIgnoreCase("spectate")) {
+            if (!(sender instanceof final Player player)) {
+                sender.sendRichMessage("<red>Only players can use this command.");
+                return true;
+            }
+            if (!sender.hasPermission("rivalrun.spectate")) {
+                sender.sendRichMessage("<red>You do not have the permissions required to run this command.");
+                return true;
+            }
+            if (!RivalRun.getInstance().getSpectatorManager().isSpectating(player)) {
+                sender.sendRichMessage("<red>You are not spectating right now.");
+                return true;
+            }
+            new SpectatorMenu().open(player);
+        }
+
         else {
             sender.sendRichMessage("<red>That is not a valid command.");
         }
 
+        return false;
+    }
+
+    private boolean isEnabled(CommandSender sender, String configPath) {
+        if (RivalRun.getInstance().getConfig().getBoolean(configPath, true)) return true;
+        sender.sendRichMessage("<red>That command is disabled on this server.");
         return false;
     }
 

@@ -1,6 +1,7 @@
 package xyz.skuller.rivalRun.helpers;
 
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Material;
 
 public class TeamPresets {
 
@@ -34,5 +35,17 @@ public class TeamPresets {
             case 6 -> NamedTextColor.WHITE;
             default -> NamedTextColor.GRAY;
         };
+    }
+
+    // Colored wool matching a team's NamedTextColor, for GUI icons.
+    public static Material getWoolByColor(NamedTextColor color) {
+        if (color == NamedTextColor.RED) return Material.RED_WOOL;
+        if (color == NamedTextColor.BLUE) return Material.BLUE_WOOL;
+        if (color == NamedTextColor.GREEN) return Material.GREEN_WOOL;
+        if (color == NamedTextColor.YELLOW) return Material.YELLOW_WOOL;
+        if (color == NamedTextColor.AQUA) return Material.LIGHT_BLUE_WOOL;
+        if (color == NamedTextColor.LIGHT_PURPLE) return Material.MAGENTA_WOOL;
+        if (color == NamedTextColor.WHITE) return Material.WHITE_WOOL;
+        return Material.GRAY_WOOL;
     }
 }

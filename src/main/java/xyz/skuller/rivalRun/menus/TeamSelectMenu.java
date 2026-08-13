@@ -1,6 +1,7 @@
 package xyz.skuller.rivalRun.menus;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
@@ -9,12 +10,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.Messages;
 import xyz.skuller.rivalRun.helpers.SimpleMenu;
+import xyz.skuller.rivalRun.helpers.TeamPresets;
 import xyz.skuller.rivalRun.helpers.Teams;
 import xyz.skuller.rivalRun.managers.TeamsManager;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class TeamSelectMenu extends SimpleMenu {
 
@@ -51,8 +56,6 @@ public class TeamSelectMenu extends SimpleMenu {
             setItem(1, filler_1);
             setItem(2, filler_1);
             setItem(3, filler_2);
-            setItem(4, filler_2);
-            setItem(5, filler_2);
             setItem(6, filler_1);
             setItem(7, filler_2);
             setItem(8, filler_2);
@@ -61,8 +64,6 @@ public class TeamSelectMenu extends SimpleMenu {
             setItem(18, filler_2);
             setItem(19, filler_2);
             setItem(20, filler_1);
-            setItem(21, filler_2);
-            setItem(22, filler_2);
             setItem(23, filler_2);
             setItem(24, filler_1);
             setItem(25, filler_1);
@@ -74,11 +75,14 @@ public class TeamSelectMenu extends SimpleMenu {
             setTeamItem(slot, team);
             slot += 1;
         }
+
+        setLeaveButton(4);
+        setRandomTeamButton(22);
     }
 
     private void setTeamItem(int slot, Teams team) {
 
-        ItemStack item = new ItemStack(Material.BOOK);
+        ItemStack item = new ItemStack(TeamPresets.getWoolByColor(team.getColor()));
         ItemMeta meta = item.getItemMeta();
 
         int max = tm.getMaxTeamSize();
@@ -99,11 +103,11 @@ public class TeamSelectMenu extends SimpleMenu {
         Teams current = tm.getPlayerTeam(viewer);
 
         if (current == team) {
-            lore.add(Component.text("§aYou are in this team"));
+            lore.add(Component.text("You are in this team", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
         } else if (tm.isTeamFull(team)) {
-            lore.add(Component.text("§cTeam is full"));
+            lore.add(Component.text("Team is full", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
         } else {
-            lore.add(Component.text("§7Click to join"));
+            lore.add(Component.text("Click to join", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         }
 
         meta.lore(lore);
@@ -116,6 +120,51 @@ public class TeamSelectMenu extends SimpleMenu {
             player.sendRichMessage("<green>You joined <white>" + team.getName() + "<green> Team");
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
 
+            open(player);
+        });
+    }
+
+    private void setLeaveButton(int slot) {
+        ItemStack item = new ItemStack(Material.BARRIER);
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(Component.text("Leave Team", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+        meta.lore(List.of(Component.text("Click to leave your current team", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
+        item.setItemMeta(meta);
+
+        setItem(slot, item, player -> {
+            if (!tm.isInTeam(player)) {
+                player.sendMessage(Messages.get("messages.notInTeam"));
+                return;
+            }
+
+            tm.removePlayer(player);
+            player.sendRichMessage("<green>You have left your team.");
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
+            open(player);
+        });
+    }
+
+    private void setRandomTeamButton(int slot) {
+        ItemStack item = new ItemStack(Material.NAUTILUS_SHELL);
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(Component.text("Random Team", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+        meta.lore(List.of(Component.text("Joins whichever team has the most room", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
+        item.setItemMeta(meta);
+
+        setItem(slot, item, player -> {
+            Optional<Teams> smallest = tm.getTeams().stream()
+                    .filter(t -> !tm.isTeamFull(t))
+                    .min(Comparator.comparingInt(Teams::getSize));
+
+            if (smallest.isEmpty()) {
+                player.sendRichMessage("<red>All teams are full!");
+                return;
+            }
+
+            if (!tm.assignPlayer(player, smallest.get())) return;
+
+            player.sendRichMessage("<green>You joined <white>" + smallest.get().getName() + "<green> Team");
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
             open(player);
         });
     }
