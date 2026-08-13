@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,11 +30,10 @@ public class TeamChatFormatter implements Listener {
             Component prefix;
 
             if (team == null) {
-                prefix = Component.text("[None] ")
-                        .color(NamedTextColor.GOLD);
+                prefix = Component.text("NONE ", NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true);
             } else {
-                prefix = Component.text("[" + team.getName() + "] ")
-                        .color(team.getColor());
+                prefix = Component.text(team.getName().toUpperCase() + " ", team.getColor())
+                        .decoration(TextDecoration.BOLD, true);
             }
 
             return prefix

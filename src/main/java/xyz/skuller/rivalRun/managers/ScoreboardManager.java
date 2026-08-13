@@ -2,6 +2,7 @@ package xyz.skuller.rivalRun.managers;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -63,7 +64,8 @@ public class ScoreboardManager {
         for (Teams team : tm.getTeams()) {
             Team sbTeam = board.registerNewTeam(team.getName());
             sbTeam.color(team.getColor());
-            sbTeam.prefix(Component.text("[" + team.getName() + "] ", team.getColor()));
+            sbTeam.prefix(Component.text(team.getName().toUpperCase() + " ", team.getColor())
+                    .decoration(TextDecoration.BOLD, true));
 
             for (var uuid : team.getPlayers()) {
                 Player member = Bukkit.getPlayer(uuid);
