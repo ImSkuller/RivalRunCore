@@ -31,6 +31,9 @@ public class AdminMenu extends SimpleMenu {
         GameStateManager gsm = RivalRun.getInstance().getGameStateManager();
         TeamsManager tm = RivalRun.getInstance().getTeamManager();
 
+        setButton(0, Material.COMMAND_BLOCK, "Settings", NamedTextColor.AQUA,
+                "Edit every config value in-game.", player -> new SettingsMenu().open(player));
+
         setButton(1, Material.LIME_DYE, "Start Game", NamedTextColor.GREEN,
                 "Begins the countdown for a new run.", player -> {
                     gc.startGame();
