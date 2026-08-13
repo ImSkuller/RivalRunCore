@@ -16,7 +16,7 @@ public final class RivalRun extends JavaPlugin {
     private static TeamsManager teamManager;
     private static GameCommands gc;
     private static TeamCommands tc;
-    double CURRENT_VERSION = 0.1;
+    double CURRENT_VERSION = 0.2;
 
 
     @Override
@@ -34,7 +34,7 @@ public final class RivalRun extends JavaPlugin {
         eventManager.StartConsoleEvent(getPluginMeta().getVersion());
 
         // Loading Configuration File
-        new ConfigManager().ConfigUpdate(CURRENT_VERSION, this);
+        new ConfigManager().update(this, CURRENT_VERSION);
 
         // Team Manager Things.
         teamManager.loadTeamsFromConfig();

@@ -76,12 +76,11 @@ gui:
   filler-1-name: ""
   filler-2-name: ""
 
-  # Turn all the plugin GUI's on and off by changing the values here
-  # If you change the values here some commands might have severe changes and
-  # Some may even get disabled if you set this to false.
+  # Whether the admin control menu (opened by running /rivalrun with no
+  # arguments) is enabled. Admins can always fall back to the subcommands.
   #
   # Usable Parameters: Boolean (true / false)
-  test-gui: true
+  adminMenu: true
 
 
 
@@ -156,15 +155,123 @@ teams:
   # There are some already predefined names in the system you cannot edit them.
   # But you may select which one of those name sets you want to use.
   #
-  # 0: Default (RED, BLUE, GREEN, YELLOW, AQUA, PURPLE)
-  # 1: Passive Mobs (Pig, Cow, Chicken, Sheep, Squid, Axolotl)
-  # 2: Hostile Mobs (Zombie, Creeper, Blaze, Piglin, Enderman, Warden)
-  # 3: Flowers (Rose, Dandelions, Sunflower, Cornflower, Tulip, Lilly)
-  # 4: Blocks (Wood, Stone, Sand, Deepslate, Obsidian, Endstone)
+  # 0: Default (RED, BLUE, GREEN, YELLOW, AQUA, PURPLE, WHITE)
+  # 1: Passive Mobs (Pig, Cow, Chicken, Sheep, Squid, Axolotl, Rabbit)
+  # 2: Hostile Mobs (Zombie, Creeper, Blaze, Piglin, Enderman, Warden, Ghast)
+  # 3: Flowers (Rose, Dandelions, Sunflower, Cornflower, Tulip, Lilly, Poppy)
+  # 4: Blocks (Wood, Stone, Sand, Deepslate, Obsidian, Endstone, Prismarine)
   #
   # Usable Parameters: Integers (Select from the above list)
   teamName: 0
 
+
+
+############################################################
+# +------------------------------------------------------+ #
+# |              📋 Scoreboard Configuration             | #
+# |                 Plugin By Skuller                    | #
+# +------------------------------------------------------+ #
+############################################################
+scoreboard:
+  # Whether the sidebar scoreboard is shown to players at all.
+  #
+  # Usable Parameters: Boolean (true / false)
+  enabled: true
+
+  # The title shown at the top of the sidebar scoreboard.
+  #
+  # Usable Parameters: String + MiniMessage format
+  title: "<gold><bold>Rival Run"
+
+
+
+############################################################
+# +------------------------------------------------------+ #
+# |              📑 Tab List Configuration               | #
+# |                 Plugin By Skuller                    | #
+# +------------------------------------------------------+ #
+############################################################
+tablist:
+  # Whether the custom tab list header/footer is shown to players.
+  #
+  # Usable Parameters: Boolean (true / false)
+  enabled: true
+
+  # The text shown above the player list.
+  # Placeholders: {state} {timer} {online} {max}
+  #
+  # Usable Parameters: String + MiniMessage format (\n for a new line)
+  header: "<gold><bold>Rival Run\n<gray>State: <white>{state}"
+
+  # The text shown below the player list.
+  # Placeholders: {state} {timer} {online} {max}
+  #
+  # Usable Parameters: String + MiniMessage format (\n for a new line)
+  footer: "<gray>Online: <white>{online}<gray>/<white>{max}\n<gray>Timer: <white>{timer}"
+
+
+
+############################################################
+# +------------------------------------------------------+ #
+# |              📡 Server MOTD Configuration            | #
+# |                 Plugin By Skuller                    | #
+# +------------------------------------------------------+ #
+############################################################
+motd:
+  # Whether the server list MOTD reflects the current game state.
+  # Set this to false to leave server.properties' motd untouched.
+  #
+  # Usable Parameters: Boolean (true / false)
+  enabled: true
+
+  # Placeholders: {online} {max} {timer}
+  #
+  # Usable Parameters: String + MiniMessage format (\n for a new line)
+  waiting: "<gold><bold>Rival Run <dark_gray>» <white>Waiting for players\n<gray>{online}<dark_gray>/<gray>{max} <dark_gray>players online"
+  starting: "<gold><bold>Rival Run <dark_gray>» <yellow>Game is starting soon!\n<gray>{online}<dark_gray>/<gray>{max} <dark_gray>players online"
+  running: "<gold><bold>Rival Run <dark_gray>» <red>Race in progress\n<gray>Timer: <white>{timer}"
+  post: "<gold><bold>Rival Run <dark_gray>» <aqua>A game just ended\n<gray>Next game starting soon"
+
+
+
+############################################################
+# +------------------------------------------------------+ #
+# |              👻 Spectator Configuration              | #
+# |                 Plugin By Skuller                    | #
+# +------------------------------------------------------+ #
+############################################################
+spectator:
+  # If true, dying during a run switches the player to spectator mode instead
+  # of respawning them back into the run.
+  #
+  # Usable Parameters: Boolean (true / false)
+  deathBecomesSpectator: true
+
+  # If true, spectators are given a compass on death that opens a menu to
+  # teleport to any remaining player. They can also use /rivalrun spectate.
+  #
+  # Usable Parameters: Boolean (true / false)
+  teleportMenu: true
+
+  # If true, once only one team has any non-spectating players left, that
+  # team automatically wins the game.
+  #
+  # Usable Parameters: Boolean (true / false)
+  eliminationWin: true
+
+
+
+############################################################
+# +------------------------------------------------------+ #
+# |              💬 Messages Configuration               | #
+# +------------------------------------------------------+ #
+############################################################
+messages:
+  teamFull: "<red>That team is full!"
+  teamsLocked: "<red>Teams are locked right now."
+  notInTeam: "<red>You are not in a team."
+  eliminated: "<red>{player} has been eliminated and is now spectating."
+  teamWin: "<gold>Team {team} has won the game!"
 
 
 
@@ -172,4 +279,4 @@ teams:
 # Plugin Configuration Version
 # ⚠️ Do Not Change ⚠️️
 # If you change this value there is a high chance for your config file to get reset.
-version: 0.1
+version: 0.2
