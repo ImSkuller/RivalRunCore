@@ -1,5 +1,6 @@
 package xyz.skuller.rivalRun.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.Messages;
 import xyz.skuller.rivalRun.menus.AdminMenu;
 import xyz.skuller.rivalRun.menus.SpectatorMenu;
 
@@ -34,7 +36,7 @@ public class MainCommandClass implements TabExecutor {
             "switch", "switchteam", "teamswitch",
             "lock", "lockteams", "teamslock",
             "unlock", "unlockteams", "teamsunlock",
-            "spectate"
+            "spectate", "spectator"
     );
 
     @Override
@@ -194,6 +196,32 @@ public class MainCommandClass implements TabExecutor {
             new SpectatorMenu().open(player);
         }
 
+        else if (args[0].equalsIgnoreCase("spectator")) {
+            if (!sender.hasPermission("rivalrun.game.spectator")) {
+                sender.sendRichMessage("<red>You do not have the permissions required to run this command.");
+                return true;
+            }
+            if (args.length < 2) {
+                sender.sendRichMessage("<red>Usage: /rivalrun spectator <player>");
+                return true;
+            }
+
+            Player target = Bukkit.getPlayer(args[1]);
+            if (target == null) {
+                sender.sendRichMessage("<red>That player is not online.");
+                return true;
+            }
+
+            boolean nowSpectating = RivalRun.getInstance().getSpectatorManager().toggleSpectator(target);
+            if (nowSpectating) {
+                sender.sendRichMessage("<green>" + target.getName() + " is now spectating.");
+                target.sendMessage(Messages.get("messages.spectatorEnabled"));
+            } else {
+                sender.sendRichMessage("<green>" + target.getName() + " is no longer spectating.");
+                target.sendMessage(Messages.get("messages.spectatorDisabled"));
+            }
+        }
+
         else {
             sender.sendRichMessage("<red>That is not a valid command.");
         }
@@ -218,6 +246,15 @@ public class MainCommandClass implements TabExecutor {
 
             return subCommands.stream()
                     .filter(cmd -> cmd.startsWith(input))
+                    .toList();
+        }
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("spectator")) {
+            String input = args[1].toLowerCase();
+
+            return Bukkit.getOnlinePlayers().stream()
+                    .map(Player::getName)
+                    .filter(name -> name.toLowerCase().startsWith(input))
                     .toList();
         }
 

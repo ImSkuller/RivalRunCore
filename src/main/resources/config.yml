@@ -241,14 +241,8 @@ motd:
 # +------------------------------------------------------+ #
 ############################################################
 spectator:
-  # If true, dying during a run switches the player to spectator mode instead
-  # of respawning them back into the run.
-  #
-  # Usable Parameters: Boolean (true / false)
-  deathBecomesSpectator: true
-
-  # If true, spectators are given a compass on death that opens a menu to
-  # teleport to any remaining player. They can also use /rivalrun spectate.
+  # If true, spectators are given a compass that opens a menu to teleport
+  # to any remaining player. They can also use /rivalrun spectate.
   #
   # Usable Parameters: Boolean (true / false)
   teleportMenu: true
@@ -270,8 +264,9 @@ messages:
   teamFull: "<red>That team is full!"
   teamsLocked: "<red>Teams are locked right now."
   notInTeam: "<red>You are not in a team."
-  eliminated: "<red>{player} has been eliminated and is now spectating."
   teamWin: "<gold>Team {team} has won the game!"
+  spectatorEnabled: "<red>You have been moved to spectator mode by an admin."
+  spectatorDisabled: "<green>You are no longer spectating."
 
 
 

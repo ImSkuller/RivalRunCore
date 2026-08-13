@@ -33,7 +33,8 @@ public class SpectatorManager {
         return alive;
     }
 
-    // Converts a player to a spectator, e.g. after dying mid-run.
+    // Converts a player to a spectator - either because they joined with no
+    // team while a game is already running, or an admin sent them in.
     public void makeSpectator(Player player) {
         if (!spectating.add(player.getUniqueId())) return;
 
@@ -47,8 +48,24 @@ public class SpectatorManager {
         checkEliminationWin();
     }
 
+    // Returns a spectating player back to survival and clears their tracking.
     public void clearSpectator(Player player) {
-        spectating.remove(player.getUniqueId());
+        if (!spectating.remove(player.getUniqueId())) return;
+
+        player.setGameMode(GameMode.SURVIVAL);
+        player.getInventory().setItem(0, null);
+    }
+
+    // Flips a player's spectating state. Returns true if they are now
+    // spectating, false if they were just restored to survival.
+    public boolean toggleSpectator(Player player) {
+        if (isSpectating(player)) {
+            clearSpectator(player);
+            return false;
+        }
+
+        makeSpectator(player);
+        return true;
     }
 
     public void reset() {

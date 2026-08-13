@@ -2,7 +2,6 @@ package xyz.skuller.rivalRun.events;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -49,7 +48,7 @@ public class JoinEvent implements Listener {
                 player.sendRichMessage("<red>You joined a tad late, a game just ended.");
             }
             else {
-                player.setGameMode(GameMode.SPECTATOR);
+                plugin.getSpectatorManager().makeSpectator(player);
                 player.sendRichMessage("<red>A game is going on right now please wait till it ends before you can play again.");
             }
 

@@ -45,6 +45,9 @@ permissions:
   rivalrun.spectate:
     description: Allows using the spectator teleport menu.
     default: true
+  rivalrun.game.spectator:
+    description: Allows forcing another player into/out of spectator mode.
+    default: op
   rivalrun.admin:
     description: Allows access to the admin control menu.
     default: op
