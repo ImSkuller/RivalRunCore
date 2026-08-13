@@ -23,6 +23,12 @@ public class GameStateManager {
     private GameStates currentState;
     private NamedTextColor timeColor;
 
+    // Run timer bookkeeping
+    private long runStartMillis;
+    private long runEndMillis;
+    private long pausedMillis;
+    private long pauseStartedMillis;
+
 
     // Constructor
     public GameStateManager() {
@@ -40,8 +46,56 @@ public class GameStateManager {
     // Function used to set the state of the game
     public void setState(GameStates newState) {
         if (this.currentState == newState) return;
+
+        GameStates previousState = this.currentState;
+        long now = System.currentTimeMillis();
+
+        if (newState == GameStates.RUNNING && runStartMillis == 0L) {
+            runStartMillis = now;
+        }
+        if (previousState == GameStates.PAUSED && newState == GameStates.RUNNING) {
+            pausedMillis += now - pauseStartedMillis;
+        }
+        if (newState == GameStates.PAUSED) {
+            pauseStartedMillis = now;
+        }
+        if (newState == GameStates.POST) {
+            runEndMillis = now;
+        }
+
         this.currentState = newState;
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Game state updated to " + newState.name());
+    }
+
+
+    // Seconds elapsed since the run started, excluding any time spent paused
+    public long getElapsedSeconds() {
+        if (runStartMillis == 0L) return 0L;
+
+        long end;
+        if (runEndMillis != 0L) {
+            end = runEndMillis;
+        } else if (currentState == GameStates.PAUSED) {
+            end = pauseStartedMillis;
+        } else {
+            end = System.currentTimeMillis();
+        }
+
+        return Math.max(0L, (end - runStartMillis - pausedMillis) / 1000L);
+    }
+
+
+    // Formats the elapsed run time as mm:ss, or hh:mm:ss once past an hour
+    public String getFormattedElapsed() {
+        long total = getElapsedSeconds();
+        long hours = total / 3600;
+        long minutes = (total % 3600) / 60;
+        long seconds = total % 60;
+
+        if (hours > 0) {
+            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        }
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
 
@@ -175,6 +229,10 @@ public class GameStateManager {
         gracePeriod = true;
         graceTimeLeft = 0;
         timeColor = NamedTextColor.GREEN;
+        runStartMillis = 0L;
+        runEndMillis = 0L;
+        pausedMillis = 0L;
+        pauseStartedMillis = 0L;
         RivalRun.getInstance().getTeamManager().unlockTeams();
 
         setState(GameStates.WAITING);
