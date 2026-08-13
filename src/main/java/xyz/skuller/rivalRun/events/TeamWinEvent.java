@@ -1,8 +1,5 @@
 package xyz.skuller.rivalRun.events;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,7 +30,6 @@ public class TeamWinEvent implements Listener {
         Teams team = RivalRun.getInstance().getTeamManager().getPlayerTeam(killer);
         if (team == null) return;
 
-        Bukkit.broadcast(Component.text("Team " + team.getName() + " has won the game!", NamedTextColor.GOLD));
-        RivalRun.getInstance().getGameStateManager().setState(GameStateManager.GameStates.POST);
+        RivalRun.getInstance().getWinManager().announceWin(team);
     }
 }

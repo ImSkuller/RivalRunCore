@@ -19,15 +19,10 @@ public class JoinEvent implements Listener {
     public void onJoin(PlayerJoinEvent event) {
 
         final Player player = event.getPlayer();
-        TeamsManager teamManager = RivalRun.getInstance().getTeamManager();
+        RivalRun plugin = RivalRun.getInstance();
+        TeamsManager teamManager = plugin.getTeamManager();
 
         Teams team = teamManager.getPlayerTeam(player);
-
-        // Apply visuals if player has a team
-        if (team != null) {
-            teamManager.applyNametag(player);
-            teamManager.updateTab(player);
-        }
 
         Component joinMessage;
 
@@ -38,15 +33,17 @@ public class JoinEvent implements Listener {
                     .append(Component.text(" joined the server", NamedTextColor.GREEN));
 
         } else {
-            
-            GameStateManager gsm = RivalRun.getInstance().getGameStateManager();
+
+            GameStateManager gsm = plugin.getGameStateManager();
             joinMessage = Component.text("")
                     .append(Component.text(player.getName(), NamedTextColor.WHITE))
                     .append(Component.text(" joined the server", NamedTextColor.GREEN));
 
 
             if (gsm.isState(GameStateManager.GameStates.WAITING)) {
-                new TeamSelectMenu().open(player);
+                if (plugin.getConfig().getBoolean("teams.loginGUI", true)) {
+                    new TeamSelectMenu().open(player);
+                }
             }
             else if (gsm.isState(GameStateManager.GameStates.POST)) {
                 player.sendRichMessage("<red>You joined a tad late, a game just ended.");
@@ -59,5 +56,9 @@ public class JoinEvent implements Listener {
         }
 
         event.joinMessage(joinMessage);
+
+        // Snappy first-second experience instead of waiting for the 1s tick
+        plugin.getScoreboardManager().refresh(player);
+        plugin.getTabListManager().refresh(player);
     }
 }

@@ -1,11 +1,10 @@
 package xyz.skuller.rivalRun.managers;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team;
 import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.Messages;
 import xyz.skuller.rivalRun.helpers.TeamPresets;
 import xyz.skuller.rivalRun.helpers.Teams;
 
@@ -66,13 +65,16 @@ public class TeamsManager {
     // Assign Player Function
     public boolean assignPlayer(Player player, Teams newTeam) {
 
-        if (teamsLocked) return false;
+        if (teamsLocked) {
+            player.sendMessage(Messages.get("messages.teamsLocked"));
+            return false;
+        }
         if (newTeam == null) return false;
 
         int max = plugin.getConfig().getInt("teams.max");
 
         if (newTeam.getSize() >= max) {
-            player.sendMessage("§cThat team is full!");
+            player.sendMessage(Messages.get("messages.teamFull"));
             return false;
         }
 
@@ -87,8 +89,7 @@ public class TeamsManager {
 
         playerTeams.put(uuid, newTeam);
         newTeam.addPlayer(uuid);
-        applyNametag(player);
-        updateTab(player);
+        RivalRun.getInstance().getScoreboardManager().refresh(player);
 
         return true;
     }
@@ -123,33 +124,6 @@ public class TeamsManager {
         return playerTeams.containsKey(player.getUniqueId());
     }
 
-    // Applies the team color to the player
-    public void applyNametag(Player player) {
-
-        Teams team = getPlayerTeam(player);
-        if (team == null) return;
-
-        var scoreboard = plugin.getServer().getScoreboardManager().getMainScoreboard();
-
-        Team sbTeam = scoreboard.getTeam(team.getName());
-
-        if (sbTeam == null) {
-            sbTeam = scoreboard.registerNewTeam(team.getName());
-        }
-
-        sbTeam.color(team.getColor());
-        sbTeam.addEntry(player.getName());
-    }
-
-    // Updates the player's nametag in tab list
-    public void updateTab(Player player) {
-        Teams team = getPlayerTeam(player);
-        if (team == null) return;
-
-        player.playerListName(Component.text("[" + team.getName() + "] ", team.getColor())
-                .append(Component.text(player.getName())));
-    }
-
     // Function used to get all the teams that are currently in the game
     public Collection<Teams> getTeams() {
         return teams.values();
@@ -162,6 +136,7 @@ public class TeamsManager {
         Teams team = playerTeams.remove(uuid);
         if (team != null) {
             team.removePlayer(uuid);
+            RivalRun.getInstance().getScoreboardManager().refresh(player);
         }
     }
 
@@ -197,6 +172,7 @@ public class TeamsManager {
         teams.clear();
         playerTeams.clear();
         teamsLocked = false;
+        RivalRun.getInstance().getSpectatorManager().reset();
         loadTeamsFromConfig();
     }
 }
