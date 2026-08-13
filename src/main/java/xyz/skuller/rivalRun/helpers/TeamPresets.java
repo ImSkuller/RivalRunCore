@@ -1,6 +1,7 @@
 package xyz.skuller.rivalRun.helpers;
 
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 
 public class TeamPresets {
@@ -47,5 +48,17 @@ public class TeamPresets {
         if (color == NamedTextColor.LIGHT_PURPLE) return Material.MAGENTA_WOOL;
         if (color == NamedTextColor.WHITE) return Material.WHITE_WOOL;
         return Material.GRAY_WOOL;
+    }
+
+    // Bukkit firework Color matching a team's NamedTextColor, for the win celebration.
+    public static Color getFireworkColorByColor(NamedTextColor color) {
+        if (color == NamedTextColor.RED) return Color.RED;
+        if (color == NamedTextColor.BLUE) return Color.BLUE;
+        if (color == NamedTextColor.GREEN) return Color.LIME;
+        if (color == NamedTextColor.YELLOW) return Color.YELLOW;
+        if (color == NamedTextColor.AQUA) return Color.AQUA;
+        if (color == NamedTextColor.LIGHT_PURPLE) return Color.FUCHSIA;
+        if (color == NamedTextColor.WHITE) return Color.WHITE;
+        return Color.SILVER;
     }
 }

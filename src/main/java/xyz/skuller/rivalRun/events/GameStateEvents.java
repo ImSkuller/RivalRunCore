@@ -35,6 +35,11 @@ public class GameStateEvents implements Listener {
             event.setCancelled(true);
         }
 
+        if (gsm.isState(GameStateManager.GameStates.POST)) {
+            event.getPlayer().sendRichMessage("<red>You cannot break blocks right now as the game has ended.");
+            event.setCancelled(true);
+        }
+
     }
 
     @EventHandler
