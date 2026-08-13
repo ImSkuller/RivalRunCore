@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.GuideBook;
 import xyz.skuller.rivalRun.helpers.Messages;
 import xyz.skuller.rivalRun.menus.AdminMenu;
 import xyz.skuller.rivalRun.menus.BuffPlayerListMenu;
@@ -40,7 +41,8 @@ public class MainCommandClass implements TabExecutor {
             "unlock", "unlockteams", "teamsunlock",
             "spectate", "spectator",
             "resetworld", "worldreset", "newworld",
-            "buffs", "buffdebuff", "playersettings", "handicaps"
+            "buffs", "buffdebuff", "playersettings", "handicaps",
+            "help", "guide"
     );
 
     @Override
@@ -58,7 +60,7 @@ public class MainCommandClass implements TabExecutor {
                 return true;
             }
 
-            sender.sendRichMessage("<red>Usage: /rr <subcommand>");
+            sender.sendRichMessage("<red>Usage: /rr <subcommand>. Run <white>/rr help<red> for a guide.");
             return true;
         }
 
@@ -255,6 +257,20 @@ public class MainCommandClass implements TabExecutor {
                 return true;
             }
             new BuffPlayerListMenu().open(player);
+        }
+
+        else if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("guide")) {
+            if (!(sender instanceof final Player player)) {
+                sender.sendRichMessage("<red>Only players can use this command.");
+                return true;
+            }
+
+            boolean wantsPlayerView = args.length >= 2 && args[1].equalsIgnoreCase("player");
+            if (sender.hasPermission("rivalrun.admin") && !wantsPlayerView) {
+                GuideBook.openAdminGuide(player);
+            } else {
+                GuideBook.openPlayerGuide(player);
+            }
         }
 
         else {

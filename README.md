@@ -62,6 +62,7 @@ RivalRun is a small **hobby project** I made because I wanted to play a **teams 
 | `spectator <player>` | Force a player into/out of spectator mode |
 | `buffs` | Set per-player buffs/debuffs before a game starts |
 | `resetworld` | Regenerate the entire world with a new seed (confirm/cancel GUI) |
+| `help` | Open the guide book - the full admin guide for admins, a player guide for everyone else |
 
 `/rrdebug` has a handful of dev/testing commands, gated behind `commands.debug` in the config and requiring OP.
 

@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.commands.GameCommands;
+import xyz.skuller.rivalRun.helpers.GuideBook;
 import xyz.skuller.rivalRun.helpers.SimpleMenu;
 import xyz.skuller.rivalRun.managers.GameStateManager;
 import xyz.skuller.rivalRun.managers.TeamsManager;
@@ -20,7 +21,7 @@ import java.util.List;
 public class AdminMenu extends SimpleMenu {
 
     public AdminMenu() {
-        super(Rows.ONE, "§4Rival Run §0| §8Admin Menu");
+        super(Rows.TWO, "§4Rival Run §0| §8Admin Menu");
     }
 
     @Override
@@ -80,6 +81,9 @@ public class AdminMenu extends SimpleMenu {
                     player.sendRichMessage("<red>Anyone can switch teams or join teams freely now.");
                     open(player);
                 });
+
+        setButton(13, Material.WRITTEN_BOOK, "Help", NamedTextColor.YELLOW,
+                "Open the admin guide book.", GuideBook::openAdminGuide);
     }
 
     private void setButton(int slot, Material material, String name, NamedTextColor color, String description, java.util.function.Consumer<org.bukkit.entity.Player> action) {

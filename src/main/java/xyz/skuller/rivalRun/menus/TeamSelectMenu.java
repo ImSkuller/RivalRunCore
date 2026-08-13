@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.GuideBook;
 import xyz.skuller.rivalRun.helpers.Messages;
 import xyz.skuller.rivalRun.helpers.SimpleMenu;
 import xyz.skuller.rivalRun.helpers.TeamPresets;
@@ -78,6 +79,7 @@ public class TeamSelectMenu extends SimpleMenu {
 
         setLeaveButton(4);
         setRandomTeamButton(22);
+        setHelpButton(5);
     }
 
     private void setTeamItem(int slot, Teams team) {
@@ -142,6 +144,16 @@ public class TeamSelectMenu extends SimpleMenu {
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
             open(player);
         });
+    }
+
+    private void setHelpButton(int slot) {
+        ItemStack item = new ItemStack(Material.WRITTEN_BOOK);
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(Component.text("Help", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
+        meta.lore(List.of(Component.text("Click to open the guide book", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
+        item.setItemMeta(meta);
+
+        setItem(slot, item, GuideBook::openPlayerGuide);
     }
 
     private void setRandomTeamButton(int slot) {
