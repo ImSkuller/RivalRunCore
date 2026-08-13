@@ -227,6 +227,7 @@ public class TeamsManager {
         playerTeams.clear();
         teamsLocked = false;
         RivalRun.getInstance().getSpectatorManager().reset();
+        RivalRun.getInstance().getAchievementManager().reset();
         loadTeamsFromConfig();
     }
 }

@@ -2,6 +2,7 @@ package xyz.skuller.rivalRun;
 
 import xyz.skuller.rivalRun.commands.GameCommands;
 import xyz.skuller.rivalRun.commands.TeamCommands;
+import xyz.skuller.rivalRun.managers.AchievementManager;
 import xyz.skuller.rivalRun.managers.ChatInputManager;
 import xyz.skuller.rivalRun.managers.ConfigManager;
 import xyz.skuller.rivalRun.managers.EventManager;
@@ -24,6 +25,7 @@ public final class RivalRun extends JavaPlugin {
     private static TabListManager tabListManager;
     private static WinManager winManager;
     private static ChatInputManager chatInputManager;
+    private static AchievementManager achievementManager;
     private static GameCommands gc;
     private static TeamCommands tc;
     double CURRENT_VERSION = 0.2;
@@ -39,6 +41,7 @@ public final class RivalRun extends JavaPlugin {
         tabListManager = new TabListManager();
         winManager = new WinManager();
         chatInputManager = new ChatInputManager();
+        achievementManager = new AchievementManager();
         gc = new GameCommands();
         tc = new TeamCommands();
 
@@ -88,6 +91,8 @@ public final class RivalRun extends JavaPlugin {
     public WinManager getWinManager() {return winManager;}
 
     public ChatInputManager getChatInputManager() {return chatInputManager;}
+
+    public AchievementManager getAchievementManager() {return achievementManager;}
 
     public GameCommands getGameCommands() {return gc;}
 

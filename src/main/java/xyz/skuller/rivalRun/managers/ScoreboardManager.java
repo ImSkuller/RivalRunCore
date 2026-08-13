@@ -102,24 +102,35 @@ public class ScoreboardManager {
         GameStateManager gsm = plugin.getGameStateManager();
         TeamsManager tm = plugin.getTeamManager();
         SpectatorManager sm = plugin.getSpectatorManager();
+        AchievementManager am = plugin.getAchievementManager();
 
         List<Component> lines = new ArrayList<>();
 
         lines.add(Component.text("State: ", NamedTextColor.GRAY).append(Component.text(gsm.getState().name(), NamedTextColor.WHITE)));
         lines.add(Component.text("Timer: ", NamedTextColor.GRAY).append(Component.text(gsm.getFormattedElapsed(), NamedTextColor.WHITE)));
+        lines.add(Component.empty());
 
         Teams viewerTeam = tm.getPlayerTeam(viewer);
-        lines.add(Component.text("Team: ", NamedTextColor.GRAY).append(
+        lines.add(Component.text("Your Team: ", NamedTextColor.GRAY).append(
                 viewerTeam != null
-                        ? Component.text(viewerTeam.getName(), viewerTeam.getColor())
+                        ? Component.text(viewerTeam.getName(), viewerTeam.getColor(), TextDecoration.BOLD)
                         : Component.text("None", NamedTextColor.WHITE)
         ));
         lines.add(Component.empty());
 
         for (Teams team : tm.getTeams()) {
             int alive = sm.countAlive(team);
-            lines.add(Component.text(team.getName() + ": ", team.getColor())
-                    .append(Component.text(alive + "/" + team.getSize(), NamedTextColor.WHITE)));
+            long achievements = am.countFor(team);
+
+            Component line = Component.text("■ ", team.getColor())
+                    .append(Component.text(team.getName() + " ", team.getColor()))
+                    .append(Component.text(alive + "/" + team.getSize(), NamedTextColor.WHITE));
+
+            if (achievements > 0) {
+                line = line.append(Component.text("  ⭐" + achievements, NamedTextColor.YELLOW));
+            }
+
+            lines.add(line);
         }
 
         return lines;

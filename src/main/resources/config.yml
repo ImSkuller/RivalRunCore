@@ -164,6 +164,15 @@ teams:
   # Usable Parameters: Integers (Select from the above list)
   teamName: 0
 
+  # Custom teams created in-game via the Settings > Manage Teams menu.
+  # If this list is non-empty it completely replaces the preset system
+  # above (list/teamName are ignored). Leave this empty to use presets.
+  # You can edit this by hand too: each entry needs a name and a color
+  # (one of the 16 standard chat colors, e.g. red, dark_aqua, white).
+  #
+  # Usable Parameters: List of {name, color} entries
+  custom: []
+
 
 
 ############################################################
@@ -181,7 +190,7 @@ scoreboard:
   # The title shown at the top of the sidebar scoreboard.
   #
   # Usable Parameters: String + MiniMessage format
-  title: "<gold><bold>Rival Run"
+  title: "<gold><bold>⚔ Rival Run ⚔"
 
 
 
@@ -201,13 +210,13 @@ tablist:
   # Placeholders: {state} {timer} {online} {max}
   #
   # Usable Parameters: String + MiniMessage format (\n for a new line)
-  header: "<gold><bold>Rival Run\n<gray>State: <white>{state}"
+  header: "<gold><bold>⚔ Rival Run ⚔\n<gray>State: <white>{state}  <gray>Timer: <white>{timer}"
 
   # The text shown below the player list.
   # Placeholders: {state} {timer} {online} {max}
   #
   # Usable Parameters: String + MiniMessage format (\n for a new line)
-  footer: "<gray>Online: <white>{online}<gray>/<white>{max}\n<gray>Timer: <white>{timer}"
+  footer: "<gray>Online: <white>{online}<gray>/<white>{max}\n<gold>Team Speedrunning"
 
 
 
@@ -252,6 +261,22 @@ spectator:
   #
   # Usable Parameters: Boolean (true / false)
   eliminationWin: true
+
+
+
+############################################################
+# +------------------------------------------------------+ #
+# |              ⭐ Achievements Configuration            | #
+# |                 Plugin By Skuller                    | #
+# +------------------------------------------------------+ #
+############################################################
+achievements:
+  # Team-speedrunning route milestones (Nether, blaze rod, ender pearl, eye
+  # of ender, the End, first hit on the dragon) - each is announced in chat
+  # and shown on the scoreboard for whichever team reaches it first.
+  #
+  # Usable Parameters: Boolean (true / false)
+  enabled: true
 
 
 
