@@ -34,6 +34,7 @@ public class SettingsMenu extends SimpleMenu {
         setCategory(19, Material.COMPASS, "Spectator", SettingsCategories.spectator());
         setCategory(20, Material.GOLDEN_APPLE, "Achievements", SettingsCategories.achievements());
         setCategory(21, Material.WRITABLE_BOOK, "Messages", SettingsCategories.messages());
+        setCategory(22, Material.TNT, "World Reset", SettingsCategories.worldReset());
 
         setItem(24, teamManagerIcon(), player -> new TeamManagerMenu().open(player));
     }

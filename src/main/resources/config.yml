@@ -282,6 +282,29 @@ achievements:
 
 ############################################################
 # +------------------------------------------------------+ #
+# |              🌍 World Reset Configuration             | #
+# |                 Plugin By Skuller                    | #
+# +------------------------------------------------------+ #
+############################################################
+worldReset:
+  # /rivalrun resetworld regenerates the entire world (Overworld, Nether,
+  # End) with a brand new random seed, after an in-game confirmation.
+  # This controls what happens to the world it replaces:
+  # - true:  the old world is permanently deleted
+  # - false: the old world is unloaded and archived into a timestamped
+  #          backup folder next to it instead
+  #
+  # Usable Parameters: Boolean (true / false)
+  deleteOldWorlds: true
+
+  # Internal - do not edit. Tracks which world set RivalRun is currently
+  # using, so it never touches the server's default world.
+  currentWorld: ""
+
+
+
+############################################################
+# +------------------------------------------------------+ #
 # |              💬 Messages Configuration               | #
 # +------------------------------------------------------+ #
 ############################################################

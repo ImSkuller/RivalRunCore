@@ -2,6 +2,7 @@ package xyz.skuller.rivalRun.events;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,6 +21,14 @@ public class JoinEvent implements Listener {
         final Player player = event.getPlayer();
         RivalRun plugin = RivalRun.getInstance();
         TeamsManager teamManager = plugin.getTeamManager();
+
+        // First-time joiners (and anyone whose last location was in a world
+        // deleted by a previous /rivalrun resetworld) land in the server's
+        // default world by vanilla behavior - RivalRun never plays there.
+        World currentOverworld = plugin.getWorldResetManager().getCurrentOverworld();
+        if (currentOverworld != null && !player.getWorld().equals(currentOverworld)) {
+            player.teleport(currentOverworld.getSpawnLocation());
+        }
 
         Teams team = teamManager.getPlayerTeam(player);
 

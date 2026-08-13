@@ -12,6 +12,7 @@ import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.helpers.Messages;
 import xyz.skuller.rivalRun.menus.AdminMenu;
 import xyz.skuller.rivalRun.menus.SpectatorMenu;
+import xyz.skuller.rivalRun.menus.WorldResetConfirmMenu;
 
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class MainCommandClass implements TabExecutor {
             "switch", "switchteam", "teamswitch",
             "lock", "lockteams", "teamslock",
             "unlock", "unlockteams", "teamsunlock",
-            "spectate", "spectator"
+            "spectate", "spectator",
+            "resetworld", "worldreset", "newworld"
     );
 
     @Override
@@ -220,6 +222,21 @@ public class MainCommandClass implements TabExecutor {
                 sender.sendRichMessage("<green>" + target.getName() + " is no longer spectating.");
                 target.sendMessage(Messages.get("messages.spectatorDisabled"));
             }
+        }
+
+        else if (args[0].equalsIgnoreCase("resetworld") ||
+                args[0].equalsIgnoreCase("worldreset") ||
+                args[0].equalsIgnoreCase("newworld"))
+        {
+            if (!(sender instanceof final Player player)) {
+                sender.sendRichMessage("<red>Only players can use this command.");
+                return true;
+            }
+            if (!sender.hasPermission("rivalrun.game.resetworld")) {
+                sender.sendRichMessage("<red>You do not have the permissions required to run this command.");
+                return true;
+            }
+            new WorldResetConfirmMenu().open(player);
         }
 
         else {

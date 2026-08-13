@@ -48,6 +48,7 @@ This plugin is mainly for fun and learning, so it isn’t designed to be perfect
 | `leave` | Leave your current team |
 | `lock` / `unlock` | Lock/unlock team joining and switching |
 | `spectate` | Open the spectator teleport menu (while spectating) |
+| `resetworld` | Regenerate the entire world with a new seed (confirm/cancel GUI) |
 
 `/rrdebug` has a handful of dev/testing commands, gated behind `commands.debug` in the config and requiring OP.
 

@@ -14,6 +14,7 @@ import xyz.skuller.rivalRun.managers.SpectatorManager;
 import xyz.skuller.rivalRun.managers.TabListManager;
 import xyz.skuller.rivalRun.managers.TeamsManager;
 import xyz.skuller.rivalRun.managers.WinManager;
+import xyz.skuller.rivalRun.managers.WorldResetManager;
 
 public final class RivalRun extends JavaPlugin {
 
@@ -26,6 +27,7 @@ public final class RivalRun extends JavaPlugin {
     private static WinManager winManager;
     private static ChatInputManager chatInputManager;
     private static AchievementManager achievementManager;
+    private static WorldResetManager worldResetManager;
     private static GameCommands gc;
     private static TeamCommands tc;
     double CURRENT_VERSION = 0.2;
@@ -42,11 +44,16 @@ public final class RivalRun extends JavaPlugin {
         winManager = new WinManager();
         chatInputManager = new ChatInputManager();
         achievementManager = new AchievementManager();
+        worldResetManager = new WorldResetManager();
         gc = new GameCommands();
         tc = new TeamCommands();
 
         // Loading Configuration File
         new ConfigManager().update(this, CURRENT_VERSION);
+
+        // Dedicated game world set (never the server's default world - see
+        // WorldResetManager for why)
+        worldResetManager.ensureWorldsLoaded();
 
         // Event manager
         EventManager eventManager = new EventManager();
@@ -93,6 +100,8 @@ public final class RivalRun extends JavaPlugin {
     public ChatInputManager getChatInputManager() {return chatInputManager;}
 
     public AchievementManager getAchievementManager() {return achievementManager;}
+
+    public WorldResetManager getWorldResetManager() {return worldResetManager;}
 
     public GameCommands getGameCommands() {return gc;}
 

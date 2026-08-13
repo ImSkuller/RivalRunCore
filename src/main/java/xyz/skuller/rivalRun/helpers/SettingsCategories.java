@@ -88,6 +88,12 @@ public class SettingsCategories {
         );
     }
 
+    public static List<SettingEntry> worldReset() {
+        return List.of(
+                toggle(Material.TNT, "Delete Old Worlds", "Off = archive instead of deleting on /rivalrun resetworld", "worldReset.deleteOldWorlds")
+        );
+    }
+
     public static List<SettingEntry> messages() {
         return List.of(
                 text(Material.PAPER, "Team Full", "Shown when trying to join a full team", "messages.teamFull"),

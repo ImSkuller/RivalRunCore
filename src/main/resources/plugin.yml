@@ -48,6 +48,9 @@ permissions:
   rivalrun.game.spectator:
     description: Allows forcing another player into/out of spectator mode.
     default: op
+  rivalrun.game.resetworld:
+    description: Allows regenerating the entire world with a new seed.
+    default: op
   rivalrun.admin:
     description: Allows access to the admin control menu.
     default: op

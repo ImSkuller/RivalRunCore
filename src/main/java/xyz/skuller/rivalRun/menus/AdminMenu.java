@@ -61,6 +61,9 @@ public class AdminMenu extends SimpleMenu {
                     player.closeInventory();
                 });
 
+        setButton(6, Material.TNT, "Reset World", NamedTextColor.RED,
+                "Regenerates the entire world with a new seed.", player -> new WorldResetConfirmMenu().open(player));
+
         setButton(7, Material.OAK_DOOR, "Lock Teams", NamedTextColor.GOLD,
                 "Stops anyone joining/switching teams.", player -> {
                     tm.lockTeams();
