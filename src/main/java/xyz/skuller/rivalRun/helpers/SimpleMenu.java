@@ -1,5 +1,6 @@
 package xyz.skuller.rivalRun.helpers;
 
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -16,9 +17,14 @@ public abstract class SimpleMenu implements Menu {
     private final Map<Integer, Consumer<Player>> actions = new HashMap<>();
     private final Inventory inventory;
 
+    // Menu titles are written as legacy "§"-coded strings throughout the
+    // codebase; deserializing here means every existing subclass keeps
+    // working unchanged while still using the non-deprecated Component
+    // overload of createInventory.
     public SimpleMenu(Rows rows, String title) {
 
-        this.inventory = Bukkit.createInventory(this, rows.getSize(), title);
+        this.inventory = Bukkit.createInventory(this, rows.getSize(),
+                LegacyComponentSerializer.legacySection().deserialize(title));
 
     }
 

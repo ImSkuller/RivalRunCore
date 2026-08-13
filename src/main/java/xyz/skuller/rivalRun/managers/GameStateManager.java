@@ -2,10 +2,13 @@ package xyz.skuller.rivalRun.managers;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
 import xyz.skuller.rivalRun.RivalRun;
+
+import java.time.Duration;
 
 public class GameStateManager {
 
@@ -194,8 +197,13 @@ public class GameStateManager {
             public void run() {
 
                 if (timeLeft <= 0 ) {
+                    Title goTitle = Title.title(
+                            Component.text("GO!", NamedTextColor.GREEN),
+                            Component.text("Good luck!", NamedTextColor.GRAY),
+                            Title.Times.times(Duration.ZERO, Duration.ofMillis(2000), Duration.ofMillis(500))
+                    );
                     Bukkit.getOnlinePlayers().forEach(player -> {
-                        player.sendTitle("§aGO!", "§7Good luck!", 0, 40, 10);
+                        player.showTitle(goTitle);
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1f,1f);
                     });
 
@@ -212,8 +220,13 @@ public class GameStateManager {
                     return;
                 }
 
+                Title countdownTitle = Title.title(
+                        Component.text(timeLeft, NamedTextColor.YELLOW),
+                        Component.empty(),
+                        Title.Times.times(Duration.ZERO, Duration.ofMillis(1000), Duration.ZERO)
+                );
                 Bukkit.getOnlinePlayers().forEach(player -> {
-                    player.sendTitle("§e" + timeLeft, "", 0, 20, 0);
+                    player.showTitle(countdownTitle);
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
                 });
 

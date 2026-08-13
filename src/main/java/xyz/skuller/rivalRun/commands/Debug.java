@@ -125,6 +125,14 @@ public class Debug implements TabExecutor {
 
         }
 
+        else if (args[0].equalsIgnoreCase("worldreset")) {
+            // Triggers the same regeneration WorldResetConfirmMenu's confirm
+            // button does, but console-usable and without the GUI - lets the
+            // irreversible unload/delete/archive path be exercised directly.
+            sender.sendRichMessage("<yellow>Triggering a world reset...");
+            RivalRun.getInstance().getWorldResetManager().resetWorlds();
+        }
+
         return true;
 
     }
@@ -136,7 +144,7 @@ public class Debug implements TabExecutor {
                                                 @NotNull String @NotNull [] args)
     {
         if (args.length == 1) {
-            return List.of("Mode", "Game", "resetConfig", "teamGUI", "getTeams", "togglefly");
+            return List.of("Mode", "Game", "resetConfig", "teamGUI", "getTeams", "togglefly", "worldreset");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("mode")) {
