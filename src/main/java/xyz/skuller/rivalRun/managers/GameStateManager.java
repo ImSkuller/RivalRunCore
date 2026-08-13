@@ -50,10 +50,7 @@ public class GameStateManager {
         GameStates previousState = this.currentState;
         long now = System.currentTimeMillis();
 
-        if (newState == GameStates.RUNNING && runStartMillis == 0L) {
-            runStartMillis = now;
-        }
-        if (previousState == GameStates.PAUSED && newState == GameStates.RUNNING) {
+        if (previousState == GameStates.PAUSED && newState == GameStates.RUNNING && runStartMillis != 0L) {
             pausedMillis += now - pauseStartedMillis;
         }
         if (newState == GameStates.PAUSED) {
@@ -65,6 +62,16 @@ public class GameStateManager {
 
         this.currentState = newState;
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Game state updated to " + newState.name());
+    }
+
+
+    // Starts the elapsed run timer. The countdown (STARTING) and grace period
+    // both happen before this is called, so the timer stays at 0:00 through
+    // both and only starts once the run is actually live.
+    public void startTimer() {
+        if (runStartMillis == 0L) {
+            runStartMillis = System.currentTimeMillis();
+        }
     }
 
 
@@ -123,6 +130,7 @@ public class GameStateManager {
 
                 if (graceTimeLeft <= 0) {
                     gracePeriod = false;
+                    startTimer();
 
                     Bukkit.broadcast(Component.text(
                             "Grace Period has ended, PVP is now enabled.",
@@ -196,6 +204,8 @@ public class GameStateManager {
                     setState(GameStates.RUNNING);
                     if (isGraceEnabled) {
                         startGracePeriod(graceTime);
+                    } else {
+                        startTimer();
                     }
                     Bukkit.broadcast(Component.text("The game has begun.", NamedTextColor.GREEN));
 
