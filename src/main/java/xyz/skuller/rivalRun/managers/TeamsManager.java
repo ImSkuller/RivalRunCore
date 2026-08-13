@@ -12,6 +12,9 @@ import java.util.*;
 
 public class TeamsManager {
 
+    private static final String CUSTOM_TEAMS_PATH = "teams.custom";
+    private static final int MAX_TEAMS = 12;
+
     private boolean teamsLocked = false;
     private final RivalRun plugin;
 
@@ -22,10 +25,24 @@ public class TeamsManager {
         this.plugin = plugin;
     }
 
-    // Team Creation (Automatic from the config)
+    // Team Creation - uses teams.custom if any custom teams have ever been
+    // saved, otherwise falls back to generating teams from the preset config.
     public void loadTeamsFromConfig() {
 
         teams.clear();
+
+        List<Map<?, ?>> customTeams = plugin.getConfig().getMapList(CUSTOM_TEAMS_PATH);
+
+        if (!customTeams.isEmpty()) {
+            for (Map<?, ?> entry : customTeams) {
+                String name = String.valueOf(entry.get("name"));
+                NamedTextColor color = NamedTextColor.NAMES.value(String.valueOf(entry.get("color")));
+                createTeam(name, color != null ? color : NamedTextColor.WHITE);
+            }
+
+            Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Loaded <gold>" + teams.size() + "<green> custom teams.");
+            return;
+        }
 
         int teamCount = plugin.getConfig().getInt("teams.list");
         int presetId = plugin.getConfig().getInt("teams.teamName");
@@ -60,6 +77,43 @@ public class TeamsManager {
     // Create Team function
     public void createTeam(String name, NamedTextColor color) {
         teams.put(name, new Teams(name, color));
+    }
+
+    // Adds a brand new team and persists the current full team roster to
+    // teams.custom, so it (and every other currently active team) survives
+    // a restart. Fails if a team with that name already exists.
+    public boolean addCustomTeam(String name, NamedTextColor color) {
+        if (teams.containsKey(name)) return false;
+        if (teams.size() >= MAX_TEAMS) return false;
+
+        createTeam(name, color);
+        persistCustomTeams();
+        return true;
+    }
+
+    // Removes a team, refusing if it still has players on it. Persists the
+    // remaining roster the same way addCustomTeam does.
+    public boolean removeCustomTeam(Teams team) {
+        if (team.getSize() > 0) return false;
+
+        teams.remove(team.getName());
+        persistCustomTeams();
+        return true;
+    }
+
+    private void persistCustomTeams() {
+        List<Map<String, Object>> serialized = new ArrayList<>();
+
+        for (Teams team : teams.values()) {
+            String colorKey = NamedTextColor.NAMES.key(team.getColor());
+            Map<String, Object> entry = new LinkedHashMap<>();
+            entry.put("name", team.getName());
+            entry.put("color", colorKey != null ? colorKey : "white");
+            serialized.add(entry);
+        }
+
+        plugin.getConfig().set(CUSTOM_TEAMS_PATH, serialized);
+        plugin.saveConfig();
     }
 
     // Assign Player Function
