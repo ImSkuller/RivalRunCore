@@ -6,11 +6,11 @@ public class TeamPresets {
 
     public enum TeamPreset {
 
-        DEFAULT(new String[]{"RED", "BLUE", "GREEN", "YELLOW", "AQUA", "PURPLE"}),
-        PASSIVE(new String[]{"Pig", "Cow", "Chicken", "Sheep", "Squid", "Axolotl"}),
-        HOSTILE(new String[]{"Zombie", "Creeper", "Blaze", "Piglin", "Enderman", "Warden"}),
-        FLOWERS(new String[]{"Rose", "Dandelions", "Sunflower", "Cornflower", "Tulip", "Lilly"}),
-        BLOCKS(new String[]{"Wood", "Stone", "Sand", "Deepslate", "Obsidian", "Endstone"});
+        DEFAULT(new String[]{"RED", "BLUE", "GREEN", "YELLOW", "AQUA", "PURPLE", "WHITE"}),
+        PASSIVE(new String[]{"Pig", "Cow", "Chicken", "Sheep", "Squid", "Axolotl", "Rabbit"}),
+        HOSTILE(new String[]{"Zombie", "Creeper", "Blaze", "Piglin", "Enderman", "Warden", "Ghast"}),
+        FLOWERS(new String[]{"Rose", "Dandelions", "Sunflower", "Cornflower", "Tulip", "Lilly", "Poppy"}),
+        BLOCKS(new String[]{"Wood", "Stone", "Sand", "Deepslate", "Obsidian", "Endstone", "Prismarine"});
 
         private final String[] names;
 
@@ -31,7 +31,8 @@ public class TeamPresets {
             case 3 -> NamedTextColor.YELLOW;
             case 4 -> NamedTextColor.AQUA;
             case 5 -> NamedTextColor.LIGHT_PURPLE;
-            default -> NamedTextColor.WHITE;
+            case 6 -> NamedTextColor.WHITE;
+            default -> NamedTextColor.GRAY;
         };
     }
 }

@@ -1,5 +1,8 @@
 package xyz.skuller.rivalRun.events;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,6 +25,7 @@ public class TeamWinEvent implements Listener {
     public void onDragonDeath(EntityDeathEvent event) {
 
         if (!(event.getEntity() instanceof EnderDragon)) return;
+        if (!RivalRun.getInstance().getGameStateManager().isState(GameStateManager.GameStates.RUNNING)) return;
 
         Player killer = event.getEntity().getKiller();
         if (killer == null) return;
@@ -29,9 +33,7 @@ public class TeamWinEvent implements Listener {
         Teams team = RivalRun.getInstance().getTeamManager().getPlayerTeam(killer);
         if (team == null) return;
 
-        plugin.getServer().broadcastMessage(
-                "§6Team " + team.getName() + " has won the game!"
-        );
+        Bukkit.broadcast(Component.text("Team " + team.getName() + " has won the game!", NamedTextColor.GOLD));
         RivalRun.getInstance().getGameStateManager().setState(GameStateManager.GameStates.POST);
     }
 }

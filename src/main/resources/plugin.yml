@@ -1,9 +1,10 @@
 name: RivalRun
-version: '1.0-SNAPSHOT'
+version: '${project.version}'
 main: xyz.skuller.rivalRun.RivalRun
-api-version: '1.21'
+api-version: '26.2'
 authors: [ Skuller ]
 description: A plugin built for speedrunning minecraft with friends.
+website: https://github.com/ImSkuller/RivalRunCore
 
 commands:
   rivalrun:
@@ -12,3 +13,38 @@ commands:
       - rr
   rrdebug:
     description: Dev command for rival run (just for testing purposes).
+
+permissions:
+  rivalrun.game.start:
+    description: Allows starting the game.
+    default: op
+  rivalrun.game.pause:
+    description: Allows pausing the game.
+    default: op
+  rivalrun.game.end:
+    description: Allows ending the game.
+    default: op
+  rivalrun.game.reset:
+    description: Allows resetting the game.
+    default: op
+  rivalrun.game.resume:
+    description: Allows resuming a paused game.
+    default: op
+  rivalrun.teams.select:
+    description: Allows selecting/joining a team.
+    default: true
+  rivalrun.teams.leave:
+    description: Allows leaving a team.
+    default: true
+  rivalrun.teams.switch:
+    description: Allows switching teams.
+    default: true
+  rivalrun.teams.lock:
+    description: Allows locking/unlocking teams.
+    default: op
+  rivalrun.spectate:
+    description: Allows using the spectator teleport menu.
+    default: true
+  rivalrun.admin:
+    description: Allows access to the admin control menu.
+    default: op

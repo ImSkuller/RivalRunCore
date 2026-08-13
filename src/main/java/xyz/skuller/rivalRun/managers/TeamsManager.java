@@ -1,5 +1,6 @@
 package xyz.skuller.rivalRun.managers;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -145,8 +146,8 @@ public class TeamsManager {
         Teams team = getPlayerTeam(player);
         if (team == null) return;
 
-        String prefix = " [" + team.getName() + "] ";
-        player.setPlayerListName(prefix + player.getName());
+        player.playerListName(Component.text("[" + team.getName() + "] ", team.getColor())
+                .append(Component.text(player.getName())));
     }
 
     // Function used to get all the teams that are currently in the game
