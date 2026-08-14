@@ -39,6 +39,12 @@ public class ManhuntManager {
     private final Set<UUID> revivedOnce = new HashSet<>();
     private final Map<UUID, Set<UUID>> killedOpponents = new HashMap<>();
 
+    // Set in onDeath (which knows the killer) and consumed in onRespawn
+    // (which is where the actual spectator conversion happens) - see
+    // isPermanentDeath(). PlayerRespawnEvent has no death-cause info of its
+    // own, so this is how the decision crosses from one event to the other.
+    private final Set<UUID> permanentDeathPending = new HashSet<>();
+
     private boolean anyHunterDied;
     private boolean hunterDiedToSpeedrunner;
     private boolean speedrunnerDiedToHunter;
@@ -139,6 +145,28 @@ public class ManhuntManager {
         return target != null ? target.getName() : "None";
     }
 
+    // manhunt.permaDeathMode is a CYCLE setting - 0 = All Deaths, 1 = Hunter
+    // Kills Only.
+    public boolean isHunterKillsOnlyMode() {
+        return RivalRun.getInstance().getConfig().getInt("manhunt.permaDeathMode", 0) == 1;
+    }
+
+    // Whether a Speedrunner who was just killed by killerRole should be
+    // eliminated (converted to a spectator) rather than simply respawning.
+    public boolean isPermanentDeath(TeamRole killerRole) {
+        return !isHunterKillsOnlyMode() || killerRole == TeamRole.HUNTER;
+    }
+
+    public void markPermanentDeath(Player player) {
+        permanentDeathPending.add(player.getUniqueId());
+    }
+
+    // True (and clears the flag) if the death that just happened to this
+    // player was marked permanent in onDeath.
+    public boolean consumePermanentDeath(Player player) {
+        return permanentDeathPending.remove(player.getUniqueId());
+    }
+
     public boolean hasBeenRevived(Player player) {
         return revivedOnce.contains(player.getUniqueId());
     }
@@ -223,6 +251,7 @@ public class ManhuntManager {
         targets.clear();
         revivedOnce.clear();
         killedOpponents.clear();
+        permanentDeathPending.clear();
         anyHunterDied = false;
         hunterDiedToSpeedrunner = false;
         speedrunnerDiedToHunter = false;

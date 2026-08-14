@@ -28,16 +28,35 @@ public class ManhuntListener implements Listener {
 
     // Hunters keep their tracking compass through death instead of it
     // dropping on the ground - it gets re-given on respawn regardless.
+    //
+    // For a Speedrunner, decides here (while the killer is still known)
+    // whether this death is permanent per manhunt.permaDeathMode - either
+    // every death counts, or only ones where a Hunter landed the kill. The
+    // decision is stashed in ManhuntManager and consumed in onRespawn(),
+    // since PlayerRespawnEvent has no death-cause info of its own.
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         if (!active()) return;
 
         RivalRun plugin = RivalRun.getInstance();
-        TeamRole role = plugin.getTeamManager().getTeamRole(event.getEntity());
-        if (role != TeamRole.HUNTER) return;
-
+        Player victim = event.getEntity();
+        TeamsManager teamsManager = plugin.getTeamManager();
+        TeamRole role = teamsManager.getTeamRole(victim);
         ManhuntManager manhuntManager = plugin.getManhuntManager();
-        event.getDrops().removeIf(manhuntManager::isTrackerCompass);
+
+        if (role == TeamRole.HUNTER) {
+            event.getDrops().removeIf(manhuntManager::isTrackerCompass);
+            return;
+        }
+
+        if (role != TeamRole.SPEEDRUNNER) return;
+
+        Player killer = victim.getKiller();
+        TeamRole killerRole = killer != null ? teamsManager.getTeamRole(killer) : TeamRole.NONE;
+
+        if (manhuntManager.isPermanentDeath(killerRole)) {
+            manhuntManager.markPermanentDeath(victim);
+        }
     }
 
     @EventHandler
@@ -48,13 +67,18 @@ public class ManhuntListener implements Listener {
         RivalRun plugin = RivalRun.getInstance();
         TeamsManager teamsManager = plugin.getTeamManager();
         TeamRole role = teamsManager.getTeamRole(player);
+        ManhuntManager manhuntManager = plugin.getManhuntManager();
 
         if (role == TeamRole.HUNTER) {
-            plugin.getManhuntManager().giveTrackerCompass(player);
+            manhuntManager.giveTrackerCompass(player);
             return;
         }
 
         if (role != TeamRole.SPEEDRUNNER) return;
+
+        // Not marked permanent (e.g. Hunter-Kills-Only mode and this was a
+        // fall/mob/lava death) - just a normal respawn, keep playing.
+        if (!manhuntManager.consumePermanentDeath(player)) return;
 
         Teams team = teamsManager.getPlayerTeam(player);
         SpectatorManager spectatorManager = plugin.getSpectatorManager();
@@ -62,7 +86,7 @@ public class ManhuntListener implements Listener {
         spectatorManager.makeSpectator(player);
 
         if (team != null && spectatorManager.countAlive(team) == 0) {
-            plugin.getManhuntManager().convertTeamToHunters(team);
+            manhuntManager.convertTeamToHunters(team);
         }
     }
 

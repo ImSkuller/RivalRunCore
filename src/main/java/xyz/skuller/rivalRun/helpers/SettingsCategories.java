@@ -44,7 +44,9 @@ public class SettingsCategories {
         return List.of(
                 cycle(Material.PLAYER_HEAD, "Speedrunner Teams", "1 = Speedrunners vs Hunters, 2 = also vs each other", "manhunt.speedrunnerTeams", 0,
                         "1", "2"),
-                number(Material.BOW, "Headstart Seconds", "How long Hunters are frozen at the start", "manhunt.headstartSeconds")
+                number(Material.BOW, "Headstart Seconds", "How long Hunters are frozen at the start", "manhunt.headstartSeconds"),
+                cycle(Material.SKELETON_SKULL, "Permadeath Mode", "Which Speedrunner deaths eliminate them vs. just respawn them", "manhunt.permaDeathMode", 0,
+                        "All Deaths", "Hunter Kills Only")
         );
     }
 

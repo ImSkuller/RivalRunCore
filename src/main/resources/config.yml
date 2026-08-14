@@ -146,6 +146,18 @@ manhunt:
   # Usable Parameters: Integer (Seconds)
   headstartSeconds: 30
 
+  # Which Speedrunner deaths are permanent (eliminated -> restricted
+  # spectator, per the usual Manhunt rules) versus just a normal respawn.
+  # 0 = All Deaths - any death (mobs, fall, lava, another Speedrunner, a
+  #     Hunter, ...) eliminates them.
+  # 1 = Hunter Kills Only - only dying to a Hunter eliminates them; any
+  #     other death (mob, fall, environment, etc.) just respawns them
+  #     normally and they keep playing.
+  # Change this in-game via Settings > Manhunt instead of editing by hand.
+  #
+  # Usable Parameters: Integer (0 or 1)
+  permaDeathMode: 0
+
 
 
 # ###########################################################
