@@ -145,7 +145,7 @@ public class ManhuntAchievementListener implements Listener {
     @EventHandler
     public void onBedEnter(PlayerBedEnterEvent event) {
         if (!active()) return;
-        if (event.getBedEnterResult() != PlayerBedEnterEvent.BedEnterResult.OK) return;
+        if (event.isCancelled()) return;
 
         award(event.getPlayer(), AchievementType.HOUSEWARMING);
     }
