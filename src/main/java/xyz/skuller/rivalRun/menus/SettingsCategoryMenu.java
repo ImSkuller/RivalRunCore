@@ -77,7 +77,7 @@ public class SettingsCategoryMenu extends SimpleMenu {
         } else {
             String hint = switch (entry.type()) {
                 case TOGGLE -> "Click to toggle";
-                case CYCLE -> "Click to cycle";
+                case CYCLE -> "Click to pick a value";
                 case TEXT, NUMBER -> "Click to edit in chat";
             };
             lore.add(Component.text(hint, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
@@ -118,14 +118,7 @@ public class SettingsCategoryMenu extends SimpleMenu {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
                 open(player);
             }
-            case CYCLE -> {
-                String[] options = entry.cycleOptions();
-                int next = (config.getInt(entry.configPath(), entry.defaultCycleIndex()) + 1) % options.length;
-                config.set(entry.configPath(), next);
-                plugin.saveConfig();
-                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
-                open(player);
-            }
+            case CYCLE -> new CycleOptionMenu(entry, () -> open(player)).open(player);
             case TEXT, NUMBER -> plugin.getChatInputManager().request(player,
                     Component.text("Enter a new value for " + entry.label() + ":", NamedTextColor.GOLD),
                     input -> applyTextValue(player, entry, input));

@@ -94,7 +94,8 @@ public class TeamSelectMenu extends SimpleMenu {
         int max = tm.getMaxTeamSize();
         int size = team.getSize();
 
-        meta.displayName(Component.text(team.getName() + " Team", team.getColor()).decoration(TextDecoration.ITALIC, false));
+        String label = team.getRole() == TeamRole.HUNTER ? team.getName() : team.getName() + " Team";
+        meta.displayName(Component.text(label.toUpperCase(), team.getColor(), TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
 
         List<Component> lore = new ArrayList<>();
         lore.add(MiniMessage.miniMessage().deserialize("<!i><#B8FFE2>Players <white>(" + size + "<!i><white>/" + max + "<!i>)"));
