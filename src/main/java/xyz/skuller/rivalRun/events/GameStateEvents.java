@@ -10,6 +10,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.helpers.TeamRole;
@@ -23,6 +25,13 @@ public class GameStateEvents implements Listener {
         this.gsm = gsm;
     }
 
+    // True before the run is actually live (still in the lobby or the
+    // pre-game countdown) - blocks/entities/PvP/hunger should all be inert.
+    private boolean isPreGame() {
+        return gsm.isState(GameStateManager.GameStates.WAITING)
+                || gsm.isState(GameStateManager.GameStates.STARTING);
+    }
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
 
@@ -31,7 +40,7 @@ public class GameStateEvents implements Listener {
             event.setCancelled(true);
         }
 
-        if (gsm.isState(GameStateManager.GameStates.WAITING)) {
+        if (isPreGame()) {
             event.getPlayer().sendRichMessage("<red>You cannot break blocks right now as the game has not started yet.");
             event.setCancelled(true);
         }
@@ -43,11 +52,31 @@ public class GameStateEvents implements Listener {
 
     }
 
+    // Blocks (chests, doors, buttons, crafting tables, ...) and entities
+    // (villagers, item frames, ...) can't be interacted with before the run
+    // is live - no looting a chest you happened to spawn next to.
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        if (!isPreGame()) return;
+        if (event.getClickedBlock() == null) return;
+
+        event.setCancelled(true);
+        event.getPlayer().sendRichMessage("<red>You cannot interact with anything right now as the game has not started yet.");
+    }
+
+    @EventHandler
+    public void onInteractEntity(PlayerInteractEntityEvent event) {
+        if (!isPreGame()) return;
+
+        event.setCancelled(true);
+        event.getPlayer().sendRichMessage("<red>You cannot interact with anything right now as the game has not started yet.");
+    }
+
     @EventHandler
     public void onHunger(FoodLevelChangeEvent event) {
 
         if (gsm.isState(GameStateManager.GameStates.PAUSED) ||
-                gsm.isState(GameStateManager.GameStates.WAITING) ||
+                isPreGame() ||
                 gsm.isState(GameStateManager.GameStates.POST))
         {
             event.setCancelled(true);
@@ -68,7 +97,7 @@ public class GameStateEvents implements Listener {
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
-            if (gsm.isGracePeriod()) {
+            if (gsm.isGracePeriod() || isPreGame()) {
                 event.setCancelled(true);
             }
         }
