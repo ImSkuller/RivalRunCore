@@ -44,20 +44,29 @@ public class TabListManager {
             return;
         }
 
-        Component header = render(plugin.getConfig().getString("tablist.header", ""));
-        Component footer = render(plugin.getConfig().getString("tablist.footer", ""));
+        String mode = plugin.getGamemodeManager().isManhunt() ? "manhunt" : "classic";
+        Component header = render(plugin.getConfig().getString("tablist." + mode + ".header", ""));
+        Component footer = render(plugin.getConfig().getString("tablist." + mode + ".footer", ""));
 
         player.sendPlayerListHeaderAndFooter(header, footer);
     }
 
     private Component render(String template) {
-        GameStateManager gsm = RivalRun.getInstance().getGameStateManager();
+        RivalRun plugin = RivalRun.getInstance();
+        GameStateManager gsm = plugin.getGameStateManager();
+        TeamsManager tm = plugin.getTeamManager();
+        SpectatorManager sm = plugin.getSpectatorManager();
+
+        int speedrunnersAlive = tm.getSpeedrunnerTeams().stream().mapToInt(sm::countAlive).sum();
+        int huntersAlive = tm.getHunterTeam() != null ? tm.getHunterTeam().getSize() : 0;
 
         String replaced = template
                 .replace("{state}", gsm.getState().name())
                 .replace("{timer}", gsm.getFormattedElapsed())
                 .replace("{online}", String.valueOf(Bukkit.getOnlinePlayers().size()))
-                .replace("{max}", String.valueOf(Bukkit.getServer().getMaxPlayers()));
+                .replace("{max}", String.valueOf(Bukkit.getServer().getMaxPlayers()))
+                .replace("{speedrunners_alive}", String.valueOf(speedrunnersAlive))
+                .replace("{hunters_alive}", String.valueOf(huntersAlive));
 
         return MiniMessage.miniMessage().deserialize(replaced);
     }

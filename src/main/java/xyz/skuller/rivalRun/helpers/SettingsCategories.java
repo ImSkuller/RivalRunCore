@@ -71,8 +71,10 @@ public class SettingsCategories {
     public static List<SettingEntry> tablist() {
         return List.of(
                 toggle(Material.BOOK, "Tab List", "Show the custom tab list header/footer", "tablist.enabled"),
-                text(Material.WRITABLE_BOOK, "Tab List Header", "Placeholders: {state} {timer} {online} {max}", "tablist.header"),
-                text(Material.WRITABLE_BOOK, "Tab List Footer", "Placeholders: {state} {timer} {online} {max}", "tablist.footer")
+                text(Material.WRITABLE_BOOK, "Classic Header", "Placeholders: {state} {timer} {online} {max}", "tablist.classic.header"),
+                text(Material.WRITABLE_BOOK, "Classic Footer", "Placeholders: {state} {timer} {online} {max}", "tablist.classic.footer"),
+                text(Material.WRITABLE_BOOK, "Manhunt Header", "Placeholders: {state} {timer} {online} {max} {speedrunners_alive} {hunters_alive}", "tablist.manhunt.header"),
+                text(Material.WRITABLE_BOOK, "Manhunt Footer", "Placeholders: {state} {timer} {online} {max} {speedrunners_alive} {hunters_alive}", "tablist.manhunt.footer")
         );
     }
 

@@ -254,21 +254,39 @@ tablist:
   # Usable Parameters: Boolean (true / false)
   enabled: true
 
-  # The text shown above the player list.
-  # Placeholders: {state} {timer} {online} {max}
-  #
-  # Usable Parameters: String + MiniMessage format (\n for a new line)
-  header: |-
-    <gold><bold>RIVAL RUN
-    <gray>State: <white>{state}  <gray>Timer: <white>{timer}
+  classic:
+    # The text shown above the player list in Classic.
+    # Placeholders: {state} {timer} {online} {max}
+    #
+    # Usable Parameters: String + MiniMessage format (\n for a new line)
+    header: |-
+      <gold><bold>RIVAL RUN
+      <gray>State: <white>{state}  <gray>Timer: <white>{timer}
 
-  # The text shown below the player list.
-  # Placeholders: {state} {timer} {online} {max}
-  #
-  # Usable Parameters: String + MiniMessage format (\n for a new line)
-  footer: |-
-    <gray>Online: <white>{online}<gray>/<white>{max}
-    <gold>Team Speedrunning
+    # The text shown below the player list in Classic.
+    # Placeholders: {state} {timer} {online} {max}
+    #
+    # Usable Parameters: String + MiniMessage format (\n for a new line)
+    footer: |-
+      <gray>Online: <white>{online}<gray>/<white>{max}
+      <gold>Team Speedrunning
+
+  manhunt:
+    # The text shown above the player list in Manhunt.
+    # Placeholders: {state} {timer} {online} {max} {speedrunners_alive} {hunters_alive}
+    #
+    # Usable Parameters: String + MiniMessage format (\n for a new line)
+    header: |-
+      <red><bold>MANHUNT
+      <gray>State: <white>{state}  <gray>Timer: <white>{timer}
+
+    # The text shown below the player list in Manhunt.
+    # Placeholders: {state} {timer} {online} {max} {speedrunners_alive} {hunters_alive}
+    #
+    # Usable Parameters: String + MiniMessage format (\n for a new line)
+    footer: |-
+      <aqua>Speedrunners: <white>{speedrunners_alive}  <red>Hunters: <white>{hunters_alive}
+      <gold>The Hunt Is On
 
 
 
