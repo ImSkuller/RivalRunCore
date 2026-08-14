@@ -14,6 +14,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.TeamRole;
 import xyz.skuller.rivalRun.helpers.Teams;
 
 import java.util.ArrayList;
@@ -78,11 +79,14 @@ public class ScoreboardManager {
         }
 
         if (plugin.getConfig().getBoolean("scoreboard.enabled", true)) {
-            String titleTemplate = plugin.getConfig().getString("scoreboard.title", "<gold><bold>RIVAL RUN");
+            boolean manhunt = plugin.getGamemodeManager().isManhunt();
+            String titlePath = manhunt ? "scoreboard.manhunt.title" : "scoreboard.classic.title";
+            String titleDefault = manhunt ? "<red><bold>MANHUNT" : "<gold><bold>RIVAL RUN";
+            String titleTemplate = plugin.getConfig().getString(titlePath, titleDefault);
             Objective objective = board.registerNewObjective(OBJECTIVE_ID, Criteria.DUMMY, MiniMessage.miniMessage().deserialize(titleTemplate));
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-            List<Component> lines = buildLines(viewer);
+            List<Component> lines = manhunt ? buildManhuntLines(viewer) : buildClassicLines(viewer);
             int score = lines.size();
 
             for (int i = 0; i < lines.size() && i < MAX_LINES; i++) {
@@ -97,7 +101,7 @@ public class ScoreboardManager {
         viewer.setScoreboard(board);
     }
 
-    private List<Component> buildLines(Player viewer) {
+    private List<Component> buildClassicLines(Player viewer) {
         RivalRun plugin = RivalRun.getInstance();
         GameStateManager gsm = plugin.getGameStateManager();
         TeamsManager tm = plugin.getTeamManager();
@@ -131,6 +135,50 @@ public class ScoreboardManager {
             }
 
             lines.add(line);
+        }
+
+        return lines;
+    }
+
+    private List<Component> buildManhuntLines(Player viewer) {
+        RivalRun plugin = RivalRun.getInstance();
+        GameStateManager gsm = plugin.getGameStateManager();
+        TeamsManager tm = plugin.getTeamManager();
+        SpectatorManager sm = plugin.getSpectatorManager();
+
+        List<Component> lines = new ArrayList<>();
+
+        lines.add(Component.text("State: ", NamedTextColor.GRAY).append(Component.text(gsm.getState().name(), NamedTextColor.WHITE)));
+        lines.add(Component.text("Timer: ", NamedTextColor.GRAY).append(Component.text(gsm.getFormattedElapsed(), NamedTextColor.WHITE)));
+        lines.add(Component.empty());
+
+        TeamRole role = tm.getTeamRole(viewer);
+        Component roleText = switch (role) {
+            case HUNTER -> Component.text("HUNTER", NamedTextColor.RED, TextDecoration.BOLD);
+            case SPEEDRUNNER -> Component.text("SPEEDRUNNER", NamedTextColor.AQUA, TextDecoration.BOLD);
+            case NONE -> Component.text("None", NamedTextColor.WHITE);
+        };
+        lines.add(Component.text("Role: ", NamedTextColor.GRAY).append(roleText));
+        lines.add(Component.empty());
+
+        Teams hunters = tm.getHunterTeam();
+        if (hunters != null) {
+            lines.add(Component.text("■ ", hunters.getColor())
+                    .append(Component.text("Hunters ", hunters.getColor()))
+                    .append(Component.text(hunters.getSize(), NamedTextColor.WHITE)));
+        }
+
+        for (Teams team : tm.getSpeedrunnerTeams()) {
+            int alive = sm.countAlive(team);
+            lines.add(Component.text("■ ", team.getColor())
+                    .append(Component.text(team.getName() + " ", team.getColor()))
+                    .append(Component.text(alive + "/" + team.getSize(), NamedTextColor.WHITE)));
+        }
+
+        if (role == TeamRole.HUNTER) {
+            lines.add(Component.empty());
+            lines.add(Component.text("Tracking: ", NamedTextColor.GRAY)
+                    .append(Component.text(plugin.getManhuntManager().getTargetName(viewer), NamedTextColor.RED)));
         }
 
         return lines;

@@ -228,10 +228,17 @@ scoreboard:
   # Usable Parameters: Boolean (true / false)
   enabled: true
 
-  # The title shown at the top of the sidebar scoreboard.
-  #
-  # Usable Parameters: String + MiniMessage format
-  title: <gold><bold>RIVAL RUN
+  classic:
+    # The title shown at the top of the sidebar scoreboard in Classic.
+    #
+    # Usable Parameters: String + MiniMessage format
+    title: <gold><bold>RIVAL RUN
+
+  manhunt:
+    # The title shown at the top of the sidebar scoreboard in Manhunt.
+    #
+    # Usable Parameters: String + MiniMessage format
+    title: <red><bold>MANHUNT
 
 
 

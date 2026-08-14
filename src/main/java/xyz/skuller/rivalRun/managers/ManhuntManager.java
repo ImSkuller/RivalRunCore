@@ -123,6 +123,15 @@ public class ManhuntManager {
         targets.remove(hunter.getUniqueId());
     }
 
+    // Name of who a Hunter is currently tracking, or "None" - used by the
+    // scoreboard.
+    public String getTargetName(Player hunter) {
+        UUID targetId = targets.get(hunter.getUniqueId());
+        if (targetId == null) return "None";
+        Player target = Bukkit.getPlayer(targetId);
+        return target != null ? target.getName() : "None";
+    }
+
     public boolean hasBeenRevived(Player player) {
         return revivedOnce.contains(player.getUniqueId());
     }

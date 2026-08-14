@@ -63,7 +63,8 @@ public class SettingsCategories {
     public static List<SettingEntry> scoreboard() {
         return List.of(
                 toggle(Material.OAK_SIGN, "Scoreboard", "Show the sidebar scoreboard", "scoreboard.enabled"),
-                text(Material.PAPER, "Scoreboard Title", "MiniMessage title text", "scoreboard.title")
+                text(Material.PAPER, "Classic Title", "MiniMessage title text", "scoreboard.classic.title"),
+                text(Material.PAPER, "Manhunt Title", "MiniMessage title text", "scoreboard.manhunt.title")
         );
     }
 
