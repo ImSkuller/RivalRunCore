@@ -218,6 +218,13 @@ public class GameStateManager {
             headstartTask.cancel();
         }
 
+        // Manhunt never calls startGracePeriod(), so without this,
+        // gracePeriod stays true (its constructor/reset default) for the
+        // entire match - isGracePeriod() would then report true forever,
+        // and GameStateEvents.onDamage() cancels ALL player-vs-player
+        // damage while it's true, silently disabling PvP for the whole game.
+        this.gracePeriod = false;
+
         this.headstartActive = true;
         this.headstartTimeLeft = seconds;
         this.timeColor = NamedTextColor.GREEN;
