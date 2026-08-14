@@ -87,6 +87,10 @@ public class SpectatorManager {
         RivalRun plugin = RivalRun.getInstance();
         if (!plugin.getConfig().getBoolean("spectator.eliminationWin", true)) return;
         if (!plugin.getGameStateManager().isState(GameStateManager.GameStates.RUNNING)) return;
+        // Manhunt has its own elimination semantics (a wiped Speedrunner
+        // team joins the Hunters instead of the game ending) - see
+        // ManhuntListener/ManhuntManager.convertTeamToHunters.
+        if (plugin.getGamemodeManager().isManhunt()) return;
 
         TeamsManager tm = plugin.getTeamManager();
 
