@@ -11,11 +11,21 @@ public class Teams {
     private final String name;
     private final NamedTextColor color;
     private final Set<UUID> players;
+    private final TeamRole role;
 
     public Teams(String name, NamedTextColor color) {
+        this(name, color, TeamRole.NONE);
+    }
+
+    public Teams(String name, NamedTextColor color, TeamRole role) {
         this.name = name;
         this.color = color;
         this.players = new HashSet<>();
+        this.role = role;
+    }
+
+    public TeamRole getRole() {
+        return role;
     }
 
     public void addPlayer(UUID uuid) {

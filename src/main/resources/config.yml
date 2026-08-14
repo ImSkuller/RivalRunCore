@@ -109,6 +109,46 @@ grace:
 
 # ###########################################################
 # +------------------------------------------------------+ #
+# |              🎯 Gamemode Configuration               | #
+# |                 Plugin By Skuller                    | #
+# +------------------------------------------------------+ #
+# ###########################################################
+gamemode:
+  # Which ruleset Rival Run is currently running. Change this in-game via
+  # /rivalrun admin gamemode <classic|manhunt> or the Admin Menu instead of
+  # editing this by hand - switching only takes effect while the game is
+  # WAITING, and needs to reset teams/state to apply cleanly.
+  #
+  # Usable Parameters: CLASSIC or MANHUNT
+  active: CLASSIC
+
+
+
+# ###########################################################
+# +------------------------------------------------------+ #
+# |              🏹 Manhunt Configuration                | #
+# |                 Plugin By Skuller                    | #
+# +------------------------------------------------------+ #
+# ###########################################################
+manhunt:
+  # How many Speedrunner teams face the single Hunters team.
+  # 1 = Speedrunners vs Hunters. 2 = Speedrunners vs Speedrunners vs Hunters
+  # (and teammate revival is disabled while both Speedrunner teams are
+  # still alive).
+  #
+  # Usable Parameters: Integer (1 or 2)
+  speedrunnerTeams: 1
+
+  # How many seconds Hunters are frozen in place (they can still look
+  # around) after the game starts, giving Speedrunners a head start.
+  #
+  # Usable Parameters: Integer (Seconds)
+  headstartSeconds: 30
+
+
+
+# ###########################################################
+# +------------------------------------------------------+ #
 # |              ➕ Teams Configuration                  | #
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #
@@ -334,4 +374,4 @@ messages:
 # Plugin Configuration Version
 # ⚠️ Do Not Change ⚠️️
 # If you change this value there is a high chance for your config file to get reset.
-version: 0.2
+version: 0.3

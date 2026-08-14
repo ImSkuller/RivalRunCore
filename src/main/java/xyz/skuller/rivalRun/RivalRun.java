@@ -7,6 +7,7 @@ import xyz.skuller.rivalRun.managers.BuffManager;
 import xyz.skuller.rivalRun.managers.ChatInputManager;
 import xyz.skuller.rivalRun.managers.ConfigManager;
 import xyz.skuller.rivalRun.managers.EventManager;
+import xyz.skuller.rivalRun.managers.GamemodeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.skuller.rivalRun.managers.GameStateManager;
@@ -30,9 +31,10 @@ public final class RivalRun extends JavaPlugin {
     private static AchievementManager achievementManager;
     private static WorldResetManager worldResetManager;
     private static BuffManager buffManager;
+    private static GamemodeManager gamemodeManager;
     private static GameCommands gc;
     private static TeamCommands tc;
-    double CURRENT_VERSION = 0.2;
+    double CURRENT_VERSION = 0.3;
 
 
     @Override
@@ -48,6 +50,7 @@ public final class RivalRun extends JavaPlugin {
         achievementManager = new AchievementManager();
         worldResetManager = new WorldResetManager();
         buffManager = new BuffManager();
+        gamemodeManager = new GamemodeManager();
         gc = new GameCommands();
         tc = new TeamCommands();
 
@@ -57,6 +60,8 @@ public final class RivalRun extends JavaPlugin {
         // Dedicated game world set (never the server's default world - see
         // WorldResetManager for why)
         worldResetManager.ensureWorldsLoaded();
+
+        gamemodeManager.loadFromConfig();
 
         // Event manager
         EventManager eventManager = new EventManager();
@@ -107,6 +112,8 @@ public final class RivalRun extends JavaPlugin {
     public WorldResetManager getWorldResetManager() {return worldResetManager;}
 
     public BuffManager getBuffManager() {return buffManager;}
+
+    public GamemodeManager getGamemodeManager() {return gamemodeManager;}
 
     public GameCommands getGameCommands() {return gc;}
 
