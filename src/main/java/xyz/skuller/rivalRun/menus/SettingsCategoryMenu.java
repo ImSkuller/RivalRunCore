@@ -31,12 +31,12 @@ public class SettingsCategoryMenu extends SimpleMenu {
     private final Supplier<Boolean> editableCheck;
     private final String lockedMessage;
 
-    public SettingsCategoryMenu(String title, List<SettingEntry> entries) {
-        this(title, entries, null, null);
+    public SettingsCategoryMenu(String title, List<SettingEntry> entries, Runnable backAction) {
+        this(title, entries, null, null, backAction);
     }
 
-    public SettingsCategoryMenu(String title, List<SettingEntry> entries, Supplier<Boolean> editableCheck, String lockedMessage) {
-        super(Rows.ONE, "§4Rival Run §0| §8" + title);
+    public SettingsCategoryMenu(String title, List<SettingEntry> entries, Supplier<Boolean> editableCheck, String lockedMessage, Runnable backAction) {
+        super(Rows.ONE, "§4Rival Run §0| §8" + title, backAction);
         this.entries = entries;
         this.editableCheck = editableCheck;
         this.lockedMessage = lockedMessage;
@@ -54,6 +54,8 @@ public class SettingsCategoryMenu extends SimpleMenu {
         for (SettingEntry entry : entries) {
             setEntryItem(slot++, entry);
         }
+
+        addBackButton(8);
     }
 
     private void setEntryItem(int slot, SettingEntry entry) {

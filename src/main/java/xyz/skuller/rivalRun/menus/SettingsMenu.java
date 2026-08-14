@@ -17,7 +17,11 @@ import java.util.List;
 public class SettingsMenu extends SimpleMenu {
 
     public SettingsMenu() {
-        super(Rows.THREE, "§4Rival Run §0| §8Settings");
+        this(null);
+    }
+
+    public SettingsMenu(Runnable backAction) {
+        super(Rows.THREE, "§4Rival Run §0| §8Settings", backAction);
     }
 
     @Override
@@ -36,23 +40,25 @@ public class SettingsMenu extends SimpleMenu {
         setCategory(21, Material.WRITABLE_BOOK, "Messages", SettingsCategories.messages());
         setCategory(22, Material.TNT, "World Reset", SettingsCategories.worldReset());
 
-        setItem(24, teamManagerIcon(), player -> new TeamManagerMenu().open(player));
+        setItem(24, teamManagerIcon(), player -> new TeamManagerMenu(() -> new SettingsMenu(backAction).open(player)).open(player));
+
+        addBackButton(18);
     }
 
     private void setCategory(int slot, Material icon, String label, List<SettingEntry> entries) {
         ItemStack item = new ItemStack(icon);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text(label, NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
+        meta.displayName(Component.text(label.toUpperCase(), NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(Component.text("Click to open", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
         item.setItemMeta(meta);
 
-        setItem(slot, item, player -> new SettingsCategoryMenu(label, entries).open(player));
+        setItem(slot, item, player -> new SettingsCategoryMenu(label, entries, () -> new SettingsMenu(backAction).open(player)).open(player));
     }
 
     private ItemStack teamManagerIcon() {
         ItemStack item = new ItemStack(Material.NAUTILUS_SHELL);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text("Manage Teams", NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
+        meta.displayName(Component.text("MANAGE TEAMS", NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(Component.text("Create or delete custom teams", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
         item.setItemMeta(meta);
         return item;

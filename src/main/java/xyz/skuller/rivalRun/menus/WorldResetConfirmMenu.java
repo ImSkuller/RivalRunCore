@@ -18,7 +18,11 @@ import java.util.List;
 public class WorldResetConfirmMenu extends SimpleMenu {
 
     public WorldResetConfirmMenu() {
-        super(Rows.THREE, "§4Rival Run §0| §cReset World?");
+        this(null);
+    }
+
+    public WorldResetConfirmMenu(Runnable backAction) {
+        super(Rows.THREE, "§4Rival Run §0| §cReset World?", backAction);
     }
 
     @Override
@@ -29,7 +33,7 @@ public class WorldResetConfirmMenu extends SimpleMenu {
 
         ItemStack warning = new ItemStack(Material.TNT);
         ItemMeta warningMeta = warning.getItemMeta();
-        warningMeta.displayName(Component.text("This regenerates the entire world!", NamedTextColor.RED, TextDecoration.BOLD)
+        warningMeta.displayName(Component.text("THIS REGENERATES THE ENTIRE WORLD!", NamedTextColor.RED, TextDecoration.BOLD)
                 .decoration(TextDecoration.ITALIC, false));
         warningMeta.lore(List.of(
                 Component.text("A brand new Overworld, Nether, and End", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
@@ -67,6 +71,8 @@ public class WorldResetConfirmMenu extends SimpleMenu {
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
             player.closeInventory();
         });
+
+        addBackButton(18);
     }
 
 }

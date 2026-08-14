@@ -33,7 +33,7 @@ public class AdminMenu extends SimpleMenu {
         TeamsManager tm = RivalRun.getInstance().getTeamManager();
 
         setButton(0, Material.COMMAND_BLOCK, "Settings", NamedTextColor.AQUA,
-                "Edit every config value in-game.", player -> new SettingsMenu().open(player));
+                "Edit every config value in-game.", player -> new SettingsMenu(() -> new AdminMenu().open(player)).open(player));
 
         setButton(1, Material.LIME_DYE, "Start Game", NamedTextColor.GREEN,
                 "Begins the countdown for a new run.", player -> {
@@ -50,7 +50,7 @@ public class AdminMenu extends SimpleMenu {
                 });
 
         setButton(3, Material.GOLDEN_APPLE, "Player Buffs", NamedTextColor.AQUA,
-                "Set per-player handicaps before the game starts.", player -> new BuffPlayerListMenu().open(player));
+                "Set per-player handicaps before the game starts.", player -> new BuffPlayerListMenu(() -> new AdminMenu().open(player)).open(player));
 
         setButton(4, Material.RED_DYE, "End Game", NamedTextColor.RED,
                 "Force ends the run without a winner.", player -> {
@@ -66,7 +66,7 @@ public class AdminMenu extends SimpleMenu {
                 });
 
         setButton(6, Material.TNT, "Reset World", NamedTextColor.RED,
-                "Regenerates the entire world with a new seed.", player -> new WorldResetConfirmMenu().open(player));
+                "Regenerates the entire world with a new seed.", player -> new WorldResetConfirmMenu(() -> new AdminMenu().open(player)).open(player));
 
         setButton(7, Material.OAK_DOOR, "Lock Teams", NamedTextColor.GOLD,
                 "Stops anyone joining/switching teams.", player -> {
@@ -83,7 +83,7 @@ public class AdminMenu extends SimpleMenu {
                 });
 
         setButton(12, Material.NETHER_STAR, "Match Summary", NamedTextColor.GOLD,
-                "See the last completed match's results.", player -> new MatchSummaryMenu().open(player));
+                "See the last completed match's results.", player -> new MatchSummaryMenu(() -> new AdminMenu().open(player)).open(player));
 
         setButton(13, Material.WRITTEN_BOOK, "Help", NamedTextColor.YELLOW,
                 "Open the admin guide book.", GuideBook::openAdminGuide);

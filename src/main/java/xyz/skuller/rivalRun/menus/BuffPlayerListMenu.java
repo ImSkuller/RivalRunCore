@@ -24,7 +24,11 @@ import java.util.List;
 public class BuffPlayerListMenu extends SimpleMenu {
 
     public BuffPlayerListMenu() {
-        super(Rows.THREE, "§4Rival Run §0| §8Player Buffs");
+        this(null);
+    }
+
+    public BuffPlayerListMenu(Runnable backAction) {
+        super(Rows.THREE, "§4Rival Run §0| §8Player Buffs", backAction);
     }
 
     private boolean editable() {
@@ -45,12 +49,14 @@ public class BuffPlayerListMenu extends SimpleMenu {
             setPlayerItem(slot, target);
             slot++;
         }
+
+        addBackButton(8);
     }
 
     private ItemStack lockBanner() {
         ItemStack item = new ItemStack(Material.BARRIER);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text("Buffs are locked", NamedTextColor.RED, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
+        meta.displayName(Component.text("BUFFS ARE LOCKED", NamedTextColor.RED, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(Component.text("A game is in progress. Buffs can only", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                 Component.text("be edited while waiting for a new game.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
         item.setItemMeta(meta);
@@ -95,7 +101,8 @@ public class BuffPlayerListMenu extends SimpleMenu {
                 target.getName() + "'s Buffs",
                 SettingsCategories.playerBuffs(target.getUniqueId()),
                 this::editable,
-                "Buffs can only be edited while waiting for a new game."
+                "Buffs can only be edited while waiting for a new game.",
+                () -> new BuffPlayerListMenu(backAction).open(player)
         ).open(player));
     }
 

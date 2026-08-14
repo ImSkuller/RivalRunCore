@@ -25,8 +25,8 @@ public class ColorPickerMenu extends SimpleMenu {
 
     private final Consumer<NamedTextColor> onPick;
 
-    public ColorPickerMenu(Consumer<NamedTextColor> onPick) {
-        super(Rows.THREE, "§4Rival Run §0| §8Pick a Color");
+    public ColorPickerMenu(Runnable backAction, Consumer<NamedTextColor> onPick) {
+        super(Rows.THREE, "§4Rival Run §0| §8Pick a Color", backAction);
         this.onPick = onPick;
     }
 
@@ -39,6 +39,8 @@ public class ColorPickerMenu extends SimpleMenu {
             setColorItem(slot, color);
             slot++;
         }
+
+        addBackButton(26);
     }
 
     private void setColorItem(int slot, NamedTextColor color) {
@@ -46,7 +48,8 @@ public class ColorPickerMenu extends SimpleMenu {
         ItemMeta meta = item.getItemMeta();
 
         String name = NamedTextColor.NAMES.key(color);
-        meta.displayName(Component.text(name != null ? name : "color", color, TextDecoration.BOLD)
+        String display = (name != null ? name : "color").replace('_', ' ').toUpperCase();
+        meta.displayName(Component.text(display, color, TextDecoration.BOLD)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(Component.text("Click to select", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
         item.setItemMeta(meta);

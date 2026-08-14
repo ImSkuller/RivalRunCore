@@ -21,7 +21,11 @@ import java.util.List;
 public class TeamManagerMenu extends SimpleMenu {
 
     public TeamManagerMenu() {
-        super(Rows.THREE, "§4Rival Run §0| §8Manage Teams");
+        this(null);
+    }
+
+    public TeamManagerMenu(Runnable backAction) {
+        super(Rows.THREE, "§4Rival Run §0| §8Manage Teams", backAction);
     }
 
     @Override
@@ -38,12 +42,13 @@ public class TeamManagerMenu extends SimpleMenu {
         }
 
         setCreateButton(22);
+        addBackButton(18);
     }
 
     private void setTeamItem(int slot, Teams team) {
         ItemStack item = new ItemStack(TeamPresets.getWoolByColor(team.getColor()));
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text(team.getName(), team.getColor(), TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
+        meta.displayName(Component.text(team.getName().toUpperCase(), team.getColor(), TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
 
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text(team.getSize() + " players", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
@@ -69,7 +74,7 @@ public class TeamManagerMenu extends SimpleMenu {
     private void setCreateButton(int slot) {
         ItemStack item = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text("+ Create Team", NamedTextColor.GREEN, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
+        meta.displayName(Component.text("+ CREATE TEAM", NamedTextColor.GREEN, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(Component.text("Click to create a new team", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
         item.setItemMeta(meta);
 
@@ -84,24 +89,24 @@ public class TeamManagerMenu extends SimpleMenu {
 
         if (trimmed.isEmpty() || trimmed.length() > 16) {
             player.sendRichMessage("<red>Team name must be 1-16 characters.");
-            new TeamManagerMenu().open(player);
+            new TeamManagerMenu(backAction).open(player);
             return;
         }
 
         boolean duplicate = tm.getTeams().stream().anyMatch(t -> t.getName().equalsIgnoreCase(trimmed));
         if (duplicate) {
             player.sendRichMessage("<red>A team with that name already exists.");
-            new TeamManagerMenu().open(player);
+            new TeamManagerMenu(backAction).open(player);
             return;
         }
 
-        new ColorPickerMenu(color -> {
+        new ColorPickerMenu(() -> new TeamManagerMenu(backAction).open(player), color -> {
             if (tm.addCustomTeam(trimmed, color)) {
                 player.sendRichMessage("<green>Created team " + trimmed + ".");
             } else {
                 player.sendRichMessage("<red>Could not create that team (too many teams already?).");
             }
-            new TeamManagerMenu().open(player);
+            new TeamManagerMenu(backAction).open(player);
         }).open(player);
     }
 

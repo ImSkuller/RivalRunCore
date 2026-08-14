@@ -22,7 +22,11 @@ import java.util.List;
 public class MatchSummaryMenu extends SimpleMenu {
 
     public MatchSummaryMenu() {
-        super(Rows.THREE, "§4Rival Run §0| §8Match Summary");
+        this(null);
+    }
+
+    public MatchSummaryMenu(Runnable backAction) {
+        super(Rows.THREE, "§4Rival Run §0| §8Match Summary", backAction);
     }
 
     @Override
@@ -33,6 +37,7 @@ public class MatchSummaryMenu extends SimpleMenu {
 
         if (summary == null) {
             setItem(13, noSummaryItem());
+            addBackButton(18);
             return;
         }
 
@@ -44,6 +49,8 @@ public class MatchSummaryMenu extends SimpleMenu {
             setTeamItem(slot, result, summary.winningTeamName());
             slot++;
         }
+
+        addBackButton(18);
     }
 
     private ItemStack noSummaryItem() {
@@ -58,7 +65,7 @@ public class MatchSummaryMenu extends SimpleMenu {
     private ItemStack headerItem(MatchSummary summary) {
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text(summary.winningTeamName() + " Wins!", summary.winningTeamColor(), TextDecoration.BOLD)
+        meta.displayName(Component.text((summary.winningTeamName() + " Wins!").toUpperCase(), summary.winningTeamColor(), TextDecoration.BOLD)
                 .decoration(TextDecoration.ITALIC, false));
 
         List<Component> lore = new ArrayList<>();
@@ -76,7 +83,7 @@ public class MatchSummaryMenu extends SimpleMenu {
         ItemStack item = new ItemStack(TeamPresets.getWoolByColor(result.color()));
         ItemMeta meta = item.getItemMeta();
 
-        Component name = Component.text(result.name(), result.color(), TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false);
+        Component name = Component.text(result.name().toUpperCase(), result.color(), TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false);
         if (won) name = name.append(Component.text(" 🏆", NamedTextColor.GOLD));
         meta.displayName(name);
 
