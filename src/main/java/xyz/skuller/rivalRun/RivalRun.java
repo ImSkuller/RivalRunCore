@@ -70,7 +70,11 @@ public final class RivalRun extends JavaPlugin {
         eventManager.StartConsoleEvent(getPluginMeta().getVersion());
 
         // Team Manager Things.
-        teamManager.loadTeamsFromConfig();
+        if (gamemodeManager.isManhunt()) {
+            teamManager.loadManhuntTeams();
+        } else {
+            teamManager.loadTeamsFromConfig();
+        }
 
         // Live UI (sidebar scoreboard + tab list header/footer)
         scoreboardManager.start(this);

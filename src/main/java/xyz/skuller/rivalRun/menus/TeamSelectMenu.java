@@ -14,6 +14,7 @@ import xyz.skuller.rivalRun.helpers.GuideBook;
 import xyz.skuller.rivalRun.helpers.Messages;
 import xyz.skuller.rivalRun.helpers.SimpleMenu;
 import xyz.skuller.rivalRun.helpers.TeamPresets;
+import xyz.skuller.rivalRun.helpers.TeamRole;
 import xyz.skuller.rivalRun.helpers.Teams;
 import xyz.skuller.rivalRun.managers.TeamsManager;
 
@@ -84,7 +85,10 @@ public class TeamSelectMenu extends SimpleMenu {
 
     private void setTeamItem(int slot, Teams team) {
 
-        ItemStack item = new ItemStack(TeamPresets.getWoolByColor(team.getColor()));
+        Material icon = team.getRole() == TeamRole.HUNTER
+                ? Material.BOW
+                : TeamPresets.getWoolByColor(team.getColor());
+        ItemStack item = new ItemStack(icon);
         ItemMeta meta = item.getItemMeta();
 
         int max = tm.getMaxTeamSize();

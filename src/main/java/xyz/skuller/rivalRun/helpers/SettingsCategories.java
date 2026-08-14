@@ -40,6 +40,14 @@ public class SettingsCategories {
         );
     }
 
+    public static List<SettingEntry> manhunt() {
+        return List.of(
+                cycle(Material.PLAYER_HEAD, "Speedrunner Teams", "1 = Speedrunners vs Hunters, 2 = also vs each other", "manhunt.speedrunnerTeams", 0,
+                        "1", "2"),
+                number(Material.BOW, "Headstart Seconds", "How long Hunters are frozen at the start", "manhunt.headstartSeconds")
+        );
+    }
+
     public static List<SettingEntry> teams() {
         return List.of(
                 number(Material.PLAYER_HEAD, "Team Count", "2 to 7 - applies on next reset", "teams.list"),

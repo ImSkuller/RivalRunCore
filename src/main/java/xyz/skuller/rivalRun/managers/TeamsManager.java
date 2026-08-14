@@ -4,9 +4,11 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.Gamemode;
 import xyz.skuller.rivalRun.helpers.Messages;
 import xyz.skuller.rivalRun.helpers.TeamPresets;
 import xyz.skuller.rivalRun.helpers.Teams;
+import xyz.skuller.rivalRun.helpers.TeamRole;
 
 import java.util.*;
 
@@ -76,7 +78,49 @@ public class TeamsManager {
 
     // Create Team function
     public void createTeam(String name, NamedTextColor color) {
-        teams.put(name, new Teams(name, color));
+        createTeam(name, color, TeamRole.NONE);
+    }
+
+    public void createTeam(String name, NamedTextColor color, TeamRole role) {
+        teams.put(name, new Teams(name, color, role));
+    }
+
+    // Builds the Manhunt team set: one Hunters team plus 1-2 Speedrunner
+    // teams (manhunt.speedrunnerTeams). Unlike loadTeamsFromConfig(), these
+    // are never persisted to teams.custom - they're rebuilt fresh every
+    // time Manhunt is (re)entered.
+    public void loadManhuntTeams() {
+        teams.clear();
+
+        // manhunt.speedrunnerTeams is a CYCLE setting - it stores the option
+        // index (0 = "1", 1 = "2"), not the literal team count.
+        int index = plugin.getConfig().getInt("manhunt.speedrunnerTeams", 0);
+        int speedrunnerTeams = (index == 1) ? 2 : 1;
+
+        createTeam("Hunters", NamedTextColor.RED, TeamRole.HUNTER);
+
+        if (speedrunnerTeams == 1) {
+            createTeam("Speedrunners", NamedTextColor.BLUE, TeamRole.SPEEDRUNNER);
+        } else {
+            createTeam("Speedrunners Blue", NamedTextColor.BLUE, TeamRole.SPEEDRUNNER);
+            createTeam("Speedrunners Green", NamedTextColor.GREEN, TeamRole.SPEEDRUNNER);
+        }
+
+        Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Loaded Manhunt teams: <gold>" + teams.size());
+    }
+
+    // Role of the team a player is on, or NONE if they're not on a team.
+    public TeamRole getTeamRole(Player player) {
+        Teams team = getPlayerTeam(player);
+        return team != null ? team.getRole() : TeamRole.NONE;
+    }
+
+    public Teams getHunterTeam() {
+        return teams.values().stream().filter(t -> t.getRole() == TeamRole.HUNTER).findFirst().orElse(null);
+    }
+
+    public List<Teams> getSpeedrunnerTeams() {
+        return teams.values().stream().filter(t -> t.getRole() == TeamRole.SPEEDRUNNER).toList();
     }
 
     // Adds a brand new team and persists the current full team roster to
@@ -146,6 +190,22 @@ public class TeamsManager {
         RivalRun.getInstance().getScoreboardManager().refresh(player);
 
         return true;
+    }
+
+    // System-driven team move (e.g. a wiped Manhunt Speedrunner team joining
+    // the Hunters) that bypasses the teamsLocked/max-size guards assignPlayer
+    // enforces for voluntary joins.
+    public void forceAssign(Player player, Teams newTeam) {
+        UUID uuid = player.getUniqueId();
+
+        Teams oldTeam = playerTeams.get(uuid);
+        if (oldTeam != null) {
+            oldTeam.removePlayer(uuid);
+        }
+
+        playerTeams.put(uuid, newTeam);
+        newTeam.addPlayer(uuid);
+        RivalRun.getInstance().getScoreboardManager().refresh(player);
     }
 
     // Get player's current team function
@@ -228,6 +288,11 @@ public class TeamsManager {
         teamsLocked = false;
         RivalRun.getInstance().getSpectatorManager().reset();
         RivalRun.getInstance().getAchievementManager().reset();
-        loadTeamsFromConfig();
+
+        if (RivalRun.getInstance().getGamemodeManager().isManhunt()) {
+            loadManhuntTeams();
+        } else {
+            loadTeamsFromConfig();
+        }
     }
 }

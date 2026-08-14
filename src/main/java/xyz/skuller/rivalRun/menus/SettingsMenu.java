@@ -28,6 +28,7 @@ public class SettingsMenu extends SimpleMenu {
     public void onSetItems() {
         clearMenu();
 
+        setCategory(9, Material.BOW, "Manhunt", SettingsCategories.manhunt());
         setCategory(10, Material.LIME_DYE, "Commands", SettingsCategories.commands());
         setCategory(11, Material.CHEST, "GUI", SettingsCategories.gui());
         setCategory(12, Material.CLOCK, "Grace Period", SettingsCategories.grace());

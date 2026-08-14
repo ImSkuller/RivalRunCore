@@ -132,12 +132,13 @@ gamemode:
 # ###########################################################
 manhunt:
   # How many Speedrunner teams face the single Hunters team.
-  # 1 = Speedrunners vs Hunters. 2 = Speedrunners vs Speedrunners vs Hunters
-  # (and teammate revival is disabled while both Speedrunner teams are
-  # still alive).
+  # 0 = 1 team (Speedrunners vs Hunters).
+  # 1 = 2 teams (Speedrunners vs Speedrunners vs Hunters, and teammate
+  #     revival is disabled while both Speedrunner teams are still alive).
+  # Change this in-game via Settings > Manhunt instead of editing by hand.
   #
-  # Usable Parameters: Integer (1 or 2)
-  speedrunnerTeams: 1
+  # Usable Parameters: Integer (0 or 1)
+  speedrunnerTeams: 0
 
   # How many seconds Hunters are frozen in place (they can still look
   # around) after the game starts, giving Speedrunners a head start.
