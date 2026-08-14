@@ -81,9 +81,10 @@ public class GameStateManager {
     }
 
 
-    // Starts the elapsed run timer. The countdown (STARTING) and grace period
-    // both happen before this is called, so the timer stays at 0:00 through
-    // both and only starts once the run is actually live.
+    // Starts the elapsed run timer. Called once the run goes live (right
+    // after STARTING ends), so it counts through grace/headstart rather
+    // than staying frozen at 0:00 until they end. Idempotent - later calls
+    // (e.g. from startGracePeriod()/startHeadstart() ending) are no-ops.
     public void startTimer() {
         if (runStartMillis == 0L) {
             runStartMillis = System.currentTimeMillis();
@@ -314,13 +315,17 @@ public class GameStateManager {
                     cancel();
 
                     setState(GameStates.RUNNING);
+                    // The run timer starts the moment the game goes live,
+                    // including through grace/headstart - it used to only
+                    // start once those ended, which left the scoreboard/tab
+                    // list/MOTD timer frozen at 0:00 for their entire
+                    // duration.
+                    startTimer();
                     if (RivalRun.getInstance().getGamemodeManager().isManhunt()) {
                         int headstartSeconds = RivalRun.getInstance().getConfig().getInt("manhunt.headstartSeconds", 30);
                         startHeadstart(headstartSeconds);
                     } else if (isGraceEnabled) {
                         startGracePeriod(graceTime);
-                    } else {
-                        startTimer();
                     }
                     Bukkit.broadcast(Component.text("The game has begun.", NamedTextColor.GREEN));
 
