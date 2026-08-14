@@ -8,6 +8,7 @@ import xyz.skuller.rivalRun.managers.ChatInputManager;
 import xyz.skuller.rivalRun.managers.ConfigManager;
 import xyz.skuller.rivalRun.managers.EventManager;
 import xyz.skuller.rivalRun.managers.GamemodeManager;
+import xyz.skuller.rivalRun.managers.ManhuntManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.skuller.rivalRun.managers.GameStateManager;
@@ -32,6 +33,7 @@ public final class RivalRun extends JavaPlugin {
     private static WorldResetManager worldResetManager;
     private static BuffManager buffManager;
     private static GamemodeManager gamemodeManager;
+    private static ManhuntManager manhuntManager;
     private static GameCommands gc;
     private static TeamCommands tc;
     double CURRENT_VERSION = 0.3;
@@ -51,6 +53,7 @@ public final class RivalRun extends JavaPlugin {
         worldResetManager = new WorldResetManager();
         buffManager = new BuffManager();
         gamemodeManager = new GamemodeManager();
+        manhuntManager = new ManhuntManager();
         gc = new GameCommands();
         tc = new TeamCommands();
 
@@ -79,6 +82,7 @@ public final class RivalRun extends JavaPlugin {
         // Live UI (sidebar scoreboard + tab list header/footer)
         scoreboardManager.start(this);
         tabListManager.start(this);
+        manhuntManager.start(this);
 
         // Loaded Message
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Rival Run Core has been loaded successfully.");
@@ -89,6 +93,7 @@ public final class RivalRun extends JavaPlugin {
     public void onDisable() {
         if (scoreboardManager != null) scoreboardManager.stop();
         if (tabListManager != null) tabListManager.stop();
+        if (manhuntManager != null) manhuntManager.stop();
 
         // Disabled Message
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Rival Run Core has shut down successfully.");
@@ -118,6 +123,8 @@ public final class RivalRun extends JavaPlugin {
     public BuffManager getBuffManager() {return buffManager;}
 
     public GamemodeManager getGamemodeManager() {return gamemodeManager;}
+
+    public ManhuntManager getManhuntManager() {return manhuntManager;}
 
     public GameCommands getGameCommands() {return gc;}
 

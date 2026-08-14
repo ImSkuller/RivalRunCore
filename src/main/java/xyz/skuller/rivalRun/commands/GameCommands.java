@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.Teams;
 import xyz.skuller.rivalRun.managers.GameStateManager;
 import xyz.skuller.rivalRun.managers.TeamsManager;
 
@@ -20,6 +21,19 @@ public class GameCommands {
             }
         }
         RivalRun.getInstance().getBuffManager().applyAll();
+
+        if (RivalRun.getInstance().getGamemodeManager().isManhunt()) {
+            Teams hunters = tmm.getHunterTeam();
+            if (hunters != null) {
+                for (var uuid : hunters.getPlayers()) {
+                    Player hunter = Bukkit.getPlayer(uuid);
+                    if (hunter != null) {
+                        RivalRun.getInstance().getManhuntManager().giveTrackerCompass(hunter);
+                    }
+                }
+            }
+        }
+
         gsm.startGame();
     }
 
@@ -31,6 +45,7 @@ public class GameCommands {
     public void resetGame() {
         gsm.resetGame();
         tmm.reset();
+        RivalRun.getInstance().getManhuntManager().reset();
     }
 
     public void pauseGame(CommandSender player) {
