@@ -3,12 +3,17 @@ package xyz.skuller.rivalRun.events;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.helpers.Teams;
@@ -94,6 +99,62 @@ public class ManhuntListener implements Listener {
 
         if (team != null && spectatorManager.countAlive(team) == 0) {
             manhuntManager.convertTeamToHunters(team);
+        } else {
+            // Team isn't wiped - lock this dead Speedrunner to spectating
+            // through whichever teammate is still alive (see the
+            // move/interact restrictions below) instead of free-flying.
+            manhuntManager.bindSpectatorToTeammate(player);
+        }
+    }
+
+    // Tracks damage each Speedrunner team deals to the dragon, so a fair
+    // winner can be picked if a Hunter ends up landing the killing blow
+    // (see TeamWinEvent) - Speedrunners beating the game is how they win,
+    // not whoever happens to get the kill credit.
+    @EventHandler
+    public void onDragonDamage(EntityDamageByEntityEvent event) {
+        if (!active()) return;
+        if (!(event.getEntity() instanceof EnderDragon)) return;
+        if (!(event.getDamager() instanceof Player player)) return;
+
+        RivalRun plugin = RivalRun.getInstance();
+        Teams team = plugin.getTeamManager().getPlayerTeam(player);
+        if (team != null && team.getRole() == TeamRole.SPEEDRUNNER) {
+            plugin.getManhuntManager().recordDragonDamage(team, event.getFinalDamage());
+        }
+    }
+
+    // A dead Speedrunner locked to spectating through a teammate can look
+    // around (and check F3) freely, but can't fly off on their own - any
+    // positional movement is cancelled, only the look direction is kept.
+    @EventHandler
+    public void onSpectatorMove(PlayerMoveEvent event) {
+        RivalRun plugin = RivalRun.getInstance();
+        if (!plugin.getManhuntManager().isBoundSpectator(event.getPlayer())) return;
+
+        Location from = event.getFrom();
+        Location to = event.getTo();
+        if (to == null) return;
+
+        if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
+            Location frozen = from.clone();
+            frozen.setYaw(to.getYaw());
+            frozen.setPitch(to.getPitch());
+            event.setTo(frozen);
+        }
+    }
+
+    @EventHandler
+    public void onSpectatorInteract(PlayerInteractEvent event) {
+        if (RivalRun.getInstance().getManhuntManager().isBoundSpectator(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onSpectatorInteractEntity(PlayerInteractEntityEvent event) {
+        if (RivalRun.getInstance().getManhuntManager().isBoundSpectator(event.getPlayer())) {
+            event.setCancelled(true);
         }
     }
 

@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -15,7 +16,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import xyz.skuller.rivalRun.RivalRun;
-import xyz.skuller.rivalRun.helpers.AchievementType;
 import xyz.skuller.rivalRun.helpers.TeamRole;
 import xyz.skuller.rivalRun.helpers.Teams;
 import xyz.skuller.rivalRun.helpers.WinReason;
@@ -25,20 +25,25 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
 // Owns Manhunt-only per-game state: which Speedrunner each Hunter is
 // tracking (kept live with a plain Player#setCompassTarget refresh - a
-// normal vanilla compass, no resource pack), and which Speedrunners have
-// already used their one revival this game.
+// normal vanilla compass, no resource pack), which Speedrunners have
+// already used their one revival this game, damage dealt to the Ender
+// Dragon per Speedrunner team (to credit a win fairly if a Hunter lands
+// the killing blow), and which dead Speedrunners are locked to spectating
+// through a living teammate.
 public class ManhuntManager {
 
     private final NamespacedKey trackerKey;
+    private final Random random = new Random();
 
     private final Map<UUID, UUID> targets = new HashMap<>();
     private final Set<UUID> revivedOnce = new HashSet<>();
-    private final Map<UUID, Set<UUID>> killedOpponents = new HashMap<>();
+    private final Map<Teams, Double> dragonDamageByTeam = new HashMap<>();
 
     // Set in onDeath (which knows the killer) and consumed in onRespawn
     // (which is where the actual spectator conversion happens) - see
@@ -46,11 +51,12 @@ public class ManhuntManager {
     // own, so this is how the decision crosses from one event to the other.
     private final Set<UUID> permanentDeathPending = new HashSet<>();
 
-    private boolean anyHunterDied;
-    private boolean hunterDiedToSpeedrunner;
-    private boolean speedrunnerDiedToHunter;
+    // Dead Speedrunner -> the living teammate they're locked to spectating
+    // through (see ManhuntListener's movement/interaction restrictions).
+    private final Map<UUID, UUID> spectatorBindings = new HashMap<>();
 
     private BukkitTask task;
+    private BukkitTask spectatorFollowTask;
 
     public ManhuntManager() {
         this.trackerKey = new NamespacedKey(RivalRun.getInstance(), "manhunt_tracker");
@@ -64,12 +70,26 @@ public class ManhuntManager {
                 tick();
             }
         }.runTaskTimer(plugin, 0L, 20L);
+
+        // A much shorter interval than the compass tick - this is what
+        // keeps a bound spectator's camera glued to their teammate's
+        // position smoothly as they move around.
+        spectatorFollowTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                tickSpectatorBindings();
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
     }
 
     public void stop() {
         if (task != null) {
             task.cancel();
             task = null;
+        }
+        if (spectatorFollowTask != null) {
+            spectatorFollowTask.cancel();
+            spectatorFollowTask = null;
         }
     }
 
@@ -193,35 +213,39 @@ public class ManhuntManager {
         revivedOnce.add(player.getUniqueId());
     }
 
-    public boolean neverRevived() {
-        return revivedOnce.isEmpty();
+    // How much damage a Speedrunner team has dealt to the Ender Dragon this
+    // match - used to fairly credit a win if a Hunter lands the kill.
+    public void recordDragonDamage(Teams team, double damage) {
+        dragonDamageByTeam.merge(team, damage, Double::sum);
     }
 
-    public void markHunterDied() {
-        anyHunterDied = true;
-    }
+    // Picks which Speedrunner team should be credited with a dragon-kill
+    // win when a Hunter lands the final blow: the sole surviving
+    // Speedrunner team if there's only one, otherwise whichever team(s)
+    // dealt the dragon the most damage this match (ties, including
+    // "nobody hit it," broken randomly).
+    public Teams pickDragonWinner() {
+        RivalRun plugin = RivalRun.getInstance();
+        List<Teams> alive = plugin.getTeamManager().getSpeedrunnerTeams().stream()
+                .filter(t -> t.getSize() > 0)
+                .toList();
+        if (alive.isEmpty()) return null;
+        if (alive.size() == 1) return alive.get(0);
 
-    public boolean anyHunterDied() {
-        return anyHunterDied;
-    }
+        double best = -1;
+        List<Teams> leaders = new ArrayList<>();
+        for (Teams team : alive) {
+            double damage = dragonDamageByTeam.getOrDefault(team, 0.0);
+            if (damage > best) {
+                best = damage;
+                leaders.clear();
+                leaders.add(team);
+            } else if (damage == best) {
+                leaders.add(team);
+            }
+        }
 
-    // Blood Feud: true once a Hunter has died to a Speedrunner AND a
-    // Speedrunner has died to a Hunter, in either order.
-    public void recordCrossKill(TeamRole killerRole, TeamRole victimRole) {
-        if (killerRole == TeamRole.SPEEDRUNNER && victimRole == TeamRole.HUNTER) hunterDiedToSpeedrunner = true;
-        if (killerRole == TeamRole.HUNTER && victimRole == TeamRole.SPEEDRUNNER) speedrunnerDiedToHunter = true;
-    }
-
-    public boolean isBloodFeud() {
-        return hunterDiedToSpeedrunner && speedrunnerDiedToHunter;
-    }
-
-    // Iron Grip: true once this killer has finished off 2+ distinct
-    // opposing-role players this game.
-    public boolean recordKillAndCheckIronGrip(Player killer, Player victim) {
-        Set<UUID> victims = killedOpponents.computeIfAbsent(killer.getUniqueId(), k -> new HashSet<>());
-        victims.add(victim.getUniqueId());
-        return victims.size() >= 2;
+        return leaders.get(random.nextInt(leaders.size()));
     }
 
     // Shared "come back weaker" state for both the team-wipe-to-Hunters
@@ -259,6 +283,7 @@ public class ManhuntManager {
             Player member = Bukkit.getPlayer(uuid);
             if (member == null) continue;
 
+            unbindSpectator(member);
             plugin.getSpectatorManager().clearSpectator(member);
             plugin.getTeamManager().forceAssign(member, hunters);
             applyHalfState(member);
@@ -267,17 +292,83 @@ public class ManhuntManager {
         }
 
         Bukkit.broadcast(Component.text(eliminatedTeam.getName() + " has been hunted down and joins the Hunters!", NamedTextColor.RED));
-        plugin.getAchievementManager().award(hunters, AchievementType.TEAM_WIPE);
+    }
+
+    // ---- Restricted spectating: a dead Speedrunner is locked to a living
+    // teammate's position (can look around freely, but can't move or
+    // interact - see ManhuntListener) rather than free-flying.
+
+    // Auto-picks the first living teammate found.
+    public void bindSpectatorToTeammate(Player spectator) {
+        RivalRun plugin = RivalRun.getInstance();
+        Teams team = plugin.getTeamManager().getPlayerTeam(spectator);
+        if (team == null) {
+            spectatorBindings.remove(spectator.getUniqueId());
+            return;
+        }
+
+        for (UUID uuid : team.getPlayers()) {
+            if (uuid.equals(spectator.getUniqueId())) continue;
+            Player candidate = Bukkit.getPlayer(uuid);
+            if (candidate != null && !plugin.getSpectatorManager().isSpectating(candidate)) {
+                spectatorBindings.put(spectator.getUniqueId(), uuid);
+                return;
+            }
+        }
+
+        spectatorBindings.remove(spectator.getUniqueId());
+    }
+
+    // Explicit pick, e.g. from the spectate menu when more than one
+    // teammate is still alive to choose from.
+    public void bindSpectatorTo(Player spectator, Player teammate) {
+        spectatorBindings.put(spectator.getUniqueId(), teammate.getUniqueId());
+    }
+
+    public void unbindSpectator(Player spectator) {
+        spectatorBindings.remove(spectator.getUniqueId());
+    }
+
+    public boolean isBoundSpectator(Player player) {
+        return spectatorBindings.containsKey(player.getUniqueId());
+    }
+
+    private void tickSpectatorBindings() {
+        if (spectatorBindings.isEmpty()) return;
+
+        RivalRun plugin = RivalRun.getInstance();
+        if (!plugin.getGamemodeManager().isManhunt()) return;
+
+        for (UUID spectatorId : new ArrayList<>(spectatorBindings.keySet())) {
+            Player spectator = Bukkit.getPlayer(spectatorId);
+            if (spectator == null) continue;
+
+            UUID teammateId = spectatorBindings.get(spectatorId);
+            Player teammate = teammateId != null ? Bukkit.getPlayer(teammateId) : null;
+
+            // The bound teammate died/logged off since the last tick -
+            // re-resolve to whichever teammate is still alive, if any.
+            if (teammate == null || plugin.getSpectatorManager().isSpectating(teammate)) {
+                bindSpectatorToTeammate(spectator);
+                teammateId = spectatorBindings.get(spectatorId);
+                teammate = teammateId != null ? Bukkit.getPlayer(teammateId) : null;
+            }
+            if (teammate == null) continue;
+
+            Location current = spectator.getLocation();
+            Location target = teammate.getLocation().clone();
+            target.setYaw(current.getYaw());
+            target.setPitch(current.getPitch());
+            spectator.teleport(target);
+        }
     }
 
     public void reset() {
         targets.clear();
         revivedOnce.clear();
-        killedOpponents.clear();
+        dragonDamageByTeam.clear();
         permanentDeathPending.clear();
-        anyHunterDied = false;
-        hunterDiedToSpeedrunner = false;
-        speedrunnerDiedToHunter = false;
+        spectatorBindings.clear();
     }
 
 }

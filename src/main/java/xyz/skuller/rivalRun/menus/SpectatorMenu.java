@@ -34,7 +34,9 @@ public class SpectatorMenu extends SimpleMenu {
         SpectatorManager sm = RivalRun.getInstance().getSpectatorManager();
 
         // A Manhunt Speedrunner who's died can only spectate their own
-        // teammates, not the Hunters or a rival Speedrunner team.
+        // teammates, not the Hunters or a rival Speedrunner team - and
+        // rather than teleporting freely, they're locked to that
+        // teammate's position (see ManhuntListener).
         boolean restricted = RivalRun.getInstance().getGamemodeManager().isManhunt()
                 && tm.getTeamRole(viewer) == TeamRole.SPEEDRUNNER;
         Iterable<Teams> visibleTeams = restricted
@@ -49,13 +51,13 @@ public class SpectatorMenu extends SimpleMenu {
                 if (target == null || sm.isSpectating(target)) continue;
                 if (slot >= getInventory().getSize()) break;
 
-                setTargetItem(slot, target, team);
+                setTargetItem(slot, target, team, restricted);
                 slot++;
             }
         }
     }
 
-    private void setTargetItem(int slot, Player target, Teams team) {
+    private void setTargetItem(int slot, Player target, Teams team, boolean bindOnly) {
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         ItemMeta meta = item.getItemMeta();
 
@@ -67,13 +69,18 @@ public class SpectatorMenu extends SimpleMenu {
 
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text("Team " + team.getName(), team.getColor()).decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Click to teleport", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text(bindOnly ? "Click to spectate" : "Click to teleport", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         meta.lore(lore);
 
         item.setItemMeta(meta);
 
         setItem(slot, item, player -> {
-            player.teleport(target.getLocation());
+            if (bindOnly) {
+                RivalRun.getInstance().getManhuntManager().bindSpectatorTo(player, target);
+                player.sendRichMessage("<red>You are now spectating <white>" + target.getName() + "<red>.");
+            } else {
+                player.teleport(target.getLocation());
+            }
             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f);
             player.closeInventory();
         });

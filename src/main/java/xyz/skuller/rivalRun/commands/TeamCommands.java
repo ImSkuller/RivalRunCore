@@ -4,7 +4,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import xyz.skuller.rivalRun.RivalRun;
-import xyz.skuller.rivalRun.helpers.AchievementType;
 import xyz.skuller.rivalRun.helpers.TeamRole;
 import xyz.skuller.rivalRun.helpers.Teams;
 import xyz.skuller.rivalRun.managers.ManhuntManager;
@@ -99,11 +98,11 @@ public class TeamCommands {
             return;
         }
 
+        manhuntManager.unbindSpectator(target);
         spectatorManager.clearSpectator(target);
         target.teleport(reviver.getLocation());
         manhuntManager.applyHalfState(target);
         manhuntManager.markRevived(target);
-        plugin.getAchievementManager().award(team, AchievementType.REVIVAL);
 
         Bukkit.broadcast(MiniMessage.miniMessage().deserialize(
                 "<green>" + target.getName() + " was revived by their team!"));

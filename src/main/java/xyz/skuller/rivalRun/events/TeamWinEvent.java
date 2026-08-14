@@ -29,13 +29,20 @@ public class TeamWinEvent implements Listener {
         Player killer = event.getEntity().getKiller();
         if (killer == null) return;
 
-        Teams team = RivalRun.getInstance().getTeamManager().getPlayerTeam(killer);
+        RivalRun rivalRun = RivalRun.getInstance();
+        Teams team = rivalRun.getTeamManager().getPlayerTeam(killer);
         if (team == null) return;
 
-        // In Manhunt, beating the dragon is how Speedrunners win - a Hunter
-        // landing the kill (an unusual edge case) doesn't end the game.
-        if (RivalRun.getInstance().getGamemodeManager().isManhunt() && team.getRole() == TeamRole.HUNTER) return;
+        // In Manhunt, beating the dragon is always a Speedrunner win - if a
+        // Hunter actually lands the kill (an unusual edge case), credit
+        // whichever Speedrunner team deserves it instead (the sole
+        // survivor, or whoever dealt the dragon the most damage).
+        if (rivalRun.getGamemodeManager().isManhunt() && team.getRole() == TeamRole.HUNTER) {
+            Teams winner = rivalRun.getManhuntManager().pickDragonWinner();
+            if (winner == null) return;
+            team = winner;
+        }
 
-        RivalRun.getInstance().getWinManager().announceWin(team, WinReason.DRAGON);
+        rivalRun.getWinManager().announceWin(team, WinReason.DRAGON);
     }
 }

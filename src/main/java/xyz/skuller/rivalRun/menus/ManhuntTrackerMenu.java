@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import xyz.skuller.rivalRun.RivalRun;
-import xyz.skuller.rivalRun.helpers.AchievementType;
 import xyz.skuller.rivalRun.helpers.SimpleMenu;
 import xyz.skuller.rivalRun.helpers.Teams;
 import xyz.skuller.rivalRun.managers.ManhuntManager;
@@ -74,11 +73,6 @@ public class ManhuntTrackerMenu extends SimpleMenu {
             player.sendRichMessage("<red>Your compass is now tracking <white>" + target.getName() + "<red>.");
             player.playSound(player.getLocation(), Sound.BLOCK_LODESTONE_PLACE, 1f, 1f);
             player.closeInventory();
-
-            Teams hunterTeam = RivalRun.getInstance().getTeamManager().getPlayerTeam(player);
-            if (hunterTeam != null) {
-                RivalRun.getInstance().getAchievementManager().award(hunterTeam, AchievementType.SHARP_EYE);
-            }
         });
     }
 

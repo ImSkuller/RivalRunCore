@@ -19,6 +19,7 @@ import xyz.skuller.rivalRun.helpers.Teams;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 // Owns every player's sidebar scoreboard AND the per-team color/prefix setup
 // that colors nametags + the tab list. Both need to live on the same
@@ -106,7 +107,6 @@ public class ScoreboardManager {
         GameStateManager gsm = plugin.getGameStateManager();
         TeamsManager tm = plugin.getTeamManager();
         SpectatorManager sm = plugin.getSpectatorManager();
-        AchievementManager am = plugin.getAchievementManager();
 
         List<Component> lines = new ArrayList<>();
 
@@ -124,20 +124,39 @@ public class ScoreboardManager {
 
         for (Teams team : tm.getTeams()) {
             int alive = sm.countAlive(team);
-            long achievements = am.countFor(team);
 
             Component line = Component.text("■ ", team.getColor())
                     .append(Component.text(team.getName() + " ", team.getColor()))
                     .append(Component.text(alive + "/" + team.getSize(), NamedTextColor.WHITE));
 
-            if (achievements > 0) {
-                line = line.append(Component.text("  ⭐" + achievements, NamedTextColor.YELLOW));
+            String locations = teamLocations(team);
+            if (!locations.isEmpty()) {
+                line = line.append(Component.text("  (" + locations + ")", NamedTextColor.GRAY));
             }
 
             lines.add(line);
         }
 
         return lines;
+    }
+
+    // Where each of a team's alive members currently are - "Unknown"
+    // instead of a real dimension for anyone sneaking, one entry per alive
+    // member (so a solo team shows just one).
+    private String teamLocations(Teams team) {
+        List<String> parts = new ArrayList<>();
+
+        for (UUID uuid : team.getPlayers()) {
+            Player member = Bukkit.getPlayer(uuid);
+            if (member == null) continue;
+            if (RivalRun.getInstance().getSpectatorManager().isSpectating(member)) continue;
+
+            parts.add(member.isSneaking()
+                    ? "Unknown"
+                    : ManhuntManager.formatDimension(member.getWorld().getEnvironment()));
+        }
+
+        return String.join(", ", parts);
     }
 
     private List<Component> buildManhuntLines(Player viewer) {
@@ -163,16 +182,30 @@ public class ScoreboardManager {
 
         Teams hunters = tm.getHunterTeam();
         if (hunters != null) {
-            lines.add(Component.text("■ ", hunters.getColor())
+            Component huntersLine = Component.text("■ ", hunters.getColor())
                     .append(Component.text("Hunters ", hunters.getColor()))
-                    .append(Component.text(hunters.getSize(), NamedTextColor.WHITE)));
+                    .append(Component.text(hunters.getSize(), NamedTextColor.WHITE));
+
+            String hunterLocations = teamLocations(hunters);
+            if (!hunterLocations.isEmpty()) {
+                huntersLine = huntersLine.append(Component.text("  (" + hunterLocations + ")", NamedTextColor.GRAY));
+            }
+
+            lines.add(huntersLine);
         }
 
         for (Teams team : tm.getSpeedrunnerTeams()) {
             int alive = sm.countAlive(team);
-            lines.add(Component.text("■ ", team.getColor())
+            Component line = Component.text("■ ", team.getColor())
                     .append(Component.text(team.getName() + " ", team.getColor()))
-                    .append(Component.text(alive + "/" + team.getSize(), NamedTextColor.WHITE)));
+                    .append(Component.text(alive + "/" + team.getSize(), NamedTextColor.WHITE));
+
+            String locations = teamLocations(team);
+            if (!locations.isEmpty()) {
+                line = line.append(Component.text("  (" + locations + ")", NamedTextColor.GRAY));
+            }
+
+            lines.add(line);
         }
 
         if (role == TeamRole.HUNTER) {
