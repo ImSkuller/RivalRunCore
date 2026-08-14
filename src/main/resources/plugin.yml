@@ -42,6 +42,12 @@ permissions:
   rivalrun.teams.lock:
     description: Allows locking/unlocking teams.
     default: op
+  rivalrun.teams.revive:
+    description: Allows reviving a dead teammate in Manhunt.
+    default: true
+  rivalrun.game.gamemode:
+    description: Allows switching between Classic and Manhunt.
+    default: op
   rivalrun.spectate:
     description: Allows using the spectator teleport menu.
     default: true
