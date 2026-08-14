@@ -7,7 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import xyz.skuller.rivalRun.RivalRun;
-import xyz.skuller.rivalRun.helpers.AchievementType;
 import xyz.skuller.rivalRun.helpers.MatchSummary;
 import xyz.skuller.rivalRun.helpers.SimpleMenu;
 import xyz.skuller.rivalRun.helpers.TeamPresets;
@@ -16,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Read-only recap of the most recently completed match - winner, run time,
-// and each team's survivors/achievements. Reads WinManager's frozen
-// snapshot rather than live team/achievement state, since both get wiped
-// by the next reset. Open to everyone, not just admins.
+// and each team's survivors. Reads WinManager's frozen snapshot rather
+// than live team state, since it gets wiped by the next reset. Open to
+// everyone, not just admins.
 public class MatchSummaryMenu extends SimpleMenu {
 
     public MatchSummaryMenu() {
@@ -90,16 +89,6 @@ public class MatchSummaryMenu extends SimpleMenu {
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text("Survived: ", NamedTextColor.GRAY)
                 .append(Component.text(result.alive() + "/" + result.total(), NamedTextColor.WHITE)).decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.empty());
-
-        if (result.achievements().isEmpty()) {
-            lore.add(Component.text("No achievements", NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
-        } else {
-            lore.add(Component.text("Achievements:", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
-            for (AchievementType type : result.achievements()) {
-                lore.add(Component.text("⭐ " + type.getDisplayName(), NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-            }
-        }
 
         meta.lore(lore);
         item.setItemMeta(meta);

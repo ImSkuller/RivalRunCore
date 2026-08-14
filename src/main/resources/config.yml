@@ -374,22 +374,6 @@ spectator:
 
 # ###########################################################
 # +------------------------------------------------------+ #
-# |              ⭐ Achievements Configuration            | #
-# |                 Plugin By Skuller                    | #
-# +------------------------------------------------------+ #
-# ###########################################################
-achievements:
-  # Team-speedrunning route milestones (Nether, blaze rod, ender pearl, eye
-  # of ender, the End, first hit on the dragon) - each is announced in chat
-  # and shown on the scoreboard for whichever team reaches it first.
-  #
-  # Usable Parameters: Boolean (true / false)
-  enabled: true
-
-
-
-# ###########################################################
-# +------------------------------------------------------+ #
 # |              🌍 World Reset Configuration             | #
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #

@@ -27,9 +27,7 @@ public class EventManager {
         plugin.getServer().getPluginManager().registerEvents(new SpectatorCompassListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new ManhuntCompassListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new ManhuntListener(), plugin);
-        plugin.getServer().getPluginManager().registerEvents(new ManhuntAchievementListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new ChatInputListener(), plugin);
-        plugin.getServer().getPluginManager().registerEvents(new AchievementListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new BuffListener(), plugin);
 
         Bukkit.getConsoleSender().sendRichMessage("<green>[Rival Run] Registered all the events.");

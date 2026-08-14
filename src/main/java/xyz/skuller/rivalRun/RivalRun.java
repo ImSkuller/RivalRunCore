@@ -2,7 +2,6 @@ package xyz.skuller.rivalRun;
 
 import xyz.skuller.rivalRun.commands.GameCommands;
 import xyz.skuller.rivalRun.commands.TeamCommands;
-import xyz.skuller.rivalRun.managers.AchievementManager;
 import xyz.skuller.rivalRun.managers.BuffManager;
 import xyz.skuller.rivalRun.managers.ChatInputManager;
 import xyz.skuller.rivalRun.managers.ConfigManager;
@@ -29,7 +28,6 @@ public final class RivalRun extends JavaPlugin {
     private static TabListManager tabListManager;
     private static WinManager winManager;
     private static ChatInputManager chatInputManager;
-    private static AchievementManager achievementManager;
     private static WorldResetManager worldResetManager;
     private static BuffManager buffManager;
     private static GamemodeManager gamemodeManager;
@@ -49,7 +47,6 @@ public final class RivalRun extends JavaPlugin {
         tabListManager = new TabListManager();
         winManager = new WinManager();
         chatInputManager = new ChatInputManager();
-        achievementManager = new AchievementManager();
         worldResetManager = new WorldResetManager();
         buffManager = new BuffManager();
         gamemodeManager = new GamemodeManager();
@@ -115,8 +112,6 @@ public final class RivalRun extends JavaPlugin {
     public WinManager getWinManager() {return winManager;}
 
     public ChatInputManager getChatInputManager() {return chatInputManager;}
-
-    public AchievementManager getAchievementManager() {return achievementManager;}
 
     public WorldResetManager getWorldResetManager() {return worldResetManager;}
 

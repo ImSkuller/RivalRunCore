@@ -4,7 +4,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import xyz.skuller.rivalRun.RivalRun;
-import xyz.skuller.rivalRun.helpers.Gamemode;
 import xyz.skuller.rivalRun.helpers.Messages;
 import xyz.skuller.rivalRun.helpers.TeamPresets;
 import xyz.skuller.rivalRun.helpers.Teams;
@@ -281,13 +280,16 @@ public class TeamsManager {
         teamsLocked = false;
     }
 
+    public boolean isTeamsLocked() {
+        return teamsLocked;
+    }
+
     // Function to reset all the teams and players
     public void reset() {
         teams.clear();
         playerTeams.clear();
         teamsLocked = false;
         RivalRun.getInstance().getSpectatorManager().reset();
-        RivalRun.getInstance().getAchievementManager().reset();
 
         if (RivalRun.getInstance().getGamemodeManager().isManhunt()) {
             loadManhuntTeams();

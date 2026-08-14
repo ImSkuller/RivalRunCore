@@ -39,9 +39,7 @@ public class GuideBook {
                         <gray>Check the sidebar for your team/role, the timer, and standings.
 
                         <gray>Classic: a grace period blocks PvP at the start.
-                        <gray>Manhunt: Hunters are frozen for a headstart instead - no grace period.
-
-                        <gray>Achievements announce in chat as milestones are reached."""),
+                        <gray>Manhunt: Hunters are frozen for a headstart instead - no grace period."""),
                 page("""
                         <gold><bold>Manhunt
 
@@ -59,14 +57,14 @@ public class GuideBook {
                         <gray>Use the Spectate compass, or run:
                         <white>/rr spectate
 
-                        <gray>to teleport to any remaining player."""),
+                        <gray>to spectate a remaining player (Manhunt locks you to a living teammate's view)."""),
                 page("""
                         <gold><bold>After the Game
 
                         <gray>Run:
                         <white>/rr summary
 
-                        <gray>to see the winner, run time, and each team's achievements from the last match.""")
+                        <gray>to see the winner, run time, and each team's survivors from the last match.""")
         )));
     }
 

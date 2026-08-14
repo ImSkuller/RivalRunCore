@@ -28,8 +28,8 @@ import java.util.UUID;
 // kill win condition and the spectator elimination win condition so the
 // celebration (chat banner, titles, sounds, fireworks) and state
 // transition only live in one place. Also snapshots a MatchSummary at the
-// moment of victory - team rosters/achievements get wiped by the next
-// reset, so /rivalrun summary needs its own frozen copy to read from.
+// moment of victory - team rosters get wiped by the next reset, so
+// /rivalrun summary needs its own frozen copy to read from.
 public class WinManager {
 
     private static final Component DIVIDER = Component.text(
@@ -43,11 +43,6 @@ public class WinManager {
         GameStateManager gsm = plugin.getGameStateManager();
 
         if (gsm.isState(GameStateManager.GameStates.POST)) return;
-
-        // Before flipping to POST, since award() requires RUNNING - this is
-        // the one place every win-time achievement (Flawless Victory, Speed
-        // Demon, Quick Hunt, etc.) gets awarded.
-        plugin.getAchievementManager().onWin(team, reason);
 
         gsm.setState(GameStateManager.GameStates.POST);
 
@@ -69,7 +64,6 @@ public class WinManager {
     private MatchSummary buildSummary(Teams winner, WinReason reason, String timer) {
         RivalRun plugin = RivalRun.getInstance();
         SpectatorManager sm = plugin.getSpectatorManager();
-        AchievementManager am = plugin.getAchievementManager();
 
         List<MatchSummary.TeamResult> results = new ArrayList<>();
         for (Teams team : plugin.getTeamManager().getTeams()) {
@@ -77,8 +71,7 @@ public class WinManager {
                     team.getName(),
                     team.getColor(),
                     sm.countAlive(team),
-                    team.getSize(),
-                    am.getAchievementsFor(team)
+                    team.getSize()
             ));
         }
 

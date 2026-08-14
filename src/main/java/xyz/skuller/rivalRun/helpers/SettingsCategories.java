@@ -101,12 +101,6 @@ public class SettingsCategories {
         );
     }
 
-    public static List<SettingEntry> achievements() {
-        return List.of(
-                toggle(Material.GOLDEN_APPLE, "Achievements", "Speedrun milestone achievements", "achievements.enabled")
-        );
-    }
-
     public static List<SettingEntry> worldReset() {
         return List.of(
                 toggle(Material.TNT, "Delete Old Worlds", "Off = archive instead of deleting on /rivalrun resetworld", "worldReset.deleteOldWorlds")
