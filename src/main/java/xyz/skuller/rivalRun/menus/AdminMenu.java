@@ -9,8 +9,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.commands.GameCommands;
+import xyz.skuller.rivalRun.helpers.Gamemode;
 import xyz.skuller.rivalRun.helpers.GuideBook;
 import xyz.skuller.rivalRun.helpers.SimpleMenu;
+import xyz.skuller.rivalRun.managers.GamemodeManager;
 import xyz.skuller.rivalRun.managers.GameStateManager;
 import xyz.skuller.rivalRun.managers.TeamsManager;
 
@@ -87,6 +89,16 @@ public class AdminMenu extends SimpleMenu {
 
         setButton(13, Material.WRITTEN_BOOK, "Help", NamedTextColor.YELLOW,
                 "Open the admin guide book.", GuideBook::openAdminGuide);
+
+        GamemodeManager gmm = RivalRun.getInstance().getGamemodeManager();
+        boolean manhunt = gmm.isManhunt();
+        Gamemode next = manhunt ? Gamemode.CLASSIC : Gamemode.MANHUNT;
+        setButton(9, manhunt ? Material.BOW : Material.DIAMOND_SWORD,
+                "Switch to " + next.name(), NamedTextColor.LIGHT_PURPLE,
+                "Currently: " + gmm.getActive().name() + ". Only while the game is WAITING.", player -> {
+                    gmm.switchTo(next, player);
+                    open(player);
+                });
     }
 
     private void setButton(int slot, Material material, String name, NamedTextColor color, String description, java.util.function.Consumer<org.bukkit.entity.Player> action) {
