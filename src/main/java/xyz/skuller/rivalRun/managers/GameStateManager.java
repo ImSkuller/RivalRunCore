@@ -6,6 +6,7 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import xyz.skuller.rivalRun.RivalRun;
 
 import java.time.Duration;
@@ -31,6 +32,11 @@ public class GameStateManager {
     private long runEndMillis;
     private long pausedMillis;
     private long pauseStartedMillis;
+
+    // The grace-period countdown task, kept so it can be cancelled on reset
+    // instead of running on indefinitely (e.g. if the game is reset/ended
+    // while grace is still active).
+    private BukkitTask graceTask;
 
 
     // Constructor
@@ -123,13 +129,25 @@ public class GameStateManager {
     // Grace period manager
     public void startGracePeriod(int seconds) {
 
+        if (graceTask != null) {
+            graceTask.cancel();
+        }
+
         this.gracePeriod = true;
         this.graceTimeLeft = seconds;
         this.timeColor = NamedTextColor.GREEN;
 
-        new BukkitRunnable() {
+        graceTask = new BukkitRunnable() {
             @Override
             public void run() {
+
+                // Freeze the grace countdown while the game is paused - skip
+                // this tick entirely (no decrement, no action bar/sound, and
+                // crucially no falling through to the "grace ended" branch)
+                // so it resumes from exactly where it left off.
+                if (currentState == GameStates.PAUSED) {
+                    return;
+                }
 
                 if (graceTimeLeft <= 0) {
                     gracePeriod = false;
@@ -249,6 +267,10 @@ public class GameStateManager {
 
     // Function that's used to reset the game after it ends.
     public void resetGame() {
+        if (graceTask != null) {
+            graceTask.cancel();
+            graceTask = null;
+        }
         gracePeriod = true;
         graceTimeLeft = 0;
         timeColor = NamedTextColor.GREEN;
