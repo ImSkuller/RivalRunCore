@@ -1,8 +1,13 @@
 package xyz.skuller.rivalRun.events;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import xyz.skuller.rivalRun.RivalRun;
@@ -12,6 +17,8 @@ import xyz.skuller.rivalRun.managers.GameStateManager;
 import xyz.skuller.rivalRun.managers.ManhuntManager;
 import xyz.skuller.rivalRun.managers.SpectatorManager;
 import xyz.skuller.rivalRun.managers.TeamsManager;
+
+import java.util.UUID;
 
 // Manhunt's death/respawn rules. Hunters respawn indefinitely (so there's
 // nothing to do for them beyond keeping their tracking compass); a
@@ -87,6 +94,48 @@ public class ManhuntListener implements Listener {
 
         if (team != null && spectatorManager.countAlive(team) == 0) {
             manhuntManager.convertTeamToHunters(team);
+        }
+    }
+
+    private static final double HEADSTART_PROTECTION_RADIUS = 10.0;
+
+    // Hunters are helpless (frozen, can't fight back) during the headstart -
+    // Speedrunners can't take advantage of that by attacking them or
+    // breaking blocks out from under/around them.
+    @EventHandler
+    public void onHeadstartDamage(EntityDamageByEntityEvent event) {
+        RivalRun plugin = RivalRun.getInstance();
+        if (!plugin.getGamemodeManager().isManhunt() || !plugin.getGameStateManager().isHeadstart()) return;
+        if (!(event.getDamager() instanceof Player damager)) return;
+        if (!(event.getEntity() instanceof Player victim)) return;
+
+        TeamsManager teamsManager = plugin.getTeamManager();
+        if (teamsManager.getTeamRole(damager) != TeamRole.SPEEDRUNNER) return;
+        if (teamsManager.getTeamRole(victim) != TeamRole.HUNTER) return;
+
+        event.setCancelled(true);
+        damager.sendActionBar(Component.text("You can't attack Hunters during the headstart!", NamedTextColor.RED));
+    }
+
+    @EventHandler
+    public void onHeadstartBlockBreak(BlockBreakEvent event) {
+        RivalRun plugin = RivalRun.getInstance();
+        if (!plugin.getGamemodeManager().isManhunt() || !plugin.getGameStateManager().isHeadstart()) return;
+
+        Player player = event.getPlayer();
+        if (plugin.getTeamManager().getTeamRole(player) != TeamRole.SPEEDRUNNER) return;
+
+        Teams hunters = plugin.getTeamManager().getHunterTeam();
+        if (hunters == null) return;
+
+        for (UUID uuid : hunters.getPlayers()) {
+            Player hunter = Bukkit.getPlayer(uuid);
+            if (hunter == null || !hunter.getWorld().equals(player.getWorld())) continue;
+            if (hunter.getLocation().distance(event.getBlock().getLocation()) <= HEADSTART_PROTECTION_RADIUS) {
+                event.setCancelled(true);
+                player.sendActionBar(Component.text("You can't break blocks near a Hunter during the headstart!", NamedTextColor.RED));
+                return;
+            }
         }
     }
 
