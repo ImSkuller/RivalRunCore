@@ -81,10 +81,14 @@ public class SettingsCategories {
     public static List<SettingEntry> motd() {
         return List.of(
                 toggle(Material.KNOWLEDGE_BOOK, "Dynamic MOTD", "Reflect game state in the server list", "motd.enabled"),
-                text(Material.PAPER, "MOTD - Waiting", "Placeholders: {online} {max} {timer}", "motd.waiting"),
-                text(Material.PAPER, "MOTD - Starting", "Placeholders: {online} {max} {timer}", "motd.starting"),
-                text(Material.PAPER, "MOTD - Running", "Placeholders: {online} {max} {timer}", "motd.running"),
-                text(Material.PAPER, "MOTD - Post-game", "Placeholders: {online} {max} {timer}", "motd.post")
+                text(Material.PAPER, "Classic - Waiting", "Placeholders: {online} {max} {timer}", "motd.classic.waiting"),
+                text(Material.PAPER, "Classic - Starting", "Placeholders: {online} {max} {timer}", "motd.classic.starting"),
+                text(Material.PAPER, "Classic - Running", "Placeholders: {online} {max} {timer}", "motd.classic.running"),
+                text(Material.PAPER, "Classic - Post-game", "Placeholders: {online} {max} {timer}", "motd.classic.post"),
+                text(Material.PAPER, "Manhunt - Waiting", "Placeholders: {online} {max} {timer} {speedrunners_alive} {hunters_alive}", "motd.manhunt.waiting"),
+                text(Material.PAPER, "Manhunt - Starting", "Placeholders: {online} {max} {timer} {speedrunners_alive} {hunters_alive}", "motd.manhunt.starting"),
+                text(Material.PAPER, "Manhunt - Running", "Placeholders: {online} {max} {timer} {speedrunners_alive} {hunters_alive}", "motd.manhunt.running"),
+                text(Material.PAPER, "Manhunt - Post-game", "Placeholders: {online} {max} {timer} {speedrunners_alive} {hunters_alive}", "motd.manhunt.post")
         );
     }
 

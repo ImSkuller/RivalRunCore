@@ -18,18 +18,27 @@ public class MotdEvent implements Listener {
         if (!plugin.getConfig().getBoolean("motd.enabled", true)) return;
 
         GameStateManager gsm = plugin.getGameStateManager();
-        String path = switch (gsm.getState()) {
-            case WAITING -> "motd.waiting";
-            case STARTING -> "motd.starting";
-            case RUNNING, PAUSED -> "motd.running";
-            case POST -> "motd.post";
+        String mode = plugin.getGamemodeManager().isManhunt() ? "manhunt" : "classic";
+        String stateKey = switch (gsm.getState()) {
+            case WAITING -> "waiting";
+            case STARTING -> "starting";
+            case RUNNING, PAUSED -> "running";
+            case POST -> "post";
         };
+        String path = "motd." + mode + "." + stateKey;
+
+        int speedrunnersAlive = plugin.getTeamManager().getSpeedrunnerTeams().stream()
+                .mapToInt(plugin.getSpectatorManager()::countAlive).sum();
+        var hunterTeam = plugin.getTeamManager().getHunterTeam();
+        int huntersAlive = hunterTeam != null ? hunterTeam.getSize() : 0;
 
         String template = plugin.getConfig().getString(path, "");
         String replaced = template
                 .replace("{online}", String.valueOf(Bukkit.getOnlinePlayers().size()))
                 .replace("{max}", String.valueOf(Bukkit.getServer().getMaxPlayers()))
-                .replace("{timer}", gsm.getFormattedElapsed());
+                .replace("{timer}", gsm.getFormattedElapsed())
+                .replace("{speedrunners_alive}", String.valueOf(speedrunnersAlive))
+                .replace("{hunters_alive}", String.valueOf(huntersAlive));
 
         Component motd = MiniMessage.miniMessage().deserialize(replaced);
         event.motd(motd);

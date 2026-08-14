@@ -303,21 +303,39 @@ motd:
   # Usable Parameters: Boolean (true / false)
   enabled: true
 
-  # Placeholders: {online} {max} {timer}
-  #
-  # Usable Parameters: String + MiniMessage format (\n for a new line)
-  waiting: |-
-    <gold><bold>RIVAL RUN</bold> <dark_gray>» <white>Waiting for players
-    <green>{online}<gray>/<green>{max} <white>players online
-  starting: |-
-    <gold><bold>RIVAL RUN</bold> <dark_gray>» <yellow>Game is starting soon!
-    <green>{online}<gray>/<green>{max} <white>players online
-  running: |-
-    <gold><bold>RIVAL RUN</bold> <dark_gray>» <red>Race in progress
-    <gray>Timer: <white>{timer}
-  post: |-
-    <gold><bold>RIVAL RUN</bold> <dark_gray>» <aqua>A game just ended
-    <white>Next game starting soon!
+  classic:
+    # Placeholders: {online} {max} {timer}
+    #
+    # Usable Parameters: String + MiniMessage format (\n for a new line)
+    waiting: |-
+      <gold><bold>RIVAL RUN</bold> <dark_gray>» <white>Waiting for players
+      <green>{online}<gray>/<green>{max} <white>players online
+    starting: |-
+      <gold><bold>RIVAL RUN</bold> <dark_gray>» <yellow>Game is starting soon!
+      <green>{online}<gray>/<green>{max} <white>players online
+    running: |-
+      <gold><bold>RIVAL RUN</bold> <dark_gray>» <red>Race in progress
+      <gray>Timer: <white>{timer}
+    post: |-
+      <gold><bold>RIVAL RUN</bold> <dark_gray>» <aqua>A game just ended
+      <white>Next game starting soon!
+
+  manhunt:
+    # Placeholders: {online} {max} {timer} {speedrunners_alive} {hunters_alive}
+    #
+    # Usable Parameters: String + MiniMessage format (\n for a new line)
+    waiting: |-
+      <red><bold>MANHUNT</bold> <dark_gray>» <white>Waiting for players
+      <green>{online}<gray>/<green>{max} <white>players online
+    starting: |-
+      <red><bold>MANHUNT</bold> <dark_gray>» <yellow>The hunt is starting soon!
+      <green>{online}<gray>/<green>{max} <white>players online
+    running: |-
+      <red><bold>MANHUNT</bold> <dark_gray>» <red>The hunt is on
+      <aqua>Speedrunners: <white>{speedrunners_alive}  <gray>Timer: <white>{timer}
+    post: |-
+      <red><bold>MANHUNT</bold> <dark_gray>» <aqua>A hunt just ended
+      <white>Next game starting soon!
 
 
 
