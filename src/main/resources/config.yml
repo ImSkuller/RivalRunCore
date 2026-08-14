@@ -242,16 +242,16 @@ motd:
   # Usable Parameters: String + MiniMessage format (\n for a new line)
   waiting: |-
     <gold><bold>RIVAL RUN</bold> <dark_gray>» <white>Waiting for players
-    <light_green>{online}<gray>/<light_green>{max} <dark_gray>players online
+    <green>{online}<gray>/<green>{max} <white>players online
   starting: |-
     <gold><bold>RIVAL RUN</bold> <dark_gray>» <yellow>Game is starting soon!
-    <light_green>{online}<gray>/<gray>{max} <dark_gray>players online
+    <green>{online}<gray>/<green>{max} <white>players online
   running: |-
     <gold><bold>RIVAL RUN</bold> <dark_gray>» <red>Race in progress
     <gray>Timer: <white>{timer}
   post: |-
     <gold><bold>RIVAL RUN</bold> <dark_gray>» <aqua>A game just ended
-    <gray>Next game starting soon
+    <white>Next game starting soon!
 
 
 
