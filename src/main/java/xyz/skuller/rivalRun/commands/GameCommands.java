@@ -60,6 +60,14 @@ public class GameCommands {
     // Wipes everything a run could have left on a player - inventory,
     // health/hunger, potion effects, XP - back to a fresh-join state.
     private void resetPlayerState(Player player) {
+        // Bring everyone back to the Overworld, not just whoever already
+        // happened to be there - a reset shouldn't leave stragglers behind
+        // in the Nether or the End.
+        var currentOverworld = RivalRun.getInstance().getWorldResetManager().getCurrentOverworld();
+        if (currentOverworld != null) {
+            player.teleport(currentOverworld.getSpawnLocation());
+        }
+
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
         player.getInventory().setItemInOffHand(null);
