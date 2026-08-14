@@ -78,7 +78,7 @@ public class ScoreboardManager {
         }
 
         if (plugin.getConfig().getBoolean("scoreboard.enabled", true)) {
-            String titleTemplate = plugin.getConfig().getString("scoreboard.title", "<gold><bold>Rival Run");
+            String titleTemplate = plugin.getConfig().getString("scoreboard.title", "<gold><bold>RIVAL RUN");
             Objective objective = board.registerNewObjective(OBJECTIVE_ID, Criteria.DUMMY, MiniMessage.miniMessage().deserialize(titleTemplate));
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
@@ -113,7 +113,7 @@ public class ScoreboardManager {
         Teams viewerTeam = tm.getPlayerTeam(viewer);
         lines.add(Component.text("Your Team: ", NamedTextColor.GRAY).append(
                 viewerTeam != null
-                        ? Component.text(viewerTeam.getName(), viewerTeam.getColor(), TextDecoration.BOLD)
+                        ? Component.text(viewerTeam.getName().toUpperCase(), viewerTeam.getColor(), TextDecoration.BOLD)
                         : Component.text("None", NamedTextColor.WHITE)
         ));
         lines.add(Component.empty());

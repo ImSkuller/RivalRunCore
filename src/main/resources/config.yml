@@ -190,7 +190,7 @@ scoreboard:
   # The title shown at the top of the sidebar scoreboard.
   #
   # Usable Parameters: String + MiniMessage format
-  title: "<gold><bold>⚔ Rival Run ⚔"
+  title: "<gold><bold>⚔ RIVAL RUN ⚔"
 
 
 
@@ -210,7 +210,7 @@ tablist:
   # Placeholders: {state} {timer} {online} {max}
   #
   # Usable Parameters: String + MiniMessage format (\n for a new line)
-  header: "<gold><bold>⚔ Rival Run ⚔\n<gray>State: <white>{state}  <gray>Timer: <white>{timer}"
+  header: "<gold><bold>⚔ RIVAL RUN ⚔\n<gray>State: <white>{state}  <gray>Timer: <white>{timer}"
 
   # The text shown below the player list.
   # Placeholders: {state} {timer} {online} {max}
