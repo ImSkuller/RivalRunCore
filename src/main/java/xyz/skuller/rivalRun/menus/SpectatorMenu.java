@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.helpers.SimpleMenu;
+import xyz.skuller.rivalRun.helpers.TeamRole;
 import xyz.skuller.rivalRun.helpers.Teams;
 import xyz.skuller.rivalRun.managers.SpectatorManager;
 import xyz.skuller.rivalRun.managers.TeamsManager;
@@ -32,8 +33,17 @@ public class SpectatorMenu extends SimpleMenu {
         TeamsManager tm = RivalRun.getInstance().getTeamManager();
         SpectatorManager sm = RivalRun.getInstance().getSpectatorManager();
 
+        // A Manhunt Speedrunner who's died can only spectate their own
+        // teammates, not the Hunters or a rival Speedrunner team.
+        boolean restricted = RivalRun.getInstance().getGamemodeManager().isManhunt()
+                && tm.getTeamRole(viewer) == TeamRole.SPEEDRUNNER;
+        Iterable<Teams> visibleTeams = restricted
+                ? List.of(tm.getPlayerTeam(viewer))
+                : tm.getTeams();
+
         int slot = 0;
-        for (Teams team : tm.getTeams()) {
+        for (Teams team : visibleTeams) {
+            if (team == null) continue;
             for (String name : tm.getPlayerNames(team)) {
                 Player target = Bukkit.getPlayer(name);
                 if (target == null || sm.isSpectating(target)) continue;

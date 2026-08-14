@@ -15,7 +15,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.helpers.Teams;
+import xyz.skuller.rivalRun.helpers.WinReason;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -136,6 +138,37 @@ public class ManhuntManager {
         player.setHealth(Math.max(1.0, maxHealth / 2.0));
         player.setFoodLevel(10);
         player.setSaturation(2.5f);
+    }
+
+    // Called once a Speedrunner team's last alive member has just gone to
+    // spectator - moves every member of that team onto the Hunters team at
+    // half health/saturation, then checks whether that was the last
+    // Speedrunner team left (Hunters win if so).
+    public void convertTeamToHunters(Teams eliminatedTeam) {
+        RivalRun plugin = RivalRun.getInstance();
+        Teams hunters = plugin.getTeamManager().getHunterTeam();
+        if (hunters == null) return;
+
+        List<UUID> members = new ArrayList<>(eliminatedTeam.getPlayers());
+        for (UUID uuid : members) {
+            Player member = Bukkit.getPlayer(uuid);
+            if (member == null) continue;
+
+            plugin.getSpectatorManager().clearSpectator(member);
+            plugin.getTeamManager().forceAssign(member, hunters);
+            applyHalfState(member);
+            giveTrackerCompass(member);
+            member.sendRichMessage("<red>Your team was hunted down - you've joined the Hunters!");
+        }
+
+        Bukkit.broadcast(Component.text(eliminatedTeam.getName() + " has been hunted down and joins the Hunters!", NamedTextColor.RED));
+
+        boolean anySpeedrunnersLeft = plugin.getTeamManager().getSpeedrunnerTeams().stream()
+                .anyMatch(t -> t.getSize() > 0);
+
+        if (!anySpeedrunnersLeft) {
+            plugin.getWinManager().announceWin(hunters, WinReason.HUNTERS_CAUGHT_ALL);
+        }
     }
 
     public void reset() {
