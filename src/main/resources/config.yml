@@ -1,25 +1,25 @@
-############################################################
+# ###########################################################
 # +------------------------------------------------------+ #
 # |                 Plugin By Skuller                    | #
 # |            https://discord.gg/WwVmxeXEgH             | #
 # +------------------------------------------------------+ #
-############################################################
+# ###########################################################
 
 # If you receive an error when Rival Run loads,  ensure that:
 #  - No tabs are present: YAML only allows spaces
 #  - Indents are correct: YAML hierarchy is based entirely on indentation
 
-#<-------------------------------------------------------->#
+# <-------------------------------------------------------->#
 # Configuration File Starts Here
-#<-------------------------------------------------------->#
+# <-------------------------------------------------------->#
 
 
-############################################################
+# ###########################################################
 # +------------------------------------------------------+ #
 # |             📜 Commands Configuration                | #
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #
-############################################################
+# ###########################################################
 commands:
   # This command is used to force end the game.
   # This can only be run by administrators.
@@ -56,12 +56,12 @@ commands:
 
 
 
-############################################################
+# ###########################################################
 # +------------------------------------------------------+ #
 # |              🧸 GUI Configuration                    | #
 # |                Plugin By Skuller                     | #
 # +------------------------------------------------------+ #
-############################################################
+# ###########################################################
 gui:
   # This determines if the fillers in the GUI is enabled or not
   # Change this to false if you don't want fillers (Design)
@@ -73,8 +73,8 @@ gui:
   # Only works if filler is set to true
   #
   # Usable Parameters: String + MiniMessage format
-  filler-1-name: ""
-  filler-2-name: ""
+  filler-1-name: ''
+  filler-2-name: ''
 
   # Whether the admin control menu (opened by running /rivalrun with no
   # arguments) is enabled. Admins can always fall back to the subcommands.
@@ -84,12 +84,12 @@ gui:
 
 
 
-############################################################
+# ###########################################################
 # +------------------------------------------------------+ #
 # |              ➕ Grace Configuration                  | #
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #
-############################################################
+# ###########################################################
 grace:
   # This determines if you want to enable a grace period or not
   # Recommended: true
@@ -107,12 +107,12 @@ grace:
 
 
 
-############################################################
+# ###########################################################
 # +------------------------------------------------------+ #
 # |              ➕ Teams Configuration                  | #
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #
-############################################################
+# ###########################################################
 teams:
   # The number of teams that you want.
   # Team is categorized into colors by default so you don't have to give the team a name,
@@ -175,12 +175,12 @@ teams:
 
 
 
-############################################################
+# ###########################################################
 # +------------------------------------------------------+ #
 # |              📋 Scoreboard Configuration             | #
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #
-############################################################
+# ###########################################################
 scoreboard:
   # Whether the sidebar scoreboard is shown to players at all.
   #
@@ -190,16 +190,16 @@ scoreboard:
   # The title shown at the top of the sidebar scoreboard.
   #
   # Usable Parameters: String + MiniMessage format
-  title: "<gold><bold>⚔ RIVAL RUN ⚔"
+  title: <gold><bold>RIVAL RUN
 
 
 
-############################################################
+# ###########################################################
 # +------------------------------------------------------+ #
 # |              📑 Tab List Configuration               | #
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #
-############################################################
+# ###########################################################
 tablist:
   # Whether the custom tab list header/footer is shown to players.
   #
@@ -210,22 +210,26 @@ tablist:
   # Placeholders: {state} {timer} {online} {max}
   #
   # Usable Parameters: String + MiniMessage format (\n for a new line)
-  header: "<gold><bold>⚔ RIVAL RUN ⚔\n<gray>State: <white>{state}  <gray>Timer: <white>{timer}"
+  header: |-
+    <gold><bold>RIVAL RUN
+    <gray>State: <white>{state}  <gray>Timer: <white>{timer}
 
   # The text shown below the player list.
   # Placeholders: {state} {timer} {online} {max}
   #
   # Usable Parameters: String + MiniMessage format (\n for a new line)
-  footer: "<gray>Online: <white>{online}<gray>/<white>{max}\n<gold>Team Speedrunning"
+  footer: |-
+    <gray>Online: <white>{online}<gray>/<white>{max}
+    <gold>Team Speedrunning
 
 
 
-############################################################
+# ###########################################################
 # +------------------------------------------------------+ #
 # |              📡 Server MOTD Configuration            | #
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #
-############################################################
+# ###########################################################
 motd:
   # Whether the server list MOTD reflects the current game state.
   # Set this to false to leave server.properties' motd untouched.
@@ -236,19 +240,27 @@ motd:
   # Placeholders: {online} {max} {timer}
   #
   # Usable Parameters: String + MiniMessage format (\n for a new line)
-  waiting: "<gold><bold>Rival Run <dark_gray>» <white>Waiting for players\n<gray>{online}<dark_gray>/<gray>{max} <dark_gray>players online"
-  starting: "<gold><bold>Rival Run <dark_gray>» <yellow>Game is starting soon!\n<gray>{online}<dark_gray>/<gray>{max} <dark_gray>players online"
-  running: "<gold><bold>Rival Run <dark_gray>» <red>Race in progress\n<gray>Timer: <white>{timer}"
-  post: "<gold><bold>Rival Run <dark_gray>» <aqua>A game just ended\n<gray>Next game starting soon"
+  waiting: |-
+    <gold><bold>RIVAL RUN</bold> <dark_gray>» <white>Waiting for players
+    <light_green>{online}<gray>/<light_green>{max} <dark_gray>players online
+  starting: |-
+    <gold><bold>RIVAL RUN</bold> <dark_gray>» <yellow>Game is starting soon!
+    <light_green>{online}<gray>/<gray>{max} <dark_gray>players online
+  running: |-
+    <gold><bold>RIVAL RUN</bold> <dark_gray>» <red>Race in progress
+    <gray>Timer: <white>{timer}
+  post: |-
+    <gold><bold>RIVAL RUN</bold> <dark_gray>» <aqua>A game just ended
+    <gray>Next game starting soon
 
 
 
-############################################################
+# ###########################################################
 # +------------------------------------------------------+ #
 # |              👻 Spectator Configuration              | #
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #
-############################################################
+# ###########################################################
 spectator:
   # If true, spectators are given a compass that opens a menu to teleport
   # to any remaining player. They can also use /rivalrun spectate.
@@ -264,12 +276,12 @@ spectator:
 
 
 
-############################################################
+# ###########################################################
 # +------------------------------------------------------+ #
 # |              ⭐ Achievements Configuration            | #
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #
-############################################################
+# ###########################################################
 achievements:
   # Team-speedrunning route milestones (Nether, blaze rod, ender pearl, eye
   # of ender, the End, first hit on the dragon) - each is announced in chat
@@ -280,12 +292,12 @@ achievements:
 
 
 
-############################################################
+# ###########################################################
 # +------------------------------------------------------+ #
 # |              🌍 World Reset Configuration             | #
 # |                 Plugin By Skuller                    | #
 # +------------------------------------------------------+ #
-############################################################
+# ###########################################################
 worldReset:
   # /rivalrun resetworld regenerates the entire world (Overworld, Nether,
   # End) with a brand new random seed, after an in-game confirmation.
@@ -299,22 +311,22 @@ worldReset:
 
   # Internal - do not edit. Tracks which world set RivalRun is currently
   # using, so it never touches the server's default world.
-  currentWorld: ""
+  currentWorld: ''
 
 
 
-############################################################
+# ###########################################################
 # +------------------------------------------------------+ #
 # |              💬 Messages Configuration               | #
 # +------------------------------------------------------+ #
-############################################################
+# ###########################################################
 messages:
-  teamFull: "<red>That team is full!"
-  teamsLocked: "<red>Teams are locked right now."
-  notInTeam: "<red>You are not in a team."
-  teamWin: "<gold>Team {team} has won the game!"
-  spectatorEnabled: "<red>You have been moved to spectator mode by an admin."
-  spectatorDisabled: "<green>You are no longer spectating."
+  teamFull: <red>That team is full!
+  teamsLocked: <red>Teams are locked right now.
+  notInTeam: <red>You are not in a team.
+  teamWin: <gold>Team {team} has won the game!
+  spectatorEnabled: <red>You have been moved to spectator mode by an admin.
+  spectatorDisabled: <green>You are no longer spectating.
 
 
 
