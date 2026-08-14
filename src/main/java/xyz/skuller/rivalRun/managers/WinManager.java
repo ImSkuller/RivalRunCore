@@ -44,6 +44,11 @@ public class WinManager {
 
         if (gsm.isState(GameStateManager.GameStates.POST)) return;
 
+        // Before flipping to POST, since award() requires RUNNING - this is
+        // the one place every win-time achievement (Flawless Victory, Speed
+        // Demon, Quick Hunt, etc.) gets awarded.
+        plugin.getAchievementManager().onWin(team, reason);
+
         gsm.setState(GameStateManager.GameStates.POST);
 
         String timer = gsm.getFormattedElapsed();

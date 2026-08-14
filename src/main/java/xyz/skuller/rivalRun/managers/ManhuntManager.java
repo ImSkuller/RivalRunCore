@@ -14,6 +14,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.AchievementType;
+import xyz.skuller.rivalRun.helpers.TeamRole;
 import xyz.skuller.rivalRun.helpers.Teams;
 import xyz.skuller.rivalRun.helpers.WinReason;
 
@@ -35,6 +37,11 @@ public class ManhuntManager {
 
     private final Map<UUID, UUID> targets = new HashMap<>();
     private final Set<UUID> revivedOnce = new HashSet<>();
+    private final Map<UUID, Set<UUID>> killedOpponents = new HashMap<>();
+
+    private boolean anyHunterDied;
+    private boolean hunterDiedToSpeedrunner;
+    private boolean speedrunnerDiedToHunter;
 
     private BukkitTask task;
 
@@ -140,6 +147,37 @@ public class ManhuntManager {
         revivedOnce.add(player.getUniqueId());
     }
 
+    public boolean neverRevived() {
+        return revivedOnce.isEmpty();
+    }
+
+    public void markHunterDied() {
+        anyHunterDied = true;
+    }
+
+    public boolean anyHunterDied() {
+        return anyHunterDied;
+    }
+
+    // Blood Feud: true once a Hunter has died to a Speedrunner AND a
+    // Speedrunner has died to a Hunter, in either order.
+    public void recordCrossKill(TeamRole killerRole, TeamRole victimRole) {
+        if (killerRole == TeamRole.SPEEDRUNNER && victimRole == TeamRole.HUNTER) hunterDiedToSpeedrunner = true;
+        if (killerRole == TeamRole.HUNTER && victimRole == TeamRole.SPEEDRUNNER) speedrunnerDiedToHunter = true;
+    }
+
+    public boolean isBloodFeud() {
+        return hunterDiedToSpeedrunner && speedrunnerDiedToHunter;
+    }
+
+    // Iron Grip: true once this killer has finished off 2+ distinct
+    // opposing-role players this game.
+    public boolean recordKillAndCheckIronGrip(Player killer, Player victim) {
+        Set<UUID> victims = killedOpponents.computeIfAbsent(killer.getUniqueId(), k -> new HashSet<>());
+        victims.add(victim.getUniqueId());
+        return victims.size() >= 2;
+    }
+
     // Shared "come back weaker" state for both the team-wipe-to-Hunters
     // conversion and a teammate revival.
     public void applyHalfState(Player player) {
@@ -171,6 +209,7 @@ public class ManhuntManager {
         }
 
         Bukkit.broadcast(Component.text(eliminatedTeam.getName() + " has been hunted down and joins the Hunters!", NamedTextColor.RED));
+        plugin.getAchievementManager().award(hunters, AchievementType.TEAM_WIPE);
 
         boolean anySpeedrunnersLeft = plugin.getTeamManager().getSpeedrunnerTeams().stream()
                 .anyMatch(t -> t.getSize() > 0);
@@ -183,6 +222,10 @@ public class ManhuntManager {
     public void reset() {
         targets.clear();
         revivedOnce.clear();
+        killedOpponents.clear();
+        anyHunterDied = false;
+        hunterDiedToSpeedrunner = false;
+        speedrunnerDiedToHunter = false;
     }
 
 }
