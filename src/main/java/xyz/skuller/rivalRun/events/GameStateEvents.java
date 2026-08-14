@@ -12,6 +12,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import xyz.skuller.rivalRun.RivalRun;
+import xyz.skuller.rivalRun.helpers.TeamRole;
 import xyz.skuller.rivalRun.managers.GameStateManager;
 
 public class GameStateEvents implements Listener {
@@ -87,13 +88,27 @@ public class GameStateEvents implements Listener {
         if (gsm.isState(GameStateManager.GameStates.PAUSED) ||
                 gsm.isState(GameStateManager.GameStates.STARTING))
         {
+            freeze(event, Component.text("Game is " + gsm.getState(), NamedTextColor.RED));
+            return;
+        }
 
-            if (event.getFrom().getX() != event.getTo().getX() ||
-                    event.getFrom().getZ() != event.getTo().getZ())
-            {
-                event.setTo(event.getFrom());
-                event.getPlayer().sendActionBar(Component.text("Game is " + RivalRun.getInstance().getGameStateManager().getState(), NamedTextColor.RED));
-            }
+        RivalRun plugin = RivalRun.getInstance();
+        if (gsm.isHeadstart()
+                && plugin.getGamemodeManager().isManhunt()
+                && plugin.getTeamManager().getTeamRole(event.getPlayer()) == TeamRole.HUNTER)
+        {
+            freeze(event, Component.text("Headstart! You can look around but not move yet.", NamedTextColor.RED));
+        }
+    }
+
+    // Locks horizontal (X/Z) movement while leaving looking around (and
+    // vertical movement, e.g. falling/jumping in place) untouched.
+    private void freeze(PlayerMoveEvent event, Component message) {
+        if (event.getFrom().getX() != event.getTo().getX() ||
+                event.getFrom().getZ() != event.getTo().getZ())
+        {
+            event.setTo(event.getFrom());
+            event.getPlayer().sendActionBar(message);
         }
     }
 

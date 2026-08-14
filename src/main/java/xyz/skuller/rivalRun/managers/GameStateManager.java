@@ -38,6 +38,13 @@ public class GameStateManager {
     // while grace is still active).
     private BukkitTask graceTask;
 
+    // Manhunt's headstart: Hunters are frozen (see GameStateEvents.onMove)
+    // for this countdown while Speedrunners get a head start. Mirrors the
+    // grace-period task's pause-freezing and cancel-on-reset behavior.
+    private boolean headstartActive;
+    private int headstartTimeLeft;
+    private BukkitTask headstartTask;
+
 
     // Constructor
     public GameStateManager() {
@@ -197,6 +204,78 @@ public class GameStateManager {
     }
 
 
+    // True while Manhunt's headstart countdown is still running - Hunters
+    // are frozen in place (see GameStateEvents.onMove) until it ends.
+    public boolean isHeadstart() {
+        return currentState == GameStates.RUNNING && headstartActive;
+    }
+
+    // Manhunt headstart manager - mirrors startGracePeriod()'s cancellable
+    // task, pause-freezing, and last-5-seconds alert pattern.
+    public void startHeadstart(int seconds) {
+
+        if (headstartTask != null) {
+            headstartTask.cancel();
+        }
+
+        this.headstartActive = true;
+        this.headstartTimeLeft = seconds;
+        this.timeColor = NamedTextColor.GREEN;
+
+        headstartTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+
+                if (currentState == GameStates.PAUSED) {
+                    return;
+                }
+
+                if (headstartTimeLeft <= 0) {
+                    headstartActive = false;
+                    startTimer();
+
+                    Bukkit.broadcast(Component.text(
+                            "The headstart is over - Hunters are free to move!",
+                            NamedTextColor.RED
+                    ));
+
+                    Bukkit.getOnlinePlayers().forEach(p ->
+                            p.playSound(p.getLocation(),
+                                    Sound.ENTITY_ENDER_DRAGON_GROWL,
+                                    1f,
+                                    1f)
+                    );
+
+                    cancel();
+                    return;
+                }
+
+                Bukkit.getOnlinePlayers().forEach(player -> player.sendActionBar(
+                        Component.text("Headstart: ", NamedTextColor.WHITE)
+                                .append(Component.text(headstartTimeLeft, timeColor))
+                                .append(Component.text("s", NamedTextColor.GRAY))
+                ));
+
+                if (headstartTimeLeft <= 5) {
+
+                    timeColor = NamedTextColor.RED;
+
+                    float pitch = 1.0f + (5 - headstartTimeLeft) * 0.2f;
+
+                    Bukkit.getOnlinePlayers().forEach(player -> player.playSound(
+                            player.getLocation(),
+                            Sound.BLOCK_NOTE_BLOCK_HAT,
+                            1f,
+                            pitch
+                    ));
+                }
+
+                headstartTimeLeft--;
+            }
+        }.runTaskTimer(RivalRun.getInstance(), 0L, 20L);
+    }
+
+
     // Countdown before the game starts and the game start logic.
     public void startCountdown(int seconds) {
         boolean isGraceEnabled;
@@ -228,7 +307,10 @@ public class GameStateManager {
                     cancel();
 
                     setState(GameStates.RUNNING);
-                    if (isGraceEnabled) {
+                    if (RivalRun.getInstance().getGamemodeManager().isManhunt()) {
+                        int headstartSeconds = RivalRun.getInstance().getConfig().getInt("manhunt.headstartSeconds", 30);
+                        startHeadstart(headstartSeconds);
+                    } else if (isGraceEnabled) {
                         startGracePeriod(graceTime);
                     } else {
                         startTimer();
@@ -271,8 +353,14 @@ public class GameStateManager {
             graceTask.cancel();
             graceTask = null;
         }
+        if (headstartTask != null) {
+            headstartTask.cancel();
+            headstartTask = null;
+        }
         gracePeriod = true;
         graceTimeLeft = 0;
+        headstartActive = false;
+        headstartTimeLeft = 0;
         timeColor = NamedTextColor.GREEN;
         runStartMillis = 0L;
         runEndMillis = 0L;
