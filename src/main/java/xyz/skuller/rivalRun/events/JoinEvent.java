@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.helpers.Teams;
 import xyz.skuller.rivalRun.managers.GameStateManager;
@@ -68,5 +69,22 @@ public class JoinEvent implements Listener {
         // Snappy first-second experience instead of waiting for the 1s tick
         plugin.getScoreboardManager().refresh(player);
         plugin.getTabListManager().refresh(player);
+    }
+
+    // Without a bed/anchor, Bukkit's default respawn location can end up
+    // pointing at whichever world the player died in - if that was the
+    // dedicated world set /rivalrun resetworld just removed (or a player
+    // never redirected out of the server's real default world), always
+    // fall back to the current world's spawn instead of wherever vanilla
+    // would otherwise pick. This is what makes a fresh /rivalrun resetworld
+    // the actual respawn point going forward, not the old/deleted world.
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent event) {
+        if (event.isBedSpawn() || event.isAnchorSpawn()) return;
+
+        World currentOverworld = RivalRun.getInstance().getWorldResetManager().getCurrentOverworld();
+        if (currentOverworld == null) return;
+
+        event.setRespawnLocation(currentOverworld.getSpawnLocation());
     }
 }

@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -145,6 +146,23 @@ public class ManhuntManager {
         return target != null ? target.getName() : "None";
     }
 
+    // Which dimension a Hunter's current target is in, or "None" - used by
+    // the scoreboard.
+    public String getTargetDimension(Player hunter) {
+        UUID targetId = targets.get(hunter.getUniqueId());
+        if (targetId == null) return "None";
+        Player target = Bukkit.getPlayer(targetId);
+        return target != null ? formatDimension(target.getWorld().getEnvironment()) : "None";
+    }
+
+    public static String formatDimension(World.Environment environment) {
+        return switch (environment) {
+            case NETHER -> "Nether";
+            case THE_END -> "The End";
+            default -> "Overworld";
+        };
+    }
+
     // manhunt.permaDeathMode is a CYCLE setting - 0 = All Deaths, 1 = Hunter
     // Kills Only.
     public boolean isHunterKillsOnlyMode() {
@@ -216,13 +234,25 @@ public class ManhuntManager {
     }
 
     // Called once a Speedrunner team's last alive member has just gone to
-    // spectator - moves every member of that team onto the Hunters team at
-    // half health/saturation, then checks whether that was the last
-    // Speedrunner team left (Hunters win if so).
+    // spectator. If another Speedrunner team is still alive, this team
+    // joins the Hunters at half health/saturation to help continue the
+    // hunt. If this was the last Speedrunner team left, the game is simply
+    // over - its members stay eliminated (spectating) rather than being
+    // shuffled onto the winning team, since they were just caught, not
+    // victors themselves.
     public void convertTeamToHunters(Teams eliminatedTeam) {
         RivalRun plugin = RivalRun.getInstance();
         Teams hunters = plugin.getTeamManager().getHunterTeam();
         if (hunters == null) return;
+
+        boolean anySpeedrunnersLeft = plugin.getTeamManager().getSpeedrunnerTeams().stream()
+                .anyMatch(t -> t != eliminatedTeam && t.getSize() > 0);
+
+        if (!anySpeedrunnersLeft) {
+            Bukkit.broadcast(Component.text(eliminatedTeam.getName() + " has been hunted down!", NamedTextColor.RED));
+            plugin.getWinManager().announceWin(hunters, WinReason.HUNTERS_CAUGHT_ALL);
+            return;
+        }
 
         List<UUID> members = new ArrayList<>(eliminatedTeam.getPlayers());
         for (UUID uuid : members) {
@@ -238,13 +268,6 @@ public class ManhuntManager {
 
         Bukkit.broadcast(Component.text(eliminatedTeam.getName() + " has been hunted down and joins the Hunters!", NamedTextColor.RED));
         plugin.getAchievementManager().award(hunters, AchievementType.TEAM_WIPE);
-
-        boolean anySpeedrunnersLeft = plugin.getTeamManager().getSpeedrunnerTeams().stream()
-                .anyMatch(t -> t.getSize() > 0);
-
-        if (!anySpeedrunnersLeft) {
-            plugin.getWinManager().announceWin(hunters, WinReason.HUNTERS_CAUGHT_ALL);
-        }
     }
 
     public void reset() {

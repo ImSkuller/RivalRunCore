@@ -176,9 +176,13 @@ public class ScoreboardManager {
         }
 
         if (role == TeamRole.HUNTER) {
+            ManhuntManager mm = plugin.getManhuntManager();
+            String targetName = mm.getTargetName(viewer);
+            String suffix = targetName.equals("None") ? "" : " (" + mm.getTargetDimension(viewer) + ")";
+
             lines.add(Component.empty());
             lines.add(Component.text("Tracking: ", NamedTextColor.GRAY)
-                    .append(Component.text(plugin.getManhuntManager().getTargetName(viewer), NamedTextColor.RED)));
+                    .append(Component.text(targetName + suffix, NamedTextColor.RED)));
         }
 
         return lines;

@@ -14,6 +14,7 @@ import xyz.skuller.rivalRun.RivalRun;
 import xyz.skuller.rivalRun.helpers.AchievementType;
 import xyz.skuller.rivalRun.helpers.SimpleMenu;
 import xyz.skuller.rivalRun.helpers.Teams;
+import xyz.skuller.rivalRun.managers.ManhuntManager;
 import xyz.skuller.rivalRun.managers.SpectatorManager;
 import xyz.skuller.rivalRun.managers.TeamsManager;
 
@@ -61,6 +62,8 @@ public class ManhuntTrackerMenu extends SimpleMenu {
 
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text("Team " + team.getName(), team.getColor()).decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text("Currently in: ", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+                .append(Component.text(ManhuntManager.formatDimension(target.getWorld().getEnvironment()), NamedTextColor.WHITE)));
         lore.add(Component.text("Click to track", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         meta.lore(lore);
 
