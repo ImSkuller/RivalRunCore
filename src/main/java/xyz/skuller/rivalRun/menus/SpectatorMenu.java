@@ -19,6 +19,7 @@ import xyz.skuller.rivalRun.managers.TeamsManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SpectatorMenu extends SimpleMenu {
 
@@ -44,12 +45,13 @@ public class SpectatorMenu extends SimpleMenu {
                 : tm.getTeams();
 
         int slot = 0;
+        outer:
         for (Teams team : visibleTeams) {
             if (team == null) continue;
-            for (String name : tm.getPlayerNames(team)) {
-                Player target = Bukkit.getPlayer(name);
-                if (target == null || sm.isSpectating(target)) continue;
-                if (slot >= getInventory().getSize()) break;
+            for (UUID uuid : team.getPlayers()) {
+                Player target = Bukkit.getPlayer(uuid);
+                if (target == null || target.equals(viewer) || sm.isSpectating(target)) continue;
+                if (slot >= getInventory().getSize()) break outer;
 
                 setTargetItem(slot, target, team, restricted);
                 slot++;

@@ -19,6 +19,7 @@ import xyz.skuller.rivalRun.managers.TeamsManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 // A Hunter's compass menu - lets them pick which alive Speedrunner to
 // track (across every Speedrunner team). Unlike SpectatorMenu, clicking
@@ -37,11 +38,12 @@ public class ManhuntTrackerMenu extends SimpleMenu {
         SpectatorManager sm = RivalRun.getInstance().getSpectatorManager();
 
         int slot = 0;
+        outer:
         for (Teams team : tm.getSpeedrunnerTeams()) {
-            for (String name : tm.getPlayerNames(team)) {
-                Player target = Bukkit.getPlayer(name);
+            for (UUID uuid : team.getPlayers()) {
+                Player target = Bukkit.getPlayer(uuid);
                 if (target == null || sm.isSpectating(target)) continue;
-                if (slot >= getInventory().getSize()) break;
+                if (slot >= getInventory().getSize()) break outer;
 
                 setTargetItem(slot, target, team);
                 slot++;
