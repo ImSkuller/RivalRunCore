@@ -51,10 +51,9 @@ public class TeamCommands {
         player.sendRichMessage("<red>Anyone can switch teams or join teams freely now. <gray>(This is not recommended to turn on while a speedrun game is running)");
     }
 
-    // Manhunt only: revives a dead teammate, once per player per game.
-    // Only usable while exactly one Speedrunner team still has anyone left -
-    // covers both "always was Speedrunners vs Hunters" and "just became
-    // that after the other Speedrunner team was wiped."
+    // Manhunt only: revives a dead teammate, once per player per game -
+    // available any time a Speedrunner team still has a living member to
+    // call it, regardless of how many other Speedrunner teams remain.
     public void reviveTeammate(Player reviver, String targetName) {
         RivalRun plugin = RivalRun.getInstance();
 
@@ -72,12 +71,6 @@ public class TeamCommands {
         SpectatorManager spectatorManager = plugin.getSpectatorManager();
         if (spectatorManager.isSpectating(reviver)) {
             reviver.sendRichMessage("<red>You cannot revive a teammate while you're eliminated yourself.");
-            return;
-        }
-
-        long remainingSpeedrunnerTeams = tm.getSpeedrunnerTeams().stream().filter(t -> t.getSize() > 0).count();
-        if (remainingSpeedrunnerTeams != 1) {
-            reviver.sendRichMessage("<red>Revival is only available while a single Speedrunner team remains.");
             return;
         }
 

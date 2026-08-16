@@ -47,7 +47,7 @@ public class GuideBook {
 
                         <gray>Speedrunners don't respawn - dying makes you a (team-only) spectator. If your whole team falls you join the Hunters at half health.
 
-                        <gray>While your team is the only Speedrunner team left, revive a fallen teammate once each with:
+                        <gray>Revive a fallen teammate once each, any time, with:
                         <white>/rr team revive <player>"""),
                 page("""
                         <gold><bold>Spectating
