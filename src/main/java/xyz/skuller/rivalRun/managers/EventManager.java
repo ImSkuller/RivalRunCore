@@ -27,6 +27,7 @@ public class EventManager {
         plugin.getServer().getPluginManager().registerEvents(new SpectatorCompassListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new ManhuntCompassListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new ManhuntListener(), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new PortalListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new ChatInputListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new BuffListener(), plugin);
 

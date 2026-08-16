@@ -55,6 +55,20 @@ public class WorldResetManager {
         return baseName.isEmpty() ? null : Bukkit.getWorld(baseName);
     }
 
+    // The Nether/End paired with the current Overworld - see PortalListener,
+    // which uses these to keep portal travel inside this same world set
+    // instead of leaking into the server's default world/world_nether/
+    // world_the_end trio.
+    public World getCurrentNether() {
+        String baseName = RivalRun.getInstance().getConfig().getString(CURRENT_WORLD_PATH, "");
+        return baseName.isEmpty() ? null : Bukkit.getWorld(baseName + "_nether");
+    }
+
+    public World getCurrentEnd() {
+        String baseName = RivalRun.getInstance().getConfig().getString(CURRENT_WORLD_PATH, "");
+        return baseName.isEmpty() ? null : Bukkit.getWorld(baseName + "_the_end");
+    }
+
     public void resetWorlds() {
         RivalRun plugin = RivalRun.getInstance();
         String oldBaseName = plugin.getConfig().getString(CURRENT_WORLD_PATH, "");
